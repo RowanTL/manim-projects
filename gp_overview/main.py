@@ -113,10 +113,14 @@ class MobjectPlacement(Scene):
 class QuoteSlide(Scene):
     def construct(self):
         font_size = 25
-        text0 = Text("...it is now clear that the hybrids form seeds having", font_size=font_size, slant=ITALIC)
+
+        # quote from: https://en.wikisource.org/wiki/Mendel%27s_Principles_of_Heredity;_a_Defence/Chapter_2
+        # Paper Title: Experiments in Plant-Hybridisation
+        # Translated from the original 1865 paper in 1901
+        text0 = Text("\"...it is now clear that the hybrids form seeds having", font_size=font_size, slant=ITALIC)
         text1 = Text("one or other of the two differentiating characters, and of these one-half", font_size=font_size, slant=ITALIC)
-        text2 = Text("develop again the hybrid form...", font_size=font_size, slant=ITALIC)
-        gregor_mendel = Text("-Gregor Mendel", font_size=font_size + 10, weight=BOLD)
+        text2 = Text("develop again the hybrid form...\"", font_size=font_size, slant=ITALIC)
+        gregor_mendel = Text("-Gregor Mendel", font_size=font_size + 10, weight=BOLD, color=BLUE)
         
         # orient the text Mobjects
         text0.shift(UP * 1.5)
@@ -126,3 +130,18 @@ class QuoteSlide(Scene):
 
         self.play(Write(text0), Write(text1), Write(text2), run_time=3.0)
         self.play(Write(gregor_mendel), run_time=2.0)
+
+class TitleSlide(Scene):
+    def construct(self):
+        title = Text("An Overview of Genetic Programming: Tree-Based GP and PushGP", font_size=30)
+        name = Text("Rowan Torbitzky-Lane", font_size=25, color=BLUE)
+
+        name.next_to(title, DOWN)
+
+        self.play(Write(title), run_time=3.0)
+        self.play(Write(name), run_time=2.0)
+
+# Corresponds to slide 2 in brainstorming notes
+class GeneticProgrammingDescription(Scene):
+    def construct(self):
+        pass
