@@ -558,9 +558,52 @@ while (loop count < threshold) do
         # probably put a slide split here for later
         self.play(FadeOut(rhandh_text), FadeOut(rhandh_description_text))
 
-        # Switch to rank population next
+        #---------- Switch to rank population next
+        self.play(
+            pseudocode_mobject.animate.center().scale(2.0),
+        )
+        # slide split here
         self.play(
             pseudocode_mobject[:28].animate.set_color(WHITE),
             pseudocode_mobject[28:42].animate.set_color(BLUE)    
         )
+        # slide split here
+        self.play(
+            pseudocode_mobject.animate.scale(0.5).to_edge(UL),
+        )
 
+        # Will need to talk about fitness functions in this section.
+        
+        # Idea is to compress an arbitrary individual into a
+        # rounded rectangle
+        temp_group = VGroup()
+        
+        temp_root = Circle(radius=circle_radius, color=BLUE).shift(UP * 3)
+        temp_root_text = Text("+", font_size=circle_font_size).move_to(temp_root.get_center())
+        temp_group.add(temp_root)
+        temp_group.add(temp_root_text)
+        
+        temp_left = Circle(radius=circle_radius, color=BLUE).next_to(temp_root, DOWN + LEFT)
+        temp_left_text = Text("3", font_size=circle_font_size).move_to(temp_left.get_center())
+        temp_group.add(temp_left)
+        temp_group.add(temp_left_text)
+
+        temp_right = Circle(radius=circle_radius, color=BLUE).next_to(temp_root, DOWN + RIGHT)
+        temp_right_text = Text("4", font_size=circle_font_size).move_to(temp_right.get_center())
+        temp_group.add(temp_right)
+        temp_group.add(temp_right_text)
+
+        temp_root_left_line = Line(temp_root, temp_left)
+        temp_root_right_line = Line(temp_root, temp_right)
+        temp_group.add(temp_root_left_line)
+        temp_group.add(temp_root_right_line)
+
+        self.play(Write(temp_group))
+
+        # Take arbitrary individual and transform into rounded rectangle
+        # Show different states of fitness for minimization/maximization problems
+        # In animation: have fitness and individual explicitly shown in animation
+
+        ind_0 = RoundedRectangle(color=BLUE).scale(0.5).move_to(DOWN + LEFT * 5)
+
+        self.play(Transform(temp_group, ind_0))
