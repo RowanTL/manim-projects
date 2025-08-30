@@ -1,4 +1,5 @@
 from manim import *
+from manim_slides.slide import Slide
 
 
 class CreateCircle(Scene):
@@ -272,10 +273,12 @@ class GeneticProgrammingDescription(Scene):
         )
 
 
-class ECLoop(Scene):
+class ECLoop(Slide):
     def construct(self):
         circle_radius: float = 0.7
         circle_font_size: int = 30
+
+        self.next_slide()
 
         # EC loop pseudocode
         # see the best possible individual in minimization problems personally
@@ -283,7 +286,7 @@ class ECLoop(Scene):
 initialize population randomly
 rank population
 while (loop count < threshold) do
-    select parents for reproduction
+    select parents for recombination
     generate children from selected parents
     evaluate children
     select individuals for the next population
@@ -291,6 +294,7 @@ while (loop count < threshold) do
 """
         pseudocode_mobject = Text(pseudocode, font_size=30)
         self.play(Write(pseudocode_mobject))
+        self.next_slide()
         self.play(
             pseudocode_mobject.animate.scale(0.5).to_edge(UL),
         )
@@ -320,6 +324,8 @@ while (loop count < threshold) do
         time0_text = gen_time_text(0)
 
         self.play(Write(time0_text))
+
+        self.next_slide()
 
         # Start of t=1
         time1_text = gen_time_text(1)
@@ -366,9 +372,7 @@ while (loop count < threshold) do
         time4_text = gen_time_text(4)
         self.play(TransformMatchingShapes(time3_text, time4_text))
 
-        y_node = Circle(radius=circle_radius, color=BLUE).next_to(
-            mult_node, DOWN * 2
-        )
+        y_node = Circle(radius=circle_radius, color=BLUE).next_to(mult_node, DOWN * 2)
         y_text = Text("y", font_size=circle_font_size)
         y_text.move_to(y_node.get_center())
         self.play(Write(y_node), Write(y_text))
@@ -396,9 +400,7 @@ while (loop count < threshold) do
         time6_text = gen_time_text(6)
         self.play(TransformMatchingShapes(time5_text, time6_text))
 
-        one_node = Circle(radius=circle_radius, color=BLUE).next_to(
-            div_node, DOWN * 2
-        )
+        one_node = Circle(radius=circle_radius, color=BLUE).next_to(div_node, DOWN * 2)
         one_text = Text("1", font_size=circle_font_size)
         one_text.move_to(one_node.get_center())
         self.play(Write(one_text), Write(one_node))
@@ -420,6 +422,8 @@ while (loop count < threshold) do
 
         div_zero_line = Line(div_node, zero_node)
         self.play(Write(div_zero_line))
+
+        self.next_slide()
 
         # end t=7
         # fade the full tree out
@@ -443,7 +447,7 @@ while (loop count < threshold) do
             mult_x_line,
             mult_y_line,
             div_one_line,
-            div_zero_line
+            div_zero_line,
         )
         self.play(Unwrite(full_group), TransformMatchingShapes(time7_text, time0_text))
 
@@ -453,7 +457,7 @@ while (loop count < threshold) do
         grow_text = Text("Grow").to_edge(UR)
         self.play(
             TransformMatchingShapes(full_text, grow_text),
-            time0_text.animate.next_to(grow_text, LEFT)
+            time0_text.animate.next_to(grow_text, LEFT),
         )
 
         # start t=1
@@ -470,7 +474,7 @@ while (loop count < threshold) do
         # start t=2
         time2_text.next_to(grow_text, LEFT)
         self.play(TransformMatchingShapes(time1_text, time2_text))
-        
+
         x_node = Circle(radius=circle_radius, color=BLUE).next_to(
             root_node, DOWN + LEFT
         )
@@ -515,16 +519,10 @@ while (loop count < threshold) do
         zero_text.move_to(zero_node.get_center())
         minus_zero_line = Line(minus_node, zero_node)
 
-        self.play(
-            Write(one_text), 
-            Write(one_node),
-            Write(zero_node),
-            Write(zero_text)
-        )
-        self.play(
-            Write(minus_one_line),
-            Write(minus_zero_line)
-        )
+        self.play(Write(one_text), Write(one_node), Write(zero_node), Write(zero_text))
+        self.play(Write(minus_one_line), Write(minus_zero_line))
+
+        self.next_slide()
 
         # end t=4 and t=5
         grow_group = VGroup(
@@ -541,55 +539,67 @@ while (loop count < threshold) do
             root_x_line,
             root_minus_line,
             minus_one_line,
-            minus_zero_line
+            minus_zero_line,
         )
-        self.play(Unwrite(grow_group), 
-                  Unwrite(time5_text),
-                  Unwrite(depth_text),
-                  Unwrite(grow_text),
+        self.play(
+            Unwrite(grow_group),
+            Unwrite(time5_text),
+            Unwrite(depth_text),
+            Unwrite(grow_text),
         )
 
         # Need to mention ramped half and half somewhere
         # First half constructed with full then rest constructed
         # with grow
         rhandh_text = Text("Ramped Half-and-Half")
-        rhandh_description_text = Text("Generate 1st half with Full and 2nd half with Grow", font_size=20).next_to(rhandh_text, DOWN)
+        rhandh_description_text = Text(
+            "Generate 1st half with Full and 2nd half with Grow", font_size=20
+        ).next_to(rhandh_text, DOWN)
         self.play(Write(rhandh_text), Write(rhandh_description_text))
-        # probably put a slide split here for later
+        self.next_slide()
         self.play(FadeOut(rhandh_text), FadeOut(rhandh_description_text))
 
-        #---------- Switch to rank population next
+        # ---------- Switch to rank population next
         self.play(
             pseudocode_mobject.animate.center().scale(2.0),
         )
-        # slide split here
         self.play(
             pseudocode_mobject[:28].animate.set_color(WHITE),
-            pseudocode_mobject[28:42].animate.set_color(BLUE)    
+            pseudocode_mobject[28:42].animate.set_color(BLUE),
         )
-        # slide split here
+        self.next_slide()
         self.play(
             pseudocode_mobject.animate.scale(0.5).to_edge(UL),
         )
 
         # Will need to talk about fitness functions in this section.
-        
+
         # Idea is to compress an arbitrary individual into a
         # rounded rectangle
         temp_group = VGroup()
-        
+
         temp_root = Circle(radius=circle_radius, color=BLUE).shift(UP * 3)
-        temp_root_text = Text("+", font_size=circle_font_size).move_to(temp_root.get_center())
+        temp_root_text = Text("+", font_size=circle_font_size).move_to(
+            temp_root.get_center()
+        )
         temp_group.add(temp_root)
         temp_group.add(temp_root_text)
-        
-        temp_left = Circle(radius=circle_radius, color=BLUE).next_to(temp_root, DOWN + LEFT)
-        temp_left_text = Text("3", font_size=circle_font_size).move_to(temp_left.get_center())
+
+        temp_left = Circle(radius=circle_radius, color=BLUE).next_to(
+            temp_root, DOWN + LEFT
+        )
+        temp_left_text = Text("3", font_size=circle_font_size).move_to(
+            temp_left.get_center()
+        )
         temp_group.add(temp_left)
         temp_group.add(temp_left_text)
 
-        temp_right = Circle(radius=circle_radius, color=BLUE).next_to(temp_root, DOWN + RIGHT)
-        temp_right_text = Text("4", font_size=circle_font_size).move_to(temp_right.get_center())
+        temp_right = Circle(radius=circle_radius, color=BLUE).next_to(
+            temp_root, DOWN + RIGHT
+        )
+        temp_right_text = Text("4", font_size=circle_font_size).move_to(
+            temp_right.get_center()
+        )
         temp_group.add(temp_right)
         temp_group.add(temp_right_text)
 
@@ -600,10 +610,215 @@ while (loop count < threshold) do
 
         self.play(Write(temp_group))
 
+        self.next_slide()
+
         # Take arbitrary individual and transform into rounded rectangle
         # Show different states of fitness for minimization/maximization problems
         # In animation: have fitness and individual explicitly shown in animation
 
-        ind_0 = RoundedRectangle(color=BLUE).scale(0.5).move_to(DOWN + LEFT * 5)
+        ind_text_size: int = 20
 
-        self.play(Transform(temp_group, ind_0))
+        ind_0 = RoundedRectangle(color=BLUE).scale(0.5).move_to(UP * 3)
+        ind_0_text = Text("individual 0", font_size=ind_text_size)
+        ind_0_text.add_updater(lambda x: x.move_to(temp_group.get_center()))
+        # Display arbitrary individual as a rounded rectangle
+        self.play(Transform(temp_group, ind_0), Write(ind_0_text))
+
+        self.next_slide()
+
+        ind_1 = RoundedRectangle(color=BLUE).scale(0.5).move_to(DOWN * 2 + LEFT * 1.5)
+        ind_1_text = Text("individual 1", font_size=ind_text_size)
+        ind_1_text.add_updater(lambda x: x.move_to(ind_1.get_center()))
+        ind_2 = RoundedRectangle(color=BLUE).scale(0.5).move_to(DOWN * 2 + LEFT * -1.0)
+        ind_2_text = Text("individual 2", font_size=ind_text_size)
+        ind_2_text.add_updater(lambda x: x.move_to(ind_2.get_center()))
+        ind_3 = RoundedRectangle(color=BLUE).scale(0.5).move_to(DOWN * 2 + LEFT * -3.5)
+        ind_3_text = Text("individual 3", font_size=ind_text_size)
+        ind_3_text.add_updater(lambda x: x.move_to(ind_3.get_center()))
+
+        fitness_font_size: int = 30
+
+        fitness_text = Text("Fitness:", font_size=fitness_font_size).move_to(
+            DOWN + LEFT * 6
+        )
+
+        # temp group is now ind_0
+        self.play(
+            temp_group.animate.move_to(DOWN * 2 + LEFT * 4),
+            Write(ind_1),
+            Write(ind_1_text),
+            Write(ind_2),
+            Write(ind_2_text),
+            Write(ind_3),
+            Write(ind_3_text),
+            Write(fitness_text),
+        )
+
+        self.next_slide()
+
+        ind_0_fitness = Text("0.0", font_size=fitness_font_size)
+        ind_0_fitness.add_updater(lambda x: x.next_to(temp_group, UP))
+        ind_1_fitness = Text("23.3", font_size=fitness_font_size)
+        ind_1_fitness.add_updater(lambda x: x.next_to(ind_1, UP))
+        ind_2_fitness = Text("9999.0", font_size=fitness_font_size)
+        ind_2_fitness.add_updater(lambda x: x.next_to(ind_2, UP))
+        ind_3_fitness = Text("10.0", font_size=fitness_font_size)
+        ind_3_fitness.add_updater(lambda x: x.next_to(ind_3, UP))
+
+        self.play(
+            Write(ind_0_fitness),
+            Write(ind_1_fitness),
+            Write(ind_2_fitness),
+            Write(ind_3_fitness),
+        )
+
+        self.next_slide()
+
+        # direction of search. Minimization or maximization
+        direction_text = Text("Minimization")
+
+        # transition to minimzation
+        # ind_3 to ind_1
+        # ind_2 to ind_3
+        self.play(
+            FadeIn(direction_text),
+            ind_3.animate.move_to(DOWN * 2 + LEFT * 1.5),
+            ind_1.animate.move_to(DOWN * 2 + LEFT * -1.0),
+            ind_2.animate.move_to(DOWN * 2 + LEFT * -3.5),
+            run_time=2,
+        )
+
+        self.next_slide()
+
+        # transition to maximization
+        self.play(
+            temp_group.animate.move_to(DOWN * 2 + LEFT * -3.5),
+            ind_1.animate.move_to(DOWN * 2 + LEFT * 1.5),
+            ind_2.animate.move_to(DOWN * 2 + LEFT * 4),
+            ind_3.animate.move_to(DOWN * 2 + LEFT * -1.0),
+            Transform(direction_text, Text("Maximization")),
+            run_time=2,
+        )
+
+        self.next_slide()
+
+        # move onto select parents slides
+
+        self.play(
+            Unwrite(temp_group),
+            Unwrite(ind_0_text),
+            Unwrite(ind_0_fitness),
+            Unwrite(ind_1),
+            Unwrite(ind_1_text),
+            Unwrite(ind_1_fitness),
+            Unwrite(ind_2),
+            Unwrite(ind_2_text),
+            Unwrite(ind_2_fitness),
+            Unwrite(ind_3),
+            Unwrite(ind_3_text),
+            Unwrite(ind_3_fitness),
+            Unwrite(fitness_text),
+            FadeOut(direction_text),
+        )
+
+        # Now that population is ranked, enter while loop.
+        # Going to be a quick transition into *select parents for reproduction*
+        self.play(
+            pseudocode_mobject.animate.center().scale(2.0),
+        )
+        # highlights the while loop
+        self.play(
+            pseudocode_mobject[:42].animate.set_color(WHITE),
+            pseudocode_mobject[42:70].animate.set_color(BLUE),
+        )
+        self.next_slide()
+        # highlights the `select parents for reproduction` section
+        self.play(
+            pseudocode_mobject[:70].animate.set_color(WHITE),
+            pseudocode_mobject[70:99].animate.set_color(BLUE),
+        )
+        self.next_slide()
+        # shrinks the pseudocode text box so can start on the
+        # parent selection portion
+        self.play(
+            pseudocode_mobject.animate.scale(0.5).to_edge(UL),
+        )
+
+        # Show the individuals again for roulette wheel/fitness proportionate selection
+        # Have chosen four random individuals from the popualation
+
+        individuals: list[RoundedRectangle] = []
+        labels = []
+        fitness_labels = []
+
+        positions = [
+            DOWN * 2 + LEFT * 4.0,
+            DOWN * 2 + LEFT * 1.5,
+            DOWN * 2 + LEFT * -1.0,
+            DOWN * 2 + LEFT * -3.5,
+        ]
+        names = [f"individiual {x}" for x in [0, 1, 2, 3]]
+        fitness_scores = [f"{x}.0" for x in [1, 2, 3, 4]]
+
+        for n in range(len(positions)):
+            rrect: RoundedRectangle = (
+                RoundedRectangle(color=BLUE).scale(0.5).move_to(positions[n])
+            )
+            label = Text(names[n], font_size=ind_text_size)
+            label.add_updater(lambda m, r=rrect: m.move_to(r.get_center()))
+            fitness = Text(fitness_scores[n], font_size=fitness_font_size)
+            fitness.add_updater(lambda m, r=rrect: m.next_to(r, UP))
+
+            individuals.append(rrect)
+            labels.append(label)
+            fitness_labels.append(fitness)
+
+        fitness_text = Text("Fitness:", font_size=fitness_font_size).move_to(
+            DOWN + LEFT * 6
+        )
+
+        selection_group = VGroup(*individuals, *labels, *fitness_labels, fitness_text)
+
+        # end selection group creation
+        # May need to copy selection_group
+
+        selection_text = Text("Fitness Proportionate").to_edge(UR)
+
+        self.play(Write(selection_group), Write(selection_text), run_time=2)
+
+        # fitness proportionate takes selects one parent from the population
+        # proportional to their fitness. Is ran multiple times to select the
+        # desired amount of parents. Repeats are allowed.
+
+        selection_percs = ["10%", "20%", "30%", "40%"]
+        sel_percs_mobjects = []
+        # TODO: add updaters for selection percentages to each invididual
+        for n in range(len(individuals)):
+            temp_text = Text(selection_percs[n], font_size=fitness_font_size)
+            temp_text.add_updater(lambda x, ind=individuals[n]: x.next_to(ind, UP * 3))
+            sel_percs_mobjects.append(temp_text)
+
+        # This isn't perfectly aligned horizontally
+        # TODO: Fix this later. I'm going to continue for now.
+        percentage_text = Text("% Chance:", font_size=fitness_font_size).next_to(
+            fitness_text, UP
+        )
+        percs_group = VGroup(*sel_percs_mobjects, percentage_text)
+
+        self.play(Write(percs_group))
+
+        self.next_slide()
+
+        # Onto tournament selection
+        # Tournament selection pulled from https://en.wikipedia.org/wiki/Tournament_selection
+        # Also 4 random individuals from the population
+        #   Tournament size being 4 here
+        self.play(
+            Unwrite(percs_group),
+            selection_text.animate.become(Text("Tournament").move_to(selection_text)),
+        )
+
+        # basic pseudocode looks like:
+        # choose k random individuals
+        # choose best individual from tournament with probability p
+        # if fails choose next best individual with probability p*(1-p)
