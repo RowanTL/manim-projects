@@ -288,7 +288,7 @@ rank population
 while (loop count < threshold) do
     select parents for recombination
     generate children from selected parents
-    evaluate children
+    rank children
     select individuals for the next population
     loop counter++
 """
@@ -732,7 +732,7 @@ while (loop count < threshold) do
             pseudocode_mobject[42:70].animate.set_color(BLUE),
         )
         self.next_slide()
-        # highlights the `select parents for reproduction` section
+        # highlights the `select parents for recombination` section
         self.play(
             pseudocode_mobject[:70].animate.set_color(WHITE),
             pseudocode_mobject[70:99].animate.set_color(BLUE),
@@ -818,6 +818,20 @@ while (loop count < threshold) do
             selection_text.animate.become(Text("Tournament").move_to(selection_text)),
         )
 
+        self.play(Unwrite(selection_group))
+
         # basically, this just takes the best individual from a tournament and returns in.
         # The tournament is randomly selected from the population.
         # This is a presentation. Do I need to animate how this works?
+
+        # Onto generate children from selected parents
+        self.next_slide()
+        self.play(pseudocode_mobject.animate.center().scale(2.0))
+        self.play(
+            pseudocode_mobject[:99].animate.set_color(WHITE),
+            pseudocode_mobject[99:134].animate.set_color(BLUE),
+        )
+        self.next_slide()
+        self.play(
+            pseudocode_mobject.animate.scale(0.5).to_edge(UL),
+        )
