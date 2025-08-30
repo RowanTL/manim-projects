@@ -289,7 +289,6 @@ while (loop count < threshold) do
     select parents for recombination
     generate children from selected parents
     rank children
-    select individuals for the next population
     loop counter++
 """
         pseudocode_mobject = Text(pseudocode, font_size=30)
@@ -835,3 +834,10 @@ while (loop count < threshold) do
         self.play(
             pseudocode_mobject.animate.scale(0.5).to_edge(UL),
         )
+
+        # Going to have some sort of tree based recombination.
+        # Will probably steal from the field guide
+        # https://faculty.washington.edu/seattle/GA-2008/FieldGuideGP.pdf
+        # Page 16 (30 if online)
+
+        # Will probably need to have a different size tree for this :(
