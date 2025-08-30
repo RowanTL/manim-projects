@@ -818,7 +818,6 @@ while (loop count < threshold) do
             selection_text.animate.become(Text("Tournament").move_to(selection_text)),
         )
 
-        # basic pseudocode looks like:
-        # choose k random individuals
-        # choose best individual from tournament with probability p
-        # if fails choose next best individual with probability p*(1-p)
+        # basically, this just takes the best individual from a tournament and returns in.
+        # The tournament is randomly selected from the population.
+        # This is a presentation. Do I need to animate how this works?
