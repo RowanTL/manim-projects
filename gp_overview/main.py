@@ -1,9 +1,48 @@
+"""
+These classes should all be in order of slides appearing
+"""
+
 from manim import *
 from manim_slides.slide import Slide
+from typing import Final
+
+CIRCLE_RADIUS: Final[float] = 0.7
+CIRCLE_FONT_SIZE: Final[int] = 30
+
+def create_node(text: str | int | float, radius=CIRCLE_RADIUS, color=BLUE, font_size=CIRCLE_FONT_SIZE) -> VGroup:
+    """
+    Creates a circle and text, adds an updater to text to the center of the
+    circle
+    """
+    node = Circle(radius=radius, color=color)
+    text = Text(str(text), font_size=font_size)
+    text.add_updater(lambda x: x.move_to(node.get_center()))
+    return VGroup(node, text)
+
+def connect_layers(layer0: VGroup, layer1: VGroup) -> VGroup:
+    temp_vgroup = VGroup()
+    for node0 in layer0:
+        for node1 in layer1:
+            temp_vgroup.add(Line(node0, node1))
+
+    return temp_vgroup
+
 
 class NNSlide(Slide):
     def construct(self):
-        pass
+        layer_one = VGroup([create_node(text, color=GREEN) for text in [0.5, 1.0]]).arrange(DOWN, buff=2.0).shift(LEFT * 4)
+        layer_two = VGroup([create_node(text, color=GREEN) for text in [0.2, 0.7]]).arrange(DOWN, buff=2.0).shift(LEFT)
+        layer_three = create_node("0.1", color=GREEN).shift(RIGHT * 4)
+        one_two_lines = connect_layers(layer_one, layer_two)
+        two_three_lines = connect_layers(layer_two, layer_three)
+
+        self.play(
+            Write(layer_one),
+            Write(layer_two),
+            Write(layer_three),
+            Write(one_two_lines),
+            Write(two_three_lines),
+        )
 
 class QuoteSlide(Slide):
     def construct(self):
