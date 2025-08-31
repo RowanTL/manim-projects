@@ -841,3 +841,48 @@ while (loop count < threshold) do
         # Page 16 (30 if online)
 
         # Will probably need to have a different size tree for this :(
+        def create_node(
+            text: str, radius=circle_radius, color=BLUE, font_size=circle_font_size
+        ) -> VGroup:
+            """
+            Creates a circle and text, adds an updater to text to the center of the
+            circle
+            """
+            node = Circle(radius=radius, color=color)
+            text = Text(text, font_size=font_size)
+            text.add_updater(lambda x: x.move_to(node.get_center()))
+            return VGroup(node, text)
+
+        # parent 0
+        p0_root = create_node("+", color=YELLOW)
+        p0_plus_node = create_node("+", color=RED)  # left child of root node
+        p0_three_node = create_node("3", color=YELLOW)  # right child of root node
+        p0_x_node = create_node("x", color=RED)  # left child of plus node
+        p0_y_node = create_node("y", color=RED)  # right child of root node
+        line_p0_root_p0_plus = Line(
+            p0_root, p0_plus_node
+        )  # This one will need to be left out
+        line_p0_root_p0_three = Line(p0_root, p0_three_node)
+        line_p0_plus_p0_x = Line(p0_plus_node, p0_x_node)
+        line_p0_plus_p0_y = Line(p0_plus_node, p0_y_node)
+        p0_comb = VGroup(p0_root, p0_three_node, line_p0_root_p0_three)
+        p0_delete = VGroup(
+            p0_plus_node, p0_x_node, p0_y_node, line_p0_plus_p0_x, line_p0_plus_p0_y
+        )
+
+        # TODO: create lines for parent 1 and place them on the screen properly
+        # parent 1
+        p1_root = create_node("*", color=RED)
+        p1_plus = create_node("+", color=RED)  # left child of root node
+        p1_y = create_node("y", color=RED)  # left child of plus node
+        p1_one = create_node("1", color=RED)
+        pl_div = create_node("/", color=YELLOW)
+        p1_x = create_node("x", color=YELLOW)
+        p1_two = create_node("2", color=YELLOW)
+        p1_comb = VGroup(pl_div, p1_x, p1_two)
+        pl_delete = VGroup(
+            p1_root,
+            p1_plus,
+            p1_y,
+            p1_one,
+        )
