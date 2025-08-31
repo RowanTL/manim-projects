@@ -1,7 +1,11 @@
 from manim import *
 from manim_slides.slide import Slide
 
-class QuoteSlide(Scene):
+class NNSlide(Slide):
+    def construct(self):
+        pass
+
+class QuoteSlide(Slide):
     def construct(self):
         font_size = 25
 
@@ -32,10 +36,11 @@ class QuoteSlide(Scene):
         gregor_mendel.next_to(text2, DOWN)
 
         self.play(Write(text0), Write(text1), Write(text2), run_time=3.0)
+        self.next_slide()
         self.play(Write(gregor_mendel), run_time=2.0)
 
 
-class TitleSlide(Scene):
+class TitleSlide(Slide):
     def construct(self):
         title = Text(
             "An Overview of Genetic Programming: Tree-Based GP and PushGP", font_size=30
@@ -45,6 +50,7 @@ class TitleSlide(Scene):
         name.next_to(title, DOWN)
 
         self.play(Write(title), run_time=3.0)
+        self.next_slide()
         self.play(Write(name), run_time=2.0)
 
 
