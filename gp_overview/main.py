@@ -6,7 +6,7 @@ class QuoteSlide(Scene):
         font_size = 25
 
         # quote from: https://en.wikisource.org/wiki/Mendel%27s_Principles_of_Heredity;_a_Defence/Chapter_2
-        # Paper Title: Experiments in Plant-Hybridisation
+        # Paper Title: Experiments in Plant-Hybridisation by Gregor Mendel
         # Translated from the original 1865 paper in 1901
         text0 = Text(
             '"...it is now clear that the hybrids form seeds having',
@@ -49,7 +49,7 @@ class TitleSlide(Scene):
 
 
 # Corresponds to slide 2 in brainstorming notes
-class GeneticProgrammingDescription(Scene):
+class GeneticProgrammingDescription(Slide):
     def construct(self):
         circle_radius: float = 0.7
         circle_font_size: int = 30
@@ -102,6 +102,7 @@ class GeneticProgrammingDescription(Scene):
         plus_two_line = Line(plus_circle, right_two_circle)
 
         self.play(Write(full_code), run_time=3)
+        self.next_slide()
         self.play(
             Write(print_circle),
             Write(minus_circle),
@@ -131,6 +132,7 @@ class GeneticProgrammingDescription(Scene):
             Write(right_two_text),
             run_time=2,
         )
+        self.next_slide()
 
         # Throughout the populations, the AST changes
         # The actual program itself could change too
@@ -146,10 +148,12 @@ class GeneticProgrammingDescription(Scene):
             Transform(minus_text, mult_text),
             TransformMatchingShapes(full_code, full_mult_text),
         )
+        self.next_slide()
         self.play(
             Transform(print_text, log_text),
             TransformMatchingShapes(full_mult_text, full_log_text),
         )
+        self.next_slide()
         self.play(
             Transform(right_two_text, big_num_text),
             TransformMatchingShapes(full_log_text, full_big_num_text),
