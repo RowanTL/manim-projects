@@ -4,35 +4,170 @@ These classes should all be in order of slides appearing
 
 from manim import *
 from manim_slides.slide import Slide
-from typing import Final
+from typing import Final, Optional
 
 CIRCLE_RADIUS: Final[float] = 0.7
 CIRCLE_FONT_SIZE: Final[int] = 30
+PSEUDOCODE: Final[str] = """
+initialize population randomly
+rank population
+while (loop count < threshold) do
+    select parents for recombination
+    generate children from selected parents
+    rank children
+    loop count++
+"""
+PSEUDOCODE_FONT_SIZE: Final[int] = 30
+PSEUDOCODE_LINE_CHARS: Final[dict[int, tuple[int, int]]] = {
+    -1: (0, 0),  # do nothing
+    0: (0, 28),  # init pop
+    1: (28, 42),  # rank pop
+    2: (42, 70),  # while loop
+    3: (70, 99),  # select parents
+    4: (99, 134),  # generate children
+    5: (134, 146),  # rank children
+    6: (146, 157),  # loop counter++
+}  # error if out of indicies
 
-def create_node(text: str | int | float, radius=CIRCLE_RADIUS, color=BLUE, font_size=CIRCLE_FONT_SIZE) -> VGroup:
+
+def pseudocode_transition(
+    start_line: int,
+    end_line: int,
+    from_scale: bool,
+    to_scale: bool,
+    from_up_left: bool,
+    move_up_left: bool,
+    slide: Slide,
+    pseudocode_mobject: Optional[Text] = None,
+    pause_after: bool = True,
+    write_text: bool = False,
+) -> Text:
+    """
+    This function transitions the color of lines in a text mobject
+    containing the `PSEUDOCODE` string.
+
+    If a pseudocode_mobject is passed, the function will use that one.
+    If it is left to none, nothing will happen
+
+    If -1 is passed to start_line or end_line, no color changing happens.
+
+    parameters:
+        start_line (int): The line to be turned white (transitioned from)
+        end_line (int): The line to be turned blue (transition to)
+        from_scale (bool): Whether to scale the text down to 0.5 after color transition
+        to_scale (bool): Whether or not to scale the text up by 2.0 before color transition
+        from_up_left (bool): Move code to center of screen before color transition
+        move_up_left (bool): Move pseudocode to the upper left corner after color transition
+        slide (Slide): The slide in which to operate in
+        pseudocode_mobject (Optional[Text], default = None): The pseudocode mobject to use if provided.
+            If one isn't provided, will just create one.
+        pause_after (bool, default = True): Whether or not to call `self.next_slide()` before calling
+            the "after" animations.
+        write_text (bool, default = False): Whether or not to write the pseudocode_mobject to the screen or not.
+
+    returns:
+        (Text): The modified pseudocode object
+    """
+    if pseudocode_mobject is None:
+        pseudocode_mobject = Text(PSEUDOCODE, font_size=PSEUDOCODE_FONT_SIZE)
+
+    if write_text:
+        slide.play(Write(pseudocode_mobject))
+
+    start_chars: tuple[int, int] = PSEUDOCODE_LINE_CHARS[start_line]
+    end_chars: tuple[int, int] = PSEUDOCODE_LINE_CHARS[end_line]
+
+    pseudocode_mobject[start_chars[0] : start_chars[1]].set_color(BLUE)
+
+    # Animations to play before the color transition
+    pre_anim = pseudocode_mobject.copy()
+    pre_anim_flag: bool = False  # no easy way to check for mobject equality
+    if to_scale:
+        pre_anim.scale(2.0)
+        pre_anim_flag = True
+    if from_up_left:
+        pre_anim.center()
+        pre_anim_flag = True
+    if pre_anim_flag:
+        slide.play(Transform(pseudocode_mobject, pre_anim))
+
+    # Transition the color now
+    slide.play(
+        pseudocode_mobject[start_chars[0] : start_chars[1]].animate.set_color(WHITE),
+        pseudocode_mobject[end_chars[0] : end_chars[1]].animate.set_color(BLUE),
+    )
+
+    post_anim = pseudocode_mobject.copy()
+    post_anim_flag = False
+    if from_scale:
+        post_anim.scale(0.5)
+        post_anim_flag = True
+    if move_up_left:
+        post_anim.to_edge(UL)
+        post_anim_flag = True
+    if pause_after:
+        slide.next_slide()
+    if post_anim_flag:
+        slide.play(Transform(pseudocode_mobject, post_anim))
+
+    return pseudocode_mobject
+
+
+def create_node(
+    text: str | int | float,
+    radius=CIRCLE_RADIUS,
+    color=BLUE,
+    font_size=CIRCLE_FONT_SIZE,
+    group: Optional[VGroup] = None,
+) -> VGroup:
     """
     Creates a circle and text, adds an updater to text to the center of the
-    circle
+    circle.
     """
     node = Circle(radius=radius, color=color)
-    text = Text(str(text), font_size=font_size)
+    text: Text = Text(str(text), font_size=font_size)
     text.add_updater(lambda x: x.move_to(node.get_center()))
     return VGroup(node, text)
+
 
 def connect_layers(layer0: VGroup, layer1: VGroup) -> VGroup:
     temp_vgroup = VGroup()
     for node0 in layer0:
         for node1 in layer1:
-            temp_vgroup.add(Line(node0, node1))
+            if (
+                isinstance(node0, Circle)
+                or isinstance(node0, VGroup)
+                and isinstance(node1, Circle)
+                or isinstance(node1, VGroup)
+            ):
+                temp_vgroup.add(Line(node0, node1))
 
     return temp_vgroup
 
 
+# This class is test class. It is not intuitive to change the color
+# of the text lol
+class PseudocodeTest(Slide):
+    def construct(self):
+        ptext = (
+            Text(PSEUDOCODE, font_size=PSEUDOCODE_FONT_SIZE).move_to(LEFT).scale(0.5)
+        )
+        self.play(Write(ptext))
+        ptext = pseudocode_transition(-1, 1, True, True, True, False, self, ptext)
+
+
+# This should be slide 1
 class NNSlide(Slide):
     def construct(self):
-        layer_one = VGroup([create_node(text, color=GREEN) for text in [0.5, 1.0]]).arrange(DOWN, buff=2.0).shift(LEFT * 4)
-        layer_two = VGroup([create_node(text, color=GREEN) for text in [0.2, 0.7]]).arrange(DOWN, buff=2.0).shift(LEFT)
-        layer_three = create_node("0.1", color=GREEN).shift(RIGHT * 4)
+        layer_one = (
+            VGroup([create_node(text, color=GREEN) for text in ["", ""]])
+            .arrange(DOWN, buff=2.0)
+            .shift(LEFT * 5)
+        )
+        layer_two = VGroup(
+            [create_node(text, color=GREEN) for text in ["", ""]]
+        ).arrange(DOWN, buff=2.0)
+        layer_three = create_node("", color=GREEN).shift(RIGHT * 5)
         one_two_lines = connect_layers(layer_one, layer_two)
         two_three_lines = connect_layers(layer_two, layer_three)
 
@@ -42,8 +177,56 @@ class NNSlide(Slide):
             Write(layer_three),
             Write(one_two_lines),
             Write(two_three_lines),
+            run_time=2,
         )
 
+        self.next_slide()
+
+        # Create dots and their move-along-path animations in one go
+        one_two_dots_animations = [
+            MoveAlongPath(
+                Dot(color=YELLOW).move_to(line.get_start()), line, remover=True
+            )
+            for line in one_two_lines
+        ]
+        one_two_dots = [anim.mobject for anim in one_two_dots_animations]
+
+        # Write the dots, play the animations, and then unwrite them
+        self.play(Write(VGroup(*one_two_dots)))
+        self.play(AnimationGroup(*one_two_dots_animations, lag_ratio=0.2))
+        self.next_slide()
+        self.play(Unwrite(VGroup(*one_two_dots)))
+
+        # second layer to output layer
+        two_three_dots_animations = [
+            MoveAlongPath(
+                Dot(color=YELLOW).move_to(line.get_start()), line, remover=True
+            )
+            for line in two_three_lines
+        ]
+        two_three_dots = [anim.mobject for anim in two_three_dots_animations]
+        self.play(Write(VGroup(*two_three_dots)))
+        self.play(AnimationGroup(*two_three_dots_animations), lag_ratio=0.2)
+        self.play(Unwrite(VGroup(*two_three_dots)))
+
+        self.play(
+            Unwrite(layer_one),
+            Unwrite(layer_two),
+            Unwrite(layer_three),
+            Unwrite(one_two_lines),
+            Unwrite(two_three_lines),
+        )
+
+
+# Slide 2
+# A slide showing a picture of something evolved
+class EvolvedExample(Slide):
+    def construct(self):
+        image = ImageMobject("media/images/evolved_antenna.jpg").scale(2.0)
+        self.play(FadeIn(image))
+
+
+# A slide I have no plans on using
 class QuoteSlide(Slide):
     def construct(self):
         font_size = 25
@@ -79,6 +262,7 @@ class QuoteSlide(Slide):
         self.play(Write(gregor_mendel), run_time=2.0)
 
 
+# Slide 3
 class TitleSlide(Slide):
     def construct(self):
         title = Text(
@@ -92,7 +276,12 @@ class TitleSlide(Slide):
         self.next_slide()
         self.play(Write(name), run_time=2.0)
 
+        self.next_slide()
 
+        self.play(Unwrite(title), Unwrite(name))
+
+
+# Slide 4
 # Corresponds to slide 2 in brainstorming notes
 class GeneticProgrammingDescription(Slide):
     def construct(self):
@@ -146,7 +335,7 @@ class GeneticProgrammingDescription(Slide):
         plus_one_line = Line(plus_circle, left_one_circle)
         plus_two_line = Line(plus_circle, right_two_circle)
 
-        self.play(Write(full_code), run_time=3)
+        self.play(Write(full_code))
         self.next_slide()
         self.play(
             Write(print_circle),
@@ -155,7 +344,6 @@ class GeneticProgrammingDescription(Slide):
             Write(plus_circle),
             Write(left_one_circle),
             Write(right_two_circle),
-            run_time=3,
         )
         self.play(
             Write(print_minus_line),
@@ -175,7 +363,6 @@ class GeneticProgrammingDescription(Slide):
             Write(plus_text),
             Write(left_one_text),
             Write(right_two_text),
-            run_time=2,
         )
         self.next_slide()
 
@@ -204,32 +391,45 @@ class GeneticProgrammingDescription(Slide):
             TransformMatchingShapes(full_log_text, full_big_num_text),
         )
 
+        self.next_slide()
 
-class ECLoop(Slide):
+        # Maybe remove the updaters for this later
+        self.play(
+            Unwrite(print_circle),
+            Unwrite(print_text),
+            Unwrite(minus_circle),
+            Unwrite(minus_text),
+            Unwrite(four_minus_circle),
+            Unwrite(four_minus_text),
+            Unwrite(plus_circle),
+            Unwrite(plus_text),
+            Unwrite(left_one_circle),
+            Unwrite(left_one_text),
+            Unwrite(right_two_circle),
+            Unwrite(right_two_text),
+            Unwrite(print_minus_line),
+            Unwrite(minus_plus_line),
+            Unwrite(minus_four_line),
+            Unwrite(plus_one_line),
+            Unwrite(plus_two_line),
+            Unwrite(mult_text),
+            Unwrite(log_text),
+            Unwrite(big_num_text),
+            Unwrite(full_big_num_text),
+        )
+
+
+# Slide 5
+class ECLoopTreeInit(Slide):
     def construct(self):
         circle_radius: float = 0.7
         circle_font_size: int = 30
 
-        self.next_slide()
-
         # EC loop pseudocode
         # see the best possible individual in minimization problems personally
-        pseudocode: str = """
-initialize population randomly
-rank population
-while (loop count < threshold) do
-    select parents for recombination
-    generate children from selected parents
-    rank children
-    loop counter++
-"""
-        pseudocode_mobject = Text(pseudocode, font_size=30)
-        self.play(Write(pseudocode_mobject))
-        self.next_slide()
-        self.play(
-            pseudocode_mobject.animate.scale(0.5).to_edge(UL),
+        ptext = pseudocode_transition(
+            -1, 0, True, False, False, True, self, write_text=True
         )
-        self.play(pseudocode_mobject[:28].animate.set_color(BLUE))
 
         # Types program initialization
         # Grow, Full, and Ramped Half&Half
@@ -490,18 +690,18 @@ while (loop count < threshold) do
         self.next_slide()
         self.play(FadeOut(rhandh_text), FadeOut(rhandh_description_text))
 
+        # brings the pseudocode to the center of the screen
+        pseudocode_transition(
+            -1, -1, False, True, True, False, self, ptext, pause_after=False
+        )
+
+
+# Slide 6
+# About ranking a population
+class ECLoopRankPop(Slide):
+    def construct(self):
         # ---------- Switch to rank population next
-        self.play(
-            pseudocode_mobject.animate.center().scale(2.0),
-        )
-        self.play(
-            pseudocode_mobject[:28].animate.set_color(WHITE),
-            pseudocode_mobject[28:42].animate.set_color(BLUE),
-        )
-        self.next_slide()
-        self.play(
-            pseudocode_mobject.animate.scale(0.5).to_edge(UL),
-        )
+        ptext = pseudocode_transition(0, 1, True, False, True, True, self)
 
         # Will need to talk about fitness functions in this section.
 
@@ -509,26 +709,26 @@ while (loop count < threshold) do
         # rounded rectangle
         temp_group = VGroup()
 
-        temp_root = Circle(radius=circle_radius, color=BLUE).shift(UP * 3)
-        temp_root_text = Text("+", font_size=circle_font_size).move_to(
+        temp_root = Circle(radius=CIRCLE_RADIUS, color=BLUE).shift(UP * 3)
+        temp_root_text = Text("+", font_size=CIRCLE_FONT_SIZE).move_to(
             temp_root.get_center()
         )
         temp_group.add(temp_root)
         temp_group.add(temp_root_text)
 
-        temp_left = Circle(radius=circle_radius, color=BLUE).next_to(
+        temp_left = Circle(radius=CIRCLE_RADIUS, color=BLUE).next_to(
             temp_root, DOWN + LEFT
         )
-        temp_left_text = Text("3", font_size=circle_font_size).move_to(
+        temp_left_text = Text("3", font_size=CIRCLE_FONT_SIZE).move_to(
             temp_left.get_center()
         )
         temp_group.add(temp_left)
         temp_group.add(temp_left_text)
 
-        temp_right = Circle(radius=circle_radius, color=BLUE).next_to(
+        temp_right = Circle(radius=CIRCLE_RADIUS, color=BLUE).next_to(
             temp_root, DOWN + RIGHT
         )
-        temp_right_text = Text("4", font_size=circle_font_size).move_to(
+        temp_right_text = Text("4", font_size=CIRCLE_FONT_SIZE).move_to(
             temp_right.get_center()
         )
         temp_group.add(temp_right)
@@ -652,8 +852,18 @@ while (loop count < threshold) do
             FadeOut(direction_text),
         )
 
+        pseudocode_transition(
+            -1, -1, False, True, True, False, self, ptext, pause_after=False
+        )
+
+
+# Slide 7
+class ECLoopParentSelect(Slide):
+    def construct(self):
         # Now that population is ranked, enter while loop.
         # Going to be a quick transition into *select parents for reproduction*
+
+        # TODO: Switch these out to pseudocode_transition function.
         self.play(
             pseudocode_mobject.animate.center().scale(2.0),
         )
