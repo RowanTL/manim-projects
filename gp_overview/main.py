@@ -224,6 +224,8 @@ class EvolvedExample(Slide):
     def construct(self):
         image = ImageMobject("media/images/evolved_antenna.jpg").scale(2.0)
         self.play(FadeIn(image))
+        self.next_slide()
+        self.play(FadeOut(image))
 
 
 # A slide I have no plans on using
