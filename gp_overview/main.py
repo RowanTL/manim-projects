@@ -219,6 +219,62 @@ class NNSlide(Slide):
 
 
 # Slide 2
+class ShowPopulation(Slide):
+    def construct(self):
+        rrects = VGroup()
+        for _ in range(25):
+            rrect = RoundedRectangle(color=BLUE).scale(0.5)
+            rrects.add(rrect)
+
+        rrects.arrange_in_grid(rows=5, cols=5, buff=0.6)
+        self.play(Write(rrects))
+
+        self.next_slide()
+
+        recomb_lines: list[Line] = [
+            Line(rrects[0].get_right(), rrects[1].get_left()),
+            Line(rrects[6].get_bottom(), rrects[11].get_top()),
+            Line(rrects[18].get_right(), rrects[19].get_left()),
+        ]
+        self.play(Write(VGroup(*recomb_lines)))
+
+        # now to demonstrate recombination visually
+        recomb_groups = [
+            VGroup(rrects[0], rrects[1], recomb_lines[0]),
+            VGroup(rrects[6], rrects[11], recomb_lines[1]),
+            VGroup(rrects[18], rrects[19], recomb_lines[2]),
+        ]
+
+        recomb_anims = []
+        for group in recomb_groups:
+            recomb_anims.append(
+                Transform(
+                    group,
+                    RoundedRectangle(color=PURPLE)
+                    .scale(0.5)
+                    .move_to((group[0].get_center() + group[1].get_center()) / 2),
+                )
+            )
+
+        self.play(AnimationGroup(*recomb_anims))
+
+        self.next_slide()
+
+        # Change the color of one of the rounded rectangles
+        # to demonstrate mutation
+
+        self.play(
+            Transform(
+                rrects[20],
+                RoundedRectangle(color=YELLOW).scale(0.5).move_to(rrects[20]),
+            ),
+            Transform(
+                rrects[3], RoundedRectangle(color=YELLOW).scale(0.5).move_to(rrects[3])
+            ),
+        )
+
+
+# Slide 3
 # A slide showing a picture of something evolved
 class EvolvedExample(Slide):
     def construct(self):
@@ -264,7 +320,7 @@ class QuoteSlide(Slide):
         self.play(Write(gregor_mendel), run_time=2.0)
 
 
-# Slide 3
+# Slide 4
 class TitleSlide(Slide):
     def construct(self):
         title = Text(
@@ -283,7 +339,7 @@ class TitleSlide(Slide):
         self.play(Unwrite(title), Unwrite(name))
 
 
-# Slide 4
+# Slide 5
 # Corresponds to slide 2 in brainstorming notes
 class GeneticProgrammingDescription(Slide):
     def construct(self):
@@ -421,7 +477,7 @@ class GeneticProgrammingDescription(Slide):
         )
 
 
-# Slide 5
+# Slide 6
 class ECLoopTreeInit(Slide):
     def construct(self):
         circle_radius: float = 0.7
@@ -698,7 +754,7 @@ class ECLoopTreeInit(Slide):
         )
 
 
-# Slide 6
+# Slide 7
 # About ranking a population
 class ECLoopRankPop(Slide):
     def construct(self):
@@ -859,7 +915,7 @@ class ECLoopRankPop(Slide):
         )
 
 
-# Slide 7
+# Slide 8
 class ECLoopParentSelect(Slide):
     def construct(self):
         # Now that population is ranked, enter while loop.
