@@ -28,6 +28,8 @@ PSEUDOCODE_LINE_CHARS: Final[dict[int, tuple[int, int]]] = {
     5: (134, 146),  # rank children
     6: (146, 157),  # loop counter++
 }  # error if out of indicies
+IND_TEXT_SIZE: Final[int] = 20
+FITNESS_FONT_SIZE: int = 30
 
 
 def pseudocode_transition(
@@ -41,6 +43,7 @@ def pseudocode_transition(
     pseudocode_mobject: Optional[Text] = None,
     pause_after: bool = True,
     write_text: bool = False,
+    add_text: bool = False,
 ) -> Text:
     """
     This function transitions the color of lines in a text mobject
@@ -64,12 +67,16 @@ def pseudocode_transition(
         pause_after (bool, default = True): Whether or not to call `self.next_slide()` before calling
             the "after" animations.
         write_text (bool, default = False): Whether or not to write the pseudocode_mobject to the screen or not.
+        add_text (bool, default = False): Whether or not to add the pseudocode_mobject to the screen or not. Is executed before write_text if passed.
 
     returns:
         (Text): The modified pseudocode object
     """
     if pseudocode_mobject is None:
         pseudocode_mobject = Text(PSEUDOCODE, font_size=PSEUDOCODE_FONT_SIZE)
+
+    if add_text:
+        slide.add(pseudocode_mobject)
 
     if write_text:
         slide.play(Write(pseudocode_mobject))
@@ -805,10 +812,8 @@ class ECLoopRankPop(Slide):
         # Show different states of fitness for minimization/maximization problems
         # In animation: have fitness and individual explicitly shown in animation
 
-        ind_text_size: int = 20
-
         ind_0 = RoundedRectangle(color=BLUE).scale(0.5).move_to(UP * 3)
-        ind_0_text = Text("individual 0", font_size=ind_text_size)
+        ind_0_text = Text("individual 0", font_size=IND_TEXT_SIZE)
         ind_0_text.add_updater(lambda x: x.move_to(temp_group.get_center()))
         # Display arbitrary individual as a rounded rectangle
         self.play(Transform(temp_group, ind_0), Write(ind_0_text))
@@ -816,18 +821,16 @@ class ECLoopRankPop(Slide):
         self.next_slide()
 
         ind_1 = RoundedRectangle(color=BLUE).scale(0.5).move_to(DOWN * 2 + LEFT * 1.5)
-        ind_1_text = Text("individual 1", font_size=ind_text_size)
+        ind_1_text = Text("individual 1", font_size=IND_TEXT_SIZE)
         ind_1_text.add_updater(lambda x: x.move_to(ind_1.get_center()))
         ind_2 = RoundedRectangle(color=BLUE).scale(0.5).move_to(DOWN * 2 + LEFT * -1.0)
-        ind_2_text = Text("individual 2", font_size=ind_text_size)
+        ind_2_text = Text("individual 2", font_size=IND_TEXT_SIZE)
         ind_2_text.add_updater(lambda x: x.move_to(ind_2.get_center()))
         ind_3 = RoundedRectangle(color=BLUE).scale(0.5).move_to(DOWN * 2 + LEFT * -3.5)
-        ind_3_text = Text("individual 3", font_size=ind_text_size)
+        ind_3_text = Text("individual 3", font_size=IND_TEXT_SIZE)
         ind_3_text.add_updater(lambda x: x.move_to(ind_3.get_center()))
 
-        fitness_font_size: int = 30
-
-        fitness_text = Text("Fitness:", font_size=fitness_font_size).move_to(
+        fitness_text = Text("Fitness:", font_size=FITNESS_FONT_SIZE).move_to(
             DOWN + LEFT * 6
         )
 
@@ -845,13 +848,13 @@ class ECLoopRankPop(Slide):
 
         self.next_slide()
 
-        ind_0_fitness = Text("0.0", font_size=fitness_font_size)
+        ind_0_fitness = Text("0.0", font_size=FITNESS_FONT_SIZE)
         ind_0_fitness.add_updater(lambda x: x.next_to(temp_group, UP))
-        ind_1_fitness = Text("23.3", font_size=fitness_font_size)
+        ind_1_fitness = Text("23.3", font_size=FITNESS_FONT_SIZE)
         ind_1_fitness.add_updater(lambda x: x.next_to(ind_1, UP))
-        ind_2_fitness = Text("9999.0", font_size=fitness_font_size)
+        ind_2_fitness = Text("9999.0", font_size=FITNESS_FONT_SIZE)
         ind_2_fitness.add_updater(lambda x: x.next_to(ind_2, UP))
-        ind_3_fitness = Text("10.0", font_size=fitness_font_size)
+        ind_3_fitness = Text("10.0", font_size=FITNESS_FONT_SIZE)
         ind_3_fitness.add_updater(lambda x: x.next_to(ind_3, UP))
 
         self.play(
@@ -922,26 +925,13 @@ class ECLoopParentSelect(Slide):
         # Going to be a quick transition into *select parents for reproduction*
 
         # TODO: Switch these out to pseudocode_transition function.
-        self.play(
-            pseudocode_mobject.animate.center().scale(2.0),
-        )
-        # highlights the while loop
-        self.play(
-            pseudocode_mobject[:42].animate.set_color(WHITE),
-            pseudocode_mobject[42:70].animate.set_color(BLUE),
+        # Highlights the while loop
+        ptext = pseudocode_transition(
+            1, 2, False, False, False, False, self, pause_after=False, add_text=True
         )
         self.next_slide()
-        # highlights the `select parents for recombination` section
-        self.play(
-            pseudocode_mobject[:70].animate.set_color(WHITE),
-            pseudocode_mobject[70:99].animate.set_color(BLUE),
-        )
-        self.next_slide()
-        # shrinks the pseudocode text box so can start on the
-        # parent selection portion
-        self.play(
-            pseudocode_mobject.animate.scale(0.5).to_edge(UL),
-        )
+        # highlights the generate children line and moves pseudocode to the corner
+        ptext = pseudocode_transition(2, 3, True, False, False, True, self, ptext)
 
         # Show the individuals again for roulette wheel/fitness proportionate selection
         # Have chosen four random individuals from the popualation
@@ -963,16 +953,16 @@ class ECLoopParentSelect(Slide):
             rrect: RoundedRectangle = (
                 RoundedRectangle(color=BLUE).scale(0.5).move_to(positions[n])
             )
-            label = Text(names[n], font_size=ind_text_size)
+            label = Text(names[n], font_size=IND_TEXT_SIZE)
             label.add_updater(lambda m, r=rrect: m.move_to(r.get_center()))
-            fitness = Text(fitness_scores[n], font_size=fitness_font_size)
+            fitness = Text(fitness_scores[n], font_size=FITNESS_FONT_SIZE)
             fitness.add_updater(lambda m, r=rrect: m.next_to(r, UP))
 
             individuals.append(rrect)
             labels.append(label)
             fitness_labels.append(fitness)
 
-        fitness_text = Text("Fitness:", font_size=fitness_font_size).move_to(
+        fitness_text = Text("Fitness:", font_size=FITNESS_FONT_SIZE).move_to(
             DOWN + LEFT * 6
         )
 
@@ -993,13 +983,13 @@ class ECLoopParentSelect(Slide):
         sel_percs_mobjects = []
         # TODO: add updaters for selection percentages to each invididual
         for n in range(len(individuals)):
-            temp_text = Text(selection_percs[n], font_size=fitness_font_size)
+            temp_text = Text(selection_percs[n], font_size=FITNESS_FONT_SIZE)
             temp_text.add_updater(lambda x, ind=individuals[n]: x.next_to(ind, UP * 3))
             sel_percs_mobjects.append(temp_text)
 
         # This isn't perfectly aligned horizontally
         # TODO: Fix this later. I'm going to continue for now.
-        percentage_text = Text("% Chance:", font_size=fitness_font_size).next_to(
+        percentage_text = Text("% Chance:", font_size=FITNESS_FONT_SIZE).next_to(
             fitness_text, UP
         )
         percs_group = VGroup(*sel_percs_mobjects, percentage_text)
@@ -1017,22 +1007,28 @@ class ECLoopParentSelect(Slide):
             selection_text.animate.become(Text("Tournament").move_to(selection_text)),
         )
 
-        self.play(Unwrite(selection_group))
+        # self.play(Unwrite(selection_group))
 
         # basically, this just takes the best individual from a tournament and returns in.
         # The tournament is randomly selected from the population.
-        # This is a presentation. Do I need to animate how this works?
 
-        # Onto generate children from selected parents
+        self.play(individuals[3].animate.set_color(YELLOW))
+
         self.next_slide()
-        self.play(pseudocode_mobject.animate.center().scale(2.0))
-        self.play(
-            pseudocode_mobject[:99].animate.set_color(WHITE),
-            pseudocode_mobject[99:134].animate.set_color(BLUE),
+
+        self.play(Unwrite(selection_text), Unwrite(selection_group))
+
+        pseudocode_transition(
+            -1, -1, False, True, True, False, self, ptext, pause_after=False
         )
-        self.next_slide()
-        self.play(
-            pseudocode_mobject.animate.scale(0.5).to_edge(UL),
+
+
+# Slide 9
+class ECLoopGenChildren(Slide):
+    def construct(self):
+        # Onto generate children from selected parents
+        ptext = pseudocode_transition(
+            3, 4, True, False, False, True, self, add_text=True
         )
 
         # Going to have some sort of tree based recombination.
@@ -1042,23 +1038,31 @@ class ECLoopParentSelect(Slide):
 
         # Will probably need to have a different size tree for this :(
         def create_node(
-            text: str, radius=circle_radius, color=BLUE, font_size=circle_font_size
+            text: str, radius=CIRCLE_RADIUS, color=BLUE, font_size=CIRCLE_FONT_SIZE
         ) -> VGroup:
             """
             Creates a circle and text, adds an updater to text to the center of the
             circle
             """
             node = Circle(radius=radius, color=color)
-            text = Text(text, font_size=font_size)
+            text: Text = Text(text, font_size=font_size)
             text.add_updater(lambda x: x.move_to(node.get_center()))
             return VGroup(node, text)
 
         # parent 0
-        p0_root = create_node("+", color=YELLOW)
-        p0_plus_node = create_node("+", color=RED)  # left child of root node
-        p0_three_node = create_node("3", color=YELLOW)  # right child of root node
-        p0_x_node = create_node("x", color=RED)  # left child of plus node
-        p0_y_node = create_node("y", color=RED)  # right child of root node
+        p0_root = create_node("+", color=BLUE).move_to(UP + LEFT * 3)
+        p0_plus_node = create_node("+", color=RED).next_to(
+            p0_root, DOWN + LEFT * 0.5
+        )  # left child of root node
+        p0_three_node = create_node("3", color=BLUE).next_to(
+            p0_root, DOWN + RIGHT * 0.5
+        )  # right child of root node
+        p0_x_node = create_node("x", color=RED).next_to(
+            p0_plus_node, DOWN + LEFT * 0.5
+        )  # left child of plus node
+        p0_y_node = create_node("y", color=RED).next_to(
+            p0_plus_node, DOWN + RIGHT * 0.5
+        )  # right child of root node
         line_p0_root_p0_plus = Line(
             p0_root, p0_plus_node
         )  # This one will need to be left out
@@ -1067,22 +1071,214 @@ class ECLoopParentSelect(Slide):
         line_p0_plus_p0_y = Line(p0_plus_node, p0_y_node)
         p0_comb = VGroup(p0_root, p0_three_node, line_p0_root_p0_three)
         p0_delete = VGroup(
-            p0_plus_node, p0_x_node, p0_y_node, line_p0_plus_p0_x, line_p0_plus_p0_y
+            p0_plus_node,
+            p0_x_node,
+            p0_y_node,
+            line_p0_plus_p0_x,
+            line_p0_plus_p0_y,
+            line_p0_root_p0_plus,
         )
 
-        # TODO: create lines for parent 1 and place them on the screen properly
         # parent 1
-        p1_root = create_node("*", color=RED)
-        p1_plus = create_node("+", color=RED)  # left child of root node
-        p1_y = create_node("y", color=RED)  # left child of plus node
-        p1_one = create_node("1", color=RED)
-        pl_div = create_node("/", color=YELLOW)
-        p1_x = create_node("x", color=YELLOW)
-        p1_two = create_node("2", color=YELLOW)
-        p1_comb = VGroup(pl_div, p1_x, p1_two)
-        pl_delete = VGroup(
+        p1_root = create_node("*", color=RED).move_to(UP + RIGHT * 3)
+        p1_plus = create_node("+", color=RED).next_to(
+            p1_root, DOWN + LEFT * 0.5
+        )  # left child of root node
+        p1_y = create_node("y", color=RED).next_to(
+            p1_plus, DOWN + LEFT * 0.5
+        )  # left child of plus node
+        p1_one = create_node("1", color=RED).next_to(p1_plus, DOWN)
+        p1_div = create_node("/", color=BLUE).next_to(p1_root, DOWN + RIGHT * 0.5)
+        p1_x = create_node("x", color=BLUE).next_to(p1_div, DOWN)
+        p1_two = create_node("2", color=BLUE).next_to(p1_div, DOWN + RIGHT * 0.5)
+        p1_root_plus_line = Line(p1_root, p1_plus)
+        p1_plus_y_line = Line(p1_plus, p1_y)
+        p1_plus_one_line = Line(p1_plus, p1_one)
+        p1_root_div_line = Line(p1_root, p1_div)  # Leave this one separate
+        p1_div_x_line = Line(p1_div, p1_x)
+        p1_div_two_line = Line(p1_div, p1_two)
+        p1_comb = VGroup(p1_div, p1_x, p1_two, p1_div_two_line, p1_div_x_line)
+        p1_delete = VGroup(
             p1_root,
             p1_plus,
             p1_y,
             p1_one,
+            p1_root_div_line,
+            p1_root_plus_line,
+            p1_plus_y_line,
+            p1_plus_one_line,
         )
+
+        recombination_text = Text("Recombination").to_edge(UR)
+
+        # red is to delete, blue is to combine
+        self.play(
+            Write(p0_comb),
+            Write(p0_delete),
+            Write(p1_comb),
+            Write(p1_delete),
+            Write(recombination_text),
+        )
+
+        self.next_slide()
+
+        self.play(Unwrite(p0_delete), Unwrite(p1_delete))
+
+        # move group logic to left of p0_comb
+        shift_vector = (
+            p0_root.get_center() + DOWN * 1.5 + LEFT * 1.5 - p1_div.get_center()
+        )
+
+        self.play(p1_comb.animate.shift(shift_vector), run_time=2)
+        p0_root_p1_div_line = Line(p0_root, p1_div)
+        self.play(Write(p0_root_p1_div_line))
+
+        self.next_slide()
+
+        self.play(
+            Unwrite(p0_root_p1_div_line),
+            Unwrite(p1_comb),
+            Unwrite(p0_comb),
+            Unwrite(recombination_text),
+        )
+
+        # Next part about mutation
+
+        mutation_text = Text("Mutation").to_edge(UR)
+
+        root_node = create_node("+").move_to(UP * 3)
+        x_node = create_node("x").next_to(root_node, DOWN + LEFT)
+        replace_node = create_node("3", color=RED).next_to(root_node, DOWN + RIGHT)
+        root_x_line = Line(root_node, x_node)
+        root_replace_line = Line(root_node, replace_node)
+
+        self.play(
+            Write(mutation_text),
+            Write(root_node),
+            Write(x_node),
+            Write(replace_node),
+            Write(root_x_line),
+            Write(root_replace_line),
+        )
+
+        self.next_slide()
+
+        # replacement tree
+        new_replace = create_node("*").next_to(root_node, DOWN + RIGHT)
+        replace_left = create_node("y").next_to(new_replace, DOWN + LEFT)
+        replace_right = create_node("9").next_to(new_replace, DOWN + RIGHT)
+        replace_left_line = Line(new_replace, replace_left)
+        replace_right_line = Line(new_replace, replace_right)
+        replace_group = VGroup(
+            new_replace,
+            replace_left,
+            replace_right,
+            replace_left_line,
+            replace_right_line,
+        )
+
+        self.play(Unwrite(replace_node))
+        self.play(Write(replace_group))
+
+        self.next_slide()
+
+        full_tree = VGroup(
+            root_node,
+            x_node,
+            replace_group,  # This now represents the whole bottom-right subtree
+            root_x_line,
+            root_replace_line,
+        )
+
+        self.play(Unwrite(mutation_text), Unwrite(full_tree))
+
+        ptext = pseudocode_transition(4, 5, False, True, True, False, self, ptext)
+        ptext = pseudocode_transition(5, 6, False, False, True, False, self, ptext)
+        self.next_slide()
+        self.play(Unwrite(ptext))
+
+        # end of Tree-Based GP slides :)
+
+
+# Slide 10
+# A description of the push programming language
+class PushDescription(Slide):
+    def construct(self):
+        push_text = Text("Push").to_edge(UP, buff=0.0)
+
+        lines = [Line() for _ in range(4)]
+        stack_labels: list[str] = ["exec", "int", "float", "str"]
+        stack_groups: VGroup = VGroup()
+
+        for line, label in zip(lines, stack_labels):
+            stack_groups.add(VGroup(line, Text(label, color=BLUE).next_to(line, DOWN)))
+
+        stack_groups.arrange(RIGHT, buff=1.5).move_to(DOWN * 3.5)
+
+        self.play(Write(push_text), Write(stack_groups))
+
+        self.next_slide()
+
+        int_three = Text("3").next_to(stack_groups[1], UP, buff=0.5)
+        int_four = Text("4").next_to(int_three, UP, buff=0.5)
+        float_zero = Text("0.0").next_to(stack_groups[2], UP, buff=0.5)
+        str_matics = Text('"matics"').next_to(stack_groups[3], UP, buff=0.5)
+        str_infor = Text('"infor"').next_to(str_matics, UP, buff=0.5)
+        str_bio = Text('"bio"').next_to(str_infor, UP, buff=0.5)
+
+        self.play(
+            Write(int_three),
+            Write(int_four),
+            Write(float_zero),
+            Write(str_matics),
+            Write(str_infor),
+            Write(str_bio),
+        )
+
+        self.next_slide()
+
+        # time to introduce the exec stack
+        exec_0 = Text("int_div").next_to(stack_groups[0], UP, buff=0.5)
+        exec_1 = Text("float_to_int").next_to(exec_0, UP, buff=0.5)
+        exec_2 = Text("int_add").next_to(exec_1, UP, buff=0.5)
+
+        self.play(Write(exec_0), Write(exec_1), Write(exec_2))
+
+        self.next_slide()
+
+        # exec int_add function
+        self.play(exec_2.animate.set_color(BLUE))
+        self.play(exec_2.animate.next_to(push_text, DOWN))
+
+        add_group = VGroup(int_three, int_four)
+        add_text = Text("3 + 4").next_to(exec_2, DOWN * 2)
+
+        # Moves 3 and 4 to near center of screen
+        self.play(Transform(add_group, add_text))
+
+        self.next_slide()
+
+        # Execuate the transaction
+        self.play(
+            Unwrite(exec_2),
+            Transform(add_group, Text("7").next_to(exec_2, DOWN * 2)),
+        )
+
+        self.play(add_group.animate.next_to(stack_groups[1], UP, buff=0.5))
+
+        self.next_slide()
+
+        self.play(exec_1.animate.set_color(BLUE))
+        self.play(exec_1.animate.next_to(push_text, DOWN))
+
+        self.next_slide()
+
+        # float_zero on int stack after this
+        self.play(
+            Unwrite(exec_1),
+            Transform(float_zero, Text("0").next_to(add_group, UP, buff=0.5)),
+        )
+
+        self.next_slide()
+
+        # astute viewer mention here :)
