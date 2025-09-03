@@ -12,9 +12,8 @@ PSEUDOCODE: Final[str] = """
 initialize population randomly
 rank population
 while (loop count < threshold) do
-    select parents for recombination
-    generate children from selected parents
-    rank children
+    select parents
+    generate children
     loop count++
 """
 PSEUDOCODE_FONT_SIZE: Final[int] = 30
@@ -23,10 +22,9 @@ PSEUDOCODE_LINE_CHARS: Final[dict[int, tuple[int, int]]] = {
     0: (0, 28),  # init pop
     1: (28, 42),  # rank pop
     2: (42, 70),  # while loop
-    3: (70, 99),  # select parents
-    4: (99, 134),  # generate children
+    3: (70, 83),  # select parents
+    4: (112, 134),  # generate children
     5: (134, 146),  # rank children
-    6: (146, 157),  # loop counter++
 }  # error if out of indicies
 IND_TEXT_SIZE: Final[int] = 20
 FITNESS_FONT_SIZE: int = 30
@@ -869,6 +867,8 @@ class ECLoopRankPop(Slide):
         # direction of search. Minimization or maximization
         direction_text = Text("Minimization")
 
+        # mention negative error function question for minimization
+
         # transition to minimzation
         # ind_3 to ind_1
         # ind_2 to ind_3
@@ -1282,3 +1282,7 @@ class PushDescription(Slide):
         self.next_slide()
 
         # astute viewer mention here :)
+        self.play(exec_0.animate.set_color())
+        self.play(exec_0.animate.next_to(push_text, DOWN))
+
+        self.next_slide()

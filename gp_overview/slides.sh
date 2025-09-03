@@ -1,1 +1,0 @@
-manim-slides NNSlide ShowPopulation EvolvedExample TitleSlide GeneticProgrammingDescription ECLoopTreeInit ECLoopRankPop ECLoopParentSelect ECLoopGenChildren PushDescription
