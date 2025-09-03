@@ -1345,7 +1345,6 @@ class PushGenome(Slide):
         # figure out how to use updaters right here. I don't want to animate
         # the movement of the new genome
         exec_stack_copy = exec_stack.copy()
-        genome.add_updater(lambda x: x.next_to(exec_stack_copy, UP * 0.5))
 
         self.next_slide()
 
@@ -1357,7 +1356,7 @@ class PushGenome(Slide):
 
         stacks_group.arrange(RIGHT, buff=3.0).move_to(DOWN * 3.5)
 
-        self.play(Transform(exec_stack, stacks_group))
+        self.play(Transform(exec_stack, stacks_group), genome.animate.shift(LEFT * 4.5))
 
 
 # Slide 12
