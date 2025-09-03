@@ -1195,6 +1195,7 @@ class ECLoopGenChildren(Slide):
         ptext = pseudocode_transition(4, 5, False, True, True, False, self, ptext)
         self.next_slide()
         self.play(Unwrite(ptext))
+        self.wait()
 
         # end of Tree-Based GP slides :)
 
@@ -1312,19 +1313,14 @@ class PushDescription(Slide):
         )
 
 
-# Maybe throw a slide in here showing off the exec stack
-# If have time after the rest of the show
-
-
 # Slide 11
+# This is to show how powerful Push can be whilst showing how
+# a push program is represented and loaded
 class PushGenome(Slide):
     def construct(self):
         genome = (
             VGroup(
-                [
-                    Text(instruction)
-                    for instruction in ["int_pop", "bool_dup", "exec_if", "True"]
-                ]
+                [Text(instruction) for instruction in ["-1", "1", "exec_if", "True"]]
             )
             .arrange(RIGHT, buff=1.0)
             .move_to(UP * 3)
@@ -1356,13 +1352,64 @@ class PushGenome(Slide):
 
         stacks_group.arrange(RIGHT, buff=3.0).move_to(DOWN * 3.5)
 
-        self.play(Transform(exec_stack, stacks_group), genome.animate.shift(LEFT * 4.5))
+        self.play(
+            Transform(exec_stack, stacks_group),
+            genome.animate.next_to(exec_stack_copy, UP * 0.5),
+        )
+
+        self.next_slide()
+
+        # genome[3] is `True`
+        self.play(genome[3].animate.set_color(BLUE))
+        self.play(genome[3].animate.move_to(UP * 2))
+
+        self.next_slide()
+
+        # move genome[3] `True` to boolean stack
+        self.play(genome[3].animate.next_to(stacks_group[2], UP).set_color(WHITE))
+
+        self.next_slide()
+
+        # genome[2] is `exec_if`
+        self.play(genome[2].animate.set_color(BLUE))
+        self.play(genome[2].animate.move_to(UP * 2))
+
+        self.next_slide()
+
+        # remove `exec_if`, `True` on bool stack, and `-1` on the exec stack
+        # left with 1 on the exec stack
+        self.play(
+            Unwrite(genome[2]),
+            Unwrite(genome[3]),
+            Unwrite(genome[0]),
+            genome[1].animate.next_to(exec_stack_copy, UP * 0.5),
+        )
+
+        self.next_slide()
+
+        self.play(Unwrite(genome), Unwrite(exec_stack))
+        self.wait()
 
 
 # Slide 12
+# Talk about UMAD (Uniform Mutation by Addition and Deletion)
+# Talk about Alternation too
 class PushRecombination(Slide):
     def construct(self):
         # Bring the code back for showing the new PushGP renditions
         ptext = pseudocode_transition(
             -1, 3, True, False, False, True, self, write_text=True
+        )
+
+        umad_text = Text(
+            "Uniform Mutation by Addition and Deletion", font_size=CIRCLE_FONT_SIZE
+        ).to_edge(UR)
+
+        self.play(Write(umad_text))
+
+        self.next_slide()
+
+        # turn full umad text into UMAD
+        self.play(
+            Transform(umad_text, Text("UMAD", font_size=CIRCLE_FONT_SIZE).to_edge(UR))
         )
