@@ -1,9 +1,10 @@
 # Manim Makefile
 # Change this variable to your Python file name
-PYTHON_FILE = my_scene.py
+PYTHON_FILE = main.py
 
 # This is the hardcoded list of scenes you want to render
-SCENE_LIST = NNSlide ShowPopulation EvolvedExample TitleSlide GeneticProgrammingDescription ECLoopTreeInit ECLoopRankPop ECLoopParentSelect ECLoopGenChildren PushDescription
+# WARNING: The order of this list does matter!
+SCENE_LIST = NNSlide ShowPopulation EvolvedExample TitleSlide GeneticProgrammingDescription ECLoopTreeInit ECLoopRankPop ECLoopParentSelect ECLoopGenChildren PushDescription PushGenome
 
 # The .PHONY declaration tells Make that these are not file names, but commands
 .PHONY: render slides clean

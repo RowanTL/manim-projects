@@ -23,8 +23,8 @@ PSEUDOCODE_LINE_CHARS: Final[dict[int, tuple[int, int]]] = {
     1: (28, 42),  # rank pop
     2: (42, 70),  # while loop
     3: (70, 83),  # select parents
-    4: (112, 134),  # generate children
-    5: (134, 146),  # rank children
+    4: (83, 99),  # generate children
+    5: (99, 110),  # loop count++
 }  # error if out of indicies
 IND_TEXT_SIZE: Final[int] = 20
 FITNESS_FONT_SIZE: int = 30
@@ -1193,7 +1193,6 @@ class ECLoopGenChildren(Slide):
         self.play(Unwrite(mutation_text), Unwrite(full_tree))
 
         ptext = pseudocode_transition(4, 5, False, True, True, False, self, ptext)
-        ptext = pseudocode_transition(5, 6, False, False, True, False, self, ptext)
         self.next_slide()
         self.play(Unwrite(ptext))
 
@@ -1204,7 +1203,7 @@ class ECLoopGenChildren(Slide):
 # A description of the push programming language
 class PushDescription(Slide):
     def construct(self):
-        push_text = Text("Push").to_edge(UP, buff=0.0)
+        push_text = Text("Push").to_edge(UP, buff=0.1)
 
         lines = [Line() for _ in range(4)]
         stack_labels: list[str] = ["exec", "int", "float", "str"]
@@ -1222,17 +1221,10 @@ class PushDescription(Slide):
         int_three = Text("3").next_to(stack_groups[1], UP, buff=0.5)
         int_four = Text("4").next_to(int_three, UP, buff=0.5)
         float_zero = Text("0.0").next_to(stack_groups[2], UP, buff=0.5)
-        str_matics = Text('"matics"').next_to(stack_groups[3], UP, buff=0.5)
-        str_infor = Text('"infor"').next_to(str_matics, UP, buff=0.5)
-        str_bio = Text('"bio"').next_to(str_infor, UP, buff=0.5)
+        str_example = Text('"tf2"').next_to(stack_groups[3], UP, buff=0.5)
 
         self.play(
-            Write(int_three),
-            Write(int_four),
-            Write(float_zero),
-            Write(str_matics),
-            Write(str_infor),
-            Write(str_bio),
+            Write(int_three), Write(int_four), Write(float_zero), Write(str_example)
         )
 
         self.next_slide()
@@ -1282,7 +1274,96 @@ class PushDescription(Slide):
         self.next_slide()
 
         # astute viewer mention here :)
-        self.play(exec_0.animate.set_color())
+        self.play(exec_0.animate.set_color(BLUE))
         self.play(exec_0.animate.next_to(push_text, DOWN))
 
         self.next_slide()
+
+        # add_group is 7, float_zero is 0
+        div_text = Text("7 / 0").next_to(exec_0, DOWN * 2)
+        div_group = VGroup(add_group, float_zero)
+        div_group_copy = div_group.copy()
+
+        # show astute viewer impending doom
+        self.play(Transform(div_group, div_text))
+
+        # error found uh oh bad, the world is nuked 7 times over!
+        self.play(div_group.animate.set_color(RED))
+
+        # Don't worry vault dweller! Push has error protection!
+        # Oh boy what is it!!
+        # No-Op
+
+        # Unlike Rust's unwinding or a C++ developer's code being part of
+        # 70%, Push just noops
+
+        # exec0 becomes no-op
+        self.play(
+            Transform(exec_0, Text("No-Op", color=GREEN).next_to(push_text, DOWN))
+        )
+        self.next_slide()
+        self.play(Transform(div_group, div_group_copy), Unwrite(exec_0))
+        self.next_slide()
+        self.play(
+            Unwrite(div_group),
+            Unwrite(push_text),
+            Unwrite(stack_groups),
+            Unwrite(str_example),
+        )
+
+
+# Maybe throw a slide in here showing off the exec stack
+# If have time after the rest of the show
+
+
+# Slide 11
+class PushGenome(Slide):
+    def construct(self):
+        genome = (
+            VGroup(
+                [
+                    Text(instruction)
+                    for instruction in ["int_pop", "bool_dup", "exec_if", "True"]
+                ]
+            )
+            .arrange(RIGHT, buff=1.0)
+            .move_to(UP * 3)
+        )
+        exec_line = Line()
+        exec_stack = VGroup(
+            exec_line, Text("exec", color=BLUE).next_to(exec_line, DOWN)
+        ).move_to(DOWN * 3.5)
+        exec_instructions = genome.copy().arrange(UP).next_to(exec_stack, UP * 0.5)
+
+        self.play(Write(exec_stack), Write(genome))
+
+        self.next_slide()
+
+        # genome now has properties of exec_instructions
+        self.play(Transform(genome, exec_instructions))
+
+        # figure out how to use updaters right here. I don't want to animate
+        # the movement of the new genome
+        exec_stack_copy = exec_stack.copy()
+        genome.add_updater(lambda x: x.next_to(exec_stack_copy, UP * 0.5))
+
+        self.next_slide()
+
+        stacks_group = VGroup().add(exec_stack_copy)
+        lines = [Line() for _ in range(2)]
+        labels: list[str] = ["int", "bool"]
+        for line, label in zip(lines, labels):
+            stacks_group.add(VGroup(line, Text(label, color=BLUE).next_to(line, DOWN)))
+
+        stacks_group.arrange(RIGHT, buff=3.0).move_to(DOWN * 3.5)
+
+        self.play(Transform(exec_stack, stacks_group))
+
+
+# Slide 12
+class PushRecombination(Slide):
+    def construct(self):
+        # Bring the code back for showing the new PushGP renditions
+        ptext = pseudocode_transition(
+            -1, 3, True, False, False, True, self, write_text=True
+        )
