@@ -1409,7 +1409,14 @@ class PushRecombination(Slide):
 
         self.next_slide()
 
-        # turn full umad text into UMAD
+        # turn full umad text into UMAD shortened
         self.play(
             Transform(umad_text, Text("UMAD", font_size=CIRCLE_FONT_SIZE).to_edge(UR))
         )
+
+        # Create a push genome
+        genome_0 = VGroup(*[Text("int_pop"), Text("exec_while"), Text("bool_and"), Text("int_sub")]).arrange(RIGHT, buff=1.0).shift(UP)
+        self.play(Write(genome_0))
+
+        # Point an arrow towards the items in the list
+        
