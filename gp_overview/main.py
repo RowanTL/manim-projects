@@ -19,6 +19,12 @@ ARBITRARY_INSTRUCTION_LIST: list[str] = [
     "int_dup",
     "int_div",
     "str_yank",
+    "str_dup",
+    "str_pop",
+    "int_yank",
+    "int_mult",
+    "int_min",
+    "int_max"
 ]
 CIRCLE_RADIUS: Final[float] = 0.7
 CIRCLE_FONT_SIZE: Final[int] = 30
@@ -57,6 +63,8 @@ def pseudocode_transition(
     pause_after: bool = True,
     write_text: bool = False,
     add_text: bool = False,
+    to_play: bool = True,
+    to_play_post: bool = True,
 ) -> Text:
     """
     This function transitions the color of lines in a text mobject
@@ -81,6 +89,9 @@ def pseudocode_transition(
             the "after" animations.
         write_text (bool, default = False): Whether or not to write the pseudocode_mobject to the screen or not.
         add_text (bool, default = False): Whether or not to add the pseudocode_mobject to the screen or not. Is executed before write_text if passed.
+        to_play (bool, default = True): Whether or not to play the color swapping animation
+        to_play_after (bool, default = True): Whether to play or apply the animations post color swap.
+            play : true, apply : false
 
     returns:
         (Text): The modified pseudocode object
@@ -112,10 +123,14 @@ def pseudocode_transition(
         slide.play(Transform(pseudocode_mobject, pre_anim))
 
     # Transition the color now
-    slide.play(
-        pseudocode_mobject[start_chars[0] : start_chars[1]].animate.set_color(WHITE),
-        pseudocode_mobject[end_chars[0] : end_chars[1]].animate.set_color(BLUE),
-    )
+    if to_play:
+        slide.play(
+            pseudocode_mobject[start_chars[0] : start_chars[1]].animate.set_color(WHITE),
+            pseudocode_mobject[end_chars[0] : end_chars[1]].animate.set_color(BLUE),
+        )
+    else:
+        pseudocode_mobject[start_chars[0] : start_chars[1]].set_color(WHITE)
+        pseudocode_mobject[end_chars[0] : end_chars[1]].set_color(BLUE)
 
     post_anim = pseudocode_mobject.copy()
     post_anim_flag = False
@@ -128,7 +143,10 @@ def pseudocode_transition(
     if pause_after:
         slide.next_slide()
     if post_anim_flag:
-        slide.play(Transform(pseudocode_mobject, post_anim))
+        if to_play_post:
+            slide.play(Transform(pseudocode_mobject, post_anim))
+        else:
+            pseudocode_mobject = post_anim
 
     return pseudocode_mobject
 
@@ -1641,3 +1659,16 @@ class PushUMAD(Slide):
 # Separate this from UMAD to reduce slide size
 class PushAlternation(Slide):
     def construct(self):
+        # transition pseudocode nicely from the previous slide
+        ptext = pseudocode_transition(-1, 3, True, False, False, True, self, pause_after=False, to_play=False, to_play_post=False)
+        self.add(ptext)
+        self.next_slide()
+
+        # First four are parent 0 and the last four are parent 1
+        parents = VGroup([Text(random.choice(ARBITRARY_INSTRUCTION_LIST)) for _ in range(8)]).arrange_in_grid(2, 4).shift(UP)
+        # TODO: arrow here pointing to first genome
+
+        self.play(
+            Write(parents)
+            # write arrow here
+        )
