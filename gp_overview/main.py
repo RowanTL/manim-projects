@@ -183,6 +183,17 @@ def connect_layers(layer0: VGroup, layer1: VGroup) -> VGroup:
     return temp_vgroup
 
 
+def flash_color(mobject, color, scene: Slide | Scene, run_time=0.5) -> None:
+    orig_state = mobject.save_state()
+    scene.play(
+        mobject.animate.set_color(color),
+        run_time=run_time
+    )
+    scene.play(
+        mobject.animate.restore(),
+        run_time=run_time
+    )
+
 # This class is test class. It is not intuitive to change the color
 # of the text lol
 class PseudocodeTest(Slide):
@@ -1482,15 +1493,7 @@ class PushUMAD(Slide):
         self.next_slide()
 
         # random chance for addition failed
-        self.play(
-            wall.animate.set_color(RED),
-            run_time=0.5
-        )
-
-        self.play(
-            wall.animate.set_color(WHITE),
-            run_time=0.5
-        )
+        flash_color(wall, RED, self)
 
         self.next_slide()
 
@@ -1504,15 +1507,7 @@ class PushUMAD(Slide):
         self.next_slide()
 
         # random chance for insertion infront has succeeded
-        self.play(
-            wall.animate.set_color(GREEN),
-            run_time=0.5
-        )
-
-        self.play(
-            wall.animate.set_color(WHITE),
-            run_time=0.5
-        )
+        flash_color(wall, GREEN, self)
 
         self.next_slide()
 
@@ -1538,15 +1533,7 @@ class PushUMAD(Slide):
         self.next_slide()
 
         # chance for addition failed here too
-        self.play(
-            wall.animate.set_color(RED),
-            run_time=0.5
-        )
-
-        self.play(
-            wall.animate.set_color(WHITE),
-            run_time=0.5
-        )
+        flash_color(wall, RED, self)
 
         self.next_slide()
 
@@ -1574,15 +1561,7 @@ class PushUMAD(Slide):
         self.next_slide()
 
         # 1st gene of 4 is good
-        self.play(
-            genome_0[0].animate.set_color(GREEN),
-            run_time=0.5
-        )
-
-        self.play(
-            genome_0[0].animate.set_color(WHITE),
-            run_time=0.5
-        )
+        flash_color(genome_0[0], GREEN, self)
 
         # 2nd gene of 4 is good
 
@@ -1592,15 +1571,7 @@ class PushUMAD(Slide):
 
         self.next_slide()
 
-        self.play(
-            genome_0[1].animate.set_color(GREEN),
-            run_time=0.5
-        )
-
-        self.play(
-            genome_0[1].animate.set_color(WHITE),
-            run_time=0.5
-        )
+        flash_color(genome_0[1], GREEN, self)
 
         # 3rd gene of 4 is not good
         self.play(
@@ -1609,15 +1580,7 @@ class PushUMAD(Slide):
 
         self.next_slide()
 
-        self.play(
-            genome_0[2].animate.set_color(RED),
-            run_time=0.5
-        )
-
-        self.play(
-            genome_0[2].animate.set_color(WHITE),
-            run_time=0.5
-        )
+        flash_color(genome_0[2], RED, self)
 
         self.next_slide()
 
@@ -1632,15 +1595,7 @@ class PushUMAD(Slide):
 
         # 3rd gene of now 3 is good
 
-        self.play(
-            genome_0[3].animate.set_color(GREEN),
-            run_time=0.5
-        )
-
-        self.play(
-            genome_0[3].animate.set_color(WHITE),
-            run_time=0.5
-        )
+        flash_color(genome_0[3], GREEN, self)
 
         self.next_slide()
 
@@ -1665,10 +1620,80 @@ class PushAlternation(Slide):
         self.next_slide()
 
         # First four are parent 0 and the last four are parent 1
-        parents = VGroup([Text(random.choice(ARBITRARY_INSTRUCTION_LIST)) for _ in range(8)]).arrange_in_grid(2, 4).shift(UP)
-        # TODO: arrow here pointing to first genome
+        parents = VGroup(*[Text(random.choice(ARBITRARY_INSTRUCTION_LIST)) for _ in range(8)]).arrange_in_grid(2, 4).shift(UP)
+        bottom_arrow = Arrow(start=DOWN, end=ORIGIN, color=YELLOW).next_to(parents[4], DOWN).set_opacity(0)
+        top_arrow = Arrow(start=ORIGIN, end=DOWN, color=YELLOW).next_to(parents[0], UP).set_opacity(0)
+
 
         self.play(
             Write(parents)
-            # write arrow here
+        )
+
+        self.next_slide()
+
+        # I want this alternation to be random
+        alternation_rate = 0.65
+        alt_rate_text = Text(f"Alternation Rate: {alternation_rate:.0%}", font_size=DESCRIPTION_FONT_SIZE).to_edge(DOWN)
+        self.play(Write(alt_rate_text))
+        self.next_slide()
+
+        rand_dec: float = random.random()
+        self.add(top_arrow, bottom_arrow)
+
+        self.next_slide()
+
+        # need some way to align the children. Come back to this later TODO
+        # need to track so can unwrite later
+        copied_genes: list = []
+        is_top_active: bool = random.choice([True, False])
+
+        for p0_gene, p1_gene in zip(parents[:4], parents[4:8]):
+            self.play(
+                top_arrow.animate.next_to(p0_gene, UP),
+                bottom_arrow.animate.next_to(p1_gene, DOWN)
+            )
+
+            # go to bottom if random decimal less than alternation rate
+            # swap sides here
+            if rand_dec < alternation_rate:
+                if is_top_active:
+                    self.play(bottom_arrow.animate.set_opacity(1), top_arrow.animate.set_opacity(0))
+                    is_top_active = False
+                else:
+                    self.play(top_arrow.animate.set_opacity(1), bottom_arrow.animate.set_opacity(0))
+                    is_top_active = True
+            else:
+                if is_top_active:
+                    self.play(top_arrow.animate.set_opacity(1))
+                else:
+                    self.play(bottom_arrow.animate.set_opacity(1))
+
+            self.next_slide()
+
+            if is_top_active:
+                gene_0_copy = p0_gene.copy()
+                copied_genes.append(gene_0_copy)
+                self.play(
+                    gene_0_copy.animate.set_y(-2)
+                )
+            else:
+                gene_1_copy = p1_gene.copy()
+                copied_genes.append(gene_1_copy)
+                self.play(
+                    gene_1_copy.animate.set_y(-2)
+                )
+
+            self.next_slide()
+
+            rand_dec = random.random()
+
+        # loop over
+        self.next_slide()
+
+        self.play(
+            Unwrite(parents),
+            Unwrite(VGroup(*copied_genes)),
+            Unwrite(alt_rate_text),
+            Unwrite(top_arrow),
+            Unwrite(bottom_arrow),
         )
