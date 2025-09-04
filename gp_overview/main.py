@@ -1697,3 +1697,5 @@ class PushAlternation(Slide):
             Unwrite(top_arrow),
             Unwrite(bottom_arrow),
         )
+
+        pseudocode_transition(3, 4, False, True, True, False, self, ptext)
