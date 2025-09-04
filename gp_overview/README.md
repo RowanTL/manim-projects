@@ -18,3 +18,8 @@ Use the arrow keys to move from slide to slide.
 
 Note: I've had `step 3` freeze at the end while generating the reverse
 animations. If this happens, `ctrl+c` then re-run the command.
+
+### Quirks
+
+I decided to program PushAlternation to be semi-random. There is no way to know
+what exactly that slide will do. :)
