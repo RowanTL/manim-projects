@@ -5,3 +5,6 @@ slides
 
 # Python
 *.pyc
+
+# Jetbrains
+.idea
