@@ -5,9 +5,26 @@ These classes should all be in order of slides appearing
 from manim import *
 from manim_slides.slide import Slide
 from typing import Final, Optional
+import random
 
+ARBITRARY_INSTRUCTION_LIST: list[str] = [
+    "int_add",
+    "int_sub",
+    "exec_when",
+    "exec_s",
+    "str_dup",
+    "str_pop",
+    "int_swap",
+    "code_if",
+    "int_dup",
+    "int_div",
+    "str_yank",
+]
 CIRCLE_RADIUS: Final[float] = 0.7
 CIRCLE_FONT_SIZE: Final[int] = 30
+DESCRIPTION_FONT_SIZE: Final[int] = 20
+FITNESS_FONT_SIZE: int = 30
+IND_TEXT_SIZE: Final[int] = 20
 PSEUDOCODE: Final[str] = """
 initialize population randomly
 rank population
@@ -26,8 +43,6 @@ PSEUDOCODE_LINE_CHARS: Final[dict[int, tuple[int, int]]] = {
     4: (83, 99),  # generate children
     5: (99, 110),  # loop count++
 }  # error if out of indicies
-IND_TEXT_SIZE: Final[int] = 20
-FITNESS_FONT_SIZE: int = 30
 
 
 def pseudocode_transition(
@@ -1394,10 +1409,10 @@ class PushGenome(Slide):
 # Slide 12
 # Talk about UMAD (Uniform Mutation by Addition and Deletion)
 # Talk about Alternation too
-class PushRecombination(Slide):
+class PushUMAD(Slide):
     def construct(self):
         # Bring the code back for showing the new PushGP renditions
-        ptext = pseudocode_transition(
+        pseudocode_transition(
             -1, 3, True, False, False, True, self, write_text=True
         )
 
@@ -1409,14 +1424,220 @@ class PushRecombination(Slide):
 
         self.next_slide()
 
+        new_umad_text = Text("UMAD", font_size=CIRCLE_FONT_SIZE).to_edge(UR)
+        umad_description = Text("Addition", font_size=DESCRIPTION_FONT_SIZE).next_to(new_umad_text, DOWN)
+        umad_deletion = Text("Deletion", font_size=DESCRIPTION_FONT_SIZE).next_to(new_umad_text, DOWN)
+
         # turn full umad text into UMAD shortened
         self.play(
-            Transform(umad_text, Text("UMAD", font_size=CIRCLE_FONT_SIZE).to_edge(UR))
+            Transform(umad_text, new_umad_text),
+            Write(umad_description)
         )
 
         # Create a push genome
-        genome_0 = VGroup(*[Text("int_pop"), Text("exec_while"), Text("bool_and"), Text("int_sub")]).arrange(RIGHT, buff=1.0).shift(UP)
+        genome_0: VGroup = (
+            VGroup(
+                *[
+                    Text("int_pop"),
+                    Text("exec_while"),
+                    Text("int_sub"),
+                ]
+            )
+            .arrange(RIGHT, buff=0.75)
+            .shift(UP)
+        )
         self.play(Write(genome_0))
 
-        # Point an arrow towards the items in the list
-        
+        self.next_slide()
+
+        # Will do uniform addition
+        gene_0_bottom = genome_0[0].get_bottom()
+        arrow = Arrow(start=gene_0_bottom + DOWN, end=gene_0_bottom, color=YELLOW).next_to(genome_0[0], LEFT + DOWN)
+        arrow_copy = arrow.copy()
+        wall = Line(start=gene_0_bottom, end=genome_0[0].get_top(), color=YELLOW)
+        wall.add_updater(lambda x: x.next_to(arrow, UP))
+
+        self.play(
+            Write(arrow), Write(wall)
+        )
+
+        self.next_slide()
+
+        # random chance for addition failed
+        self.play(
+            wall.animate.set_color(RED),
+            run_time=0.5
+        )
+
+        self.play(
+            wall.animate.set_color(WHITE),
+            run_time=0.5
+        )
+
+        self.next_slide()
+
+        # genome_0[0] flashed red, now addition
+        # genome_0[1] will be different
+
+        self.play(
+            arrow.animate.next_to(genome_0[1], DOWN + LEFT)
+        )
+
+        self.next_slide()
+
+        # random chance for insertion infront has succeeded
+        self.play(
+            wall.animate.set_color(GREEN),
+            run_time=0.5
+        )
+
+        self.play(
+            wall.animate.set_color(WHITE),
+            run_time=0.5
+        )
+
+        self.next_slide()
+
+        # random gene added, replace original genome_0 with new genome
+        random_gene = Text(random.choice(ARBITRARY_INSTRUCTION_LIST))
+        new_genome = VGroup(genome_0[0].copy())
+        new_genome.add(random_gene)
+        new_genome.add(genome_0[1].copy())
+        new_genome.add(genome_0[2].copy())
+        new_genome.arrange(RIGHT, buff=0.75).shift(UP)
+
+        self.play(
+            Transform(genome_0, new_genome),
+            arrow.animate.next_to(new_genome[2], LEFT + DOWN)
+        )
+
+        self.next_slide()
+
+        self.play(
+            arrow.animate.next_to(new_genome[3], LEFT + DOWN)
+        )
+
+        self.next_slide()
+
+        # chance for addition failed here too
+        self.play(
+            wall.animate.set_color(RED),
+            run_time=0.5
+        )
+
+        self.play(
+            wall.animate.set_color(WHITE),
+            run_time=0.5
+        )
+
+        self.next_slide()
+
+        self.play(
+            Unwrite(arrow),
+            Unwrite(wall)
+        )
+
+        self.next_slide()
+
+        # Onto Uniform Deletion
+
+        self.play(
+            TransformMatchingShapes(umad_description, umad_deletion),
+        )
+
+        self.next_slide()
+
+        arrow_copy.next_to(genome_0[0], DOWN)
+
+        self.play(
+            Write(arrow_copy),
+        )
+
+        self.next_slide()
+
+        # 1st gene of 4 is good
+        self.play(
+            genome_0[0].animate.set_color(GREEN),
+            run_time=0.5
+        )
+
+        self.play(
+            genome_0[0].animate.set_color(WHITE),
+            run_time=0.5
+        )
+
+        # 2nd gene of 4 is good
+
+        self.play(
+            arrow_copy.animate.next_to(genome_0[1], DOWN),
+        )
+
+        self.next_slide()
+
+        self.play(
+            genome_0[1].animate.set_color(GREEN),
+            run_time=0.5
+        )
+
+        self.play(
+            genome_0[1].animate.set_color(WHITE),
+            run_time=0.5
+        )
+
+        # 3rd gene of 4 is not good
+        self.play(
+            arrow_copy.animate.next_to(genome_0[2], DOWN)
+        )
+
+        self.next_slide()
+
+        self.play(
+            genome_0[2].animate.set_color(RED),
+            run_time=0.5
+        )
+
+        self.play(
+            genome_0[2].animate.set_color(WHITE),
+            run_time=0.5
+        )
+
+        self.next_slide()
+
+        genome_0_del = VGroup(genome_0[0].copy(), genome_0[1].copy(), genome_0[3].copy()).arrange(RIGHT, buff=0.75).shift(UP)
+
+        self.play(
+            ReplacementTransform(genome_0, genome_0_del),
+            arrow_copy.animate.next_to(genome_0_del[2], DOWN)
+        )
+
+        self.next_slide()
+
+        # 3rd gene of now 3 is good
+
+        self.play(
+            genome_0[3].animate.set_color(GREEN),
+            run_time=0.5
+        )
+
+        self.play(
+            genome_0[3].animate.set_color(WHITE),
+            run_time=0.5
+        )
+
+        self.next_slide()
+
+        # uniform mutation done
+
+        self.play(
+            Unwrite(arrow_copy),
+            Unwrite(genome_0_del),
+            Unwrite(genome_0),
+            Unwrite(umad_text),
+            Unwrite(umad_deletion)
+        )
+
+
+# Slide 13
+# Separate this from UMAD to reduce slide size
+class PushAlternation(Slide):
+    def construct(self):
