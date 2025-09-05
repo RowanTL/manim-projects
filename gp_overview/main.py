@@ -1442,7 +1442,7 @@ class PushUMAD(Slide):
     def construct(self):
         # Bring the code back for showing the new PushGP renditions
         pseudocode_transition(
-            -1, 3, True, False, False, True, self, write_text=True
+            -1, 4, True, False, False, True, self, write_text=True
         )
 
         umad_text = Text(
@@ -1612,10 +1612,11 @@ class PushUMAD(Slide):
 
 # Slide 13
 # Separate this from UMAD to reduce slide size
+# May want to put this before UMAD and alternation
 class PushAlternation(Slide):
     def construct(self):
         # transition pseudocode nicely from the previous slide
-        ptext = pseudocode_transition(-1, 3, True, False, False, True, self, pause_after=False, to_play=False, to_play_post=False)
+        ptext = pseudocode_transition(-1, 4, True, False, False, True, self, pause_after=False, to_play=False, to_play_post=False)
         self.add(ptext)
         self.next_slide()
 
@@ -1698,4 +1699,36 @@ class PushAlternation(Slide):
             Unwrite(bottom_arrow),
         )
 
-        pseudocode_transition(3, 4, False, True, True, False, self, ptext)
+        pseudocode_transition(4, 3, False, True, True, False, self, ptext)
+
+
+# Slide 14
+class PushLexicase(Slide):
+    def construct(self):
+        ptext = pseudocode_transition(3, 3, True, False, True, True, self, add_text=True)
+
+        # first: think about error functions in general
+        axes = Axes(x_range=(-4, 4), y_range=(-4, 4), tips=False)
+        axes.add_coordinates()
+        axes.get_axis_labels()
+
+        arbitrary_func = axes.plot(lambda x: x**3 + 2 * x**2, color=BLUE)
+        arb_func_tex = Tex(r"$x^3 + 2x^2$").next_to(ptext, DOWN)
+
+        self.play(
+            Write(axes)
+        )
+
+        self.play(
+            Write(arbitrary_func),
+            Write(arb_func_tex),
+            run_time=2
+        )
+
+        # plot red dots and dotted line to true point to show error
+        # Also throw sum of squares equation in there to prove a point
+        mse_tex = Tex(r"$\frac{1}{n} \Sigma (y_i - \hat{y}_i)^2$").to_edge(DR)
+
+        self.play(
+            Write(mse_tex)
+        )
