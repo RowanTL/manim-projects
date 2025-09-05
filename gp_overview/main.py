@@ -1708,12 +1708,12 @@ class PushLexicase(Slide):
         ptext = pseudocode_transition(3, 3, True, False, True, True, self, add_text=True)
 
         # first: think about error functions in general
-        axes = Axes(x_range=(-4, 4), y_range=(-4, 4), tips=False)
+        axes = Axes(x_range=(-4, 4), y_range=(-4, 4), tips=False).scale(0.75)
         axes.add_coordinates()
         axes.get_axis_labels()
 
-        arbitrary_func = axes.plot(lambda x: x**3 + 2 * x**2, color=BLUE)
-        arb_func_tex = Tex(r"$x^3 + 2x^2$").next_to(ptext, DOWN)
+        arbitrary_func = axes.plot(lambda x: x**3 + 3 * x**2, color=BLUE)
+        arb_func_tex = Tex(r"$x^3 + 3x^2$").next_to(ptext, DOWN)
 
         self.play(
             Write(axes)
@@ -1727,8 +1727,64 @@ class PushLexicase(Slide):
 
         # plot red dots and dotted line to true point to show error
         # Also throw sum of squares equation in there to prove a point
-        mse_tex = Tex(r"$\frac{1}{n} \Sigma (y_i - \hat{y}_i)^2$").to_edge(DR)
+        mse_tex = Tex(r"$\frac{1}{n} \Sigma (y_i - \hat{y}_i)^2$").scale(2).to_edge(DR)
 
         self.play(
             Write(mse_tex)
+        )
+
+        d0 = Dot(axes.c2p(-3, 3), color=RED)
+        d1 = Dot(axes.c2p(-2, 0), color=RED)
+        d2 = Dot(axes.c2p(0, 2), color=RED)
+
+        bd0 = Dot(axes.c2p(-3, 0), color=BLUE)
+        bd1 = Dot(axes.c2p(-2, 4), color=BLUE)
+        bd2 = Dot(axes.c2p(0, 0), color=BLUE)
+
+        self.next_slide()
+
+        self.play(
+            Write(d0),
+            Write(d1),
+            Write(d2)
+        )
+
+        line0 = DashedLine(d0, bd0, color=RED)
+        line1 = DashedLine(d1, bd1, color=RED)
+        line2 = DashedLine(d2, bd2, color=RED)
+
+        self.play(
+            Write(line0),
+            Write(line1),
+            Write(line2)
+        )
+
+        self.play(
+            Write(bd0),
+            Write(bd1),
+            Write(bd2)
+        )
+
+        self.next_slide()
+
+        # mse of this function would be (9 + 16 + 4) / 3 = 9.666666666
+        error_tex = Text("Error: 9.6666").to_edge(UR)
+
+        self.play(
+            Write(error_tex)
+        )
+
+        self.next_slide()
+
+        self.play(
+            Unwrite(mse_tex)
+        )
+
+        self.next_slide()
+
+        vector_error_text = Text("Error: [3, 4, 2]").to_edge(UR)
+
+        # reveal individual error right here. BIG REVEAL pog
+        self.play(
+            Transform(error_tex, vector_error_text)
         )
