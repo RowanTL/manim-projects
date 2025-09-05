@@ -4,7 +4,7 @@ PYTHON_FILE = main.py
 
 # This is the hardcoded list of scenes you want to render
 # WARNING: The order of this list does matter!
-SCENE_LIST = NNSlide ShowPopulation EvolvedExample TitleSlide GeneticProgrammingDescription ECLoopTreeInit ECLoopRankPop ECLoopParentSelect ECLoopGenChildren PushDescription PushGenome PushUMAD PushAlternation
+SCENE_LIST = NNSlide ShowPopulation EvolvedExample TitleSlide GeneticProgrammingDescription ECLoopTreeInit ECLoopRankPop ECLoopParentSelect ECLoopGenChildren PushDescription PushGenome PushUMAD PushAlternation PushLexicase
 
 # The .PHONY declaration tells Make that these are not file names, but commands
 .PHONY: render slides clean
