@@ -6,7 +6,8 @@ The presentation takes place on September 18th, 2025 6PM CST @ Tech Artista Cent
 
 ## How to build
 
-A venv would be beneficial here. These instructions do not create one.
+A venv would be beneficial here. These instructions do not create one. Ensure you are using manim version
+`v0.19.0`.
 
 1) Follow the official instructions for !(Manim Community Edition)[https://docs.manim.community/en/stable/installation/uv.html]
 2) `uv pip install -U manim-slides[manim]`
