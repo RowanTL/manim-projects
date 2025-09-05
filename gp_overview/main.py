@@ -1788,3 +1788,54 @@ class PushLexicase(Slide):
         self.play(
             Transform(error_tex, vector_error_text)
         )
+
+        self.next_slide()
+
+        error_alone_text = Text("3   4   2").scale(2.0)
+        # Make error_tex bigger to illustrate how cool this is
+        self.play(
+            Unwrite(axes),
+            Unwrite(arbitrary_func),
+            Unwrite(arb_func_tex),
+            Transform(error_tex, error_alone_text),
+            Unwrite(d0),
+            Unwrite(d1),
+            Unwrite(d2),
+            Unwrite(bd0),
+            Unwrite(bd1),
+            Unwrite(bd2),
+            Unwrite(line0),
+            Unwrite(line1),
+            Unwrite(line2)
+        )
+
+        self.next_slide()
+
+        self.play(Unwrite(error_tex))
+
+        self.next_slide()
+
+        # Don't need this anymore
+        self.play(Unwrite(ptext))
+
+        self.next_slide()
+
+        # time to make a table to demonstrate lexicase selection
+        # 5x5 table. 5 individuals, 5 cases
+        # At least three rounds of selection, so need to have some cases with same fitness score
+        # Maximization problem so higher the better wins
+        scores: list[list[int]] = [
+            [1, 4, 8, 8, 10],
+            [6, 4, 5, 9, 11],
+            [3, 4, 8, 2, 1],
+            [15, 1, 0, 0, 0],
+            [1, 1, 1, 1, 1]
+        ]
+        scores_str: list[list[str]] = [[str(element) for element in row] for row in scores]
+        ind_labels = [Text(f"ind{n}") for n in range(5)]
+
+        lexicase_table = Table(scores_str, ind_labels, include_outer_lines=True)
+
+        self.play(
+            Write(lexicase_table)
+        )
