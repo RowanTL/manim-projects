@@ -24,7 +24,7 @@ ARBITRARY_INSTRUCTION_LIST: list[str] = [
     "int_yank",
     "int_mult",
     "int_min",
-    "int_max"
+    "int_max",
 ]
 CIRCLE_RADIUS: Final[float] = 0.7
 CIRCLE_FONT_SIZE: Final[int] = 30
@@ -125,7 +125,9 @@ def pseudocode_transition(
     # Transition the color now
     if to_play:
         slide.play(
-            pseudocode_mobject[start_chars[0] : start_chars[1]].animate.set_color(WHITE),
+            pseudocode_mobject[start_chars[0] : start_chars[1]].animate.set_color(
+                WHITE
+            ),
             pseudocode_mobject[end_chars[0] : end_chars[1]].animate.set_color(BLUE),
         )
     else:
@@ -183,16 +185,30 @@ def connect_layers(layer0: VGroup, layer1: VGroup) -> VGroup:
     return temp_vgroup
 
 
-def flash_color(mobject, color, scene: Slide | Scene, run_time=0.5) -> None:
-    orig_state = mobject.save_state()
-    scene.play(
-        mobject.animate.set_color(color),
-        run_time=run_time
-    )
-    scene.play(
-        mobject.animate.restore(),
-        run_time=run_time
-    )
+def flash_color(
+    mobject,
+    color,
+    scene: Slide | Scene,
+    run_time: float = 0.5,
+    next_slide: bool = False,
+) -> None:
+    """
+    A shorthand function to change a mobjects color.
+
+    parameters:
+        mobject: The mobject to change color
+        color: The color to switch to
+        scene (Slide | Scene): The scene in which the mobjects are a part of
+        run_time (float, default = 0.5): The run_time the play functions use
+        next_slide (bool, default=False): Whether or not to use `self.next_slide()` between the color transitions.
+            Will only work if the scene object is a Slide
+    """
+    mobject.save_state()
+    scene.play(mobject.animate.set_color(color), run_time=run_time)
+    if next_slide and isinstance(scene, Slide):
+        scene.next_slide()
+    scene.play(mobject.animate.restore(), run_time=run_time)
+
 
 # This class is test class. It is not intuitive to change the color
 # of the text lol
@@ -1441,9 +1457,7 @@ class PushGenome(Slide):
 class PushUMAD(Slide):
     def construct(self):
         # Bring the code back for showing the new PushGP renditions
-        pseudocode_transition(
-            -1, 4, True, False, False, True, self, write_text=True
-        )
+        pseudocode_transition(-1, 4, True, False, False, True, self, write_text=True)
 
         umad_text = Text(
             "Uniform Mutation by Addition and Deletion", font_size=CIRCLE_FONT_SIZE
@@ -1454,14 +1468,15 @@ class PushUMAD(Slide):
         self.next_slide()
 
         new_umad_text = Text("UMAD", font_size=CIRCLE_FONT_SIZE).to_edge(UR)
-        umad_description = Text("Addition", font_size=DESCRIPTION_FONT_SIZE).next_to(new_umad_text, DOWN)
-        umad_deletion = Text("Deletion", font_size=DESCRIPTION_FONT_SIZE).next_to(new_umad_text, DOWN)
+        umad_description = Text("Addition", font_size=DESCRIPTION_FONT_SIZE).next_to(
+            new_umad_text, DOWN
+        )
+        umad_deletion = Text("Deletion", font_size=DESCRIPTION_FONT_SIZE).next_to(
+            new_umad_text, DOWN
+        )
 
         # turn full umad text into UMAD shortened
-        self.play(
-            Transform(umad_text, new_umad_text),
-            Write(umad_description)
-        )
+        self.play(Transform(umad_text, new_umad_text), Write(umad_description))
 
         # Create a push genome
         genome_0: VGroup = (
@@ -1481,14 +1496,14 @@ class PushUMAD(Slide):
 
         # Will do uniform addition
         gene_0_bottom = genome_0[0].get_bottom()
-        arrow = Arrow(start=gene_0_bottom + DOWN, end=gene_0_bottom, color=YELLOW).next_to(genome_0[0], LEFT + DOWN)
+        arrow = Arrow(
+            start=gene_0_bottom + DOWN, end=gene_0_bottom, color=YELLOW
+        ).next_to(genome_0[0], LEFT + DOWN)
         arrow_copy = arrow.copy()
         wall = Line(start=gene_0_bottom, end=genome_0[0].get_top(), color=YELLOW)
         wall.add_updater(lambda x: x.next_to(arrow, UP))
 
-        self.play(
-            Write(arrow), Write(wall)
-        )
+        self.play(Write(arrow), Write(wall))
 
         self.next_slide()
 
@@ -1500,9 +1515,7 @@ class PushUMAD(Slide):
         # genome_0[0] flashed red, now addition
         # genome_0[1] will be different
 
-        self.play(
-            arrow.animate.next_to(genome_0[1], DOWN + LEFT)
-        )
+        self.play(arrow.animate.next_to(genome_0[1], DOWN + LEFT))
 
         self.next_slide()
 
@@ -1521,14 +1534,12 @@ class PushUMAD(Slide):
 
         self.play(
             Transform(genome_0, new_genome),
-            arrow.animate.next_to(new_genome[2], LEFT + DOWN)
+            arrow.animate.next_to(new_genome[2], LEFT + DOWN),
         )
 
         self.next_slide()
 
-        self.play(
-            arrow.animate.next_to(new_genome[3], LEFT + DOWN)
-        )
+        self.play(arrow.animate.next_to(new_genome[3], LEFT + DOWN))
 
         self.next_slide()
 
@@ -1537,10 +1548,7 @@ class PushUMAD(Slide):
 
         self.next_slide()
 
-        self.play(
-            Unwrite(arrow),
-            Unwrite(wall)
-        )
+        self.play(Unwrite(arrow), Unwrite(wall))
 
         self.next_slide()
 
@@ -1574,9 +1582,7 @@ class PushUMAD(Slide):
         flash_color(genome_0[1], GREEN, self)
 
         # 3rd gene of 4 is not good
-        self.play(
-            arrow_copy.animate.next_to(genome_0[2], DOWN)
-        )
+        self.play(arrow_copy.animate.next_to(genome_0[2], DOWN))
 
         self.next_slide()
 
@@ -1584,11 +1590,15 @@ class PushUMAD(Slide):
 
         self.next_slide()
 
-        genome_0_del = VGroup(genome_0[0].copy(), genome_0[1].copy(), genome_0[3].copy()).arrange(RIGHT, buff=0.75).shift(UP)
+        genome_0_del = (
+            VGroup(genome_0[0].copy(), genome_0[1].copy(), genome_0[3].copy())
+            .arrange(RIGHT, buff=0.75)
+            .shift(UP)
+        )
 
         self.play(
             ReplacementTransform(genome_0, genome_0_del),
-            arrow_copy.animate.next_to(genome_0_del[2], DOWN)
+            arrow_copy.animate.next_to(genome_0_del[2], DOWN),
         )
 
         self.next_slide()
@@ -1606,7 +1616,7 @@ class PushUMAD(Slide):
             Unwrite(genome_0_del),
             Unwrite(genome_0),
             Unwrite(umad_text),
-            Unwrite(umad_deletion)
+            Unwrite(umad_deletion),
         )
 
 
@@ -1616,25 +1626,47 @@ class PushUMAD(Slide):
 class PushAlternation(Slide):
     def construct(self):
         # transition pseudocode nicely from the previous slide
-        ptext = pseudocode_transition(-1, 4, True, False, False, True, self, pause_after=False, to_play=False, to_play_post=False)
+        ptext = pseudocode_transition(
+            -1,
+            4,
+            True,
+            False,
+            False,
+            True,
+            self,
+            pause_after=False,
+            to_play=False,
+            to_play_post=False,
+        )
         self.add(ptext)
         self.next_slide()
 
         # First four are parent 0 and the last four are parent 1
-        parents = VGroup(*[Text(random.choice(ARBITRARY_INSTRUCTION_LIST)) for _ in range(8)]).arrange_in_grid(2, 4).shift(UP)
-        bottom_arrow = Arrow(start=DOWN, end=ORIGIN, color=YELLOW).next_to(parents[4], DOWN).set_opacity(0)
-        top_arrow = Arrow(start=ORIGIN, end=DOWN, color=YELLOW).next_to(parents[0], UP).set_opacity(0)
-
-
-        self.play(
-            Write(parents)
+        parents = (
+            VGroup(*[Text(random.choice(ARBITRARY_INSTRUCTION_LIST)) for _ in range(8)])
+            .arrange_in_grid(2, 4)
+            .shift(UP)
         )
+        bottom_arrow = (
+            Arrow(start=DOWN, end=ORIGIN, color=YELLOW)
+            .next_to(parents[4], DOWN)
+            .set_opacity(0)
+        )
+        top_arrow = (
+            Arrow(start=ORIGIN, end=DOWN, color=YELLOW)
+            .next_to(parents[0], UP)
+            .set_opacity(0)
+        )
+
+        self.play(Write(parents))
 
         self.next_slide()
 
         # I want this alternation to be random
         alternation_rate = 0.65
-        alt_rate_text = Text(f"Alternation Rate: {alternation_rate:.0%}", font_size=DESCRIPTION_FONT_SIZE).to_edge(DOWN)
+        alt_rate_text = Text(
+            f"Alternation Rate: {alternation_rate:.0%}", font_size=DESCRIPTION_FONT_SIZE
+        ).to_edge(DOWN)
         self.play(Write(alt_rate_text))
         self.next_slide()
 
@@ -1651,17 +1683,23 @@ class PushAlternation(Slide):
         for p0_gene, p1_gene in zip(parents[:4], parents[4:8]):
             self.play(
                 top_arrow.animate.next_to(p0_gene, UP),
-                bottom_arrow.animate.next_to(p1_gene, DOWN)
+                bottom_arrow.animate.next_to(p1_gene, DOWN),
             )
 
             # go to bottom if random decimal less than alternation rate
             # swap sides here
             if rand_dec < alternation_rate:
                 if is_top_active:
-                    self.play(bottom_arrow.animate.set_opacity(1), top_arrow.animate.set_opacity(0))
+                    self.play(
+                        bottom_arrow.animate.set_opacity(1),
+                        top_arrow.animate.set_opacity(0),
+                    )
                     is_top_active = False
                 else:
-                    self.play(top_arrow.animate.set_opacity(1), bottom_arrow.animate.set_opacity(0))
+                    self.play(
+                        top_arrow.animate.set_opacity(1),
+                        bottom_arrow.animate.set_opacity(0),
+                    )
                     is_top_active = True
             else:
                 if is_top_active:
@@ -1674,15 +1712,11 @@ class PushAlternation(Slide):
             if is_top_active:
                 gene_0_copy = p0_gene.copy()
                 copied_genes.append(gene_0_copy)
-                self.play(
-                    gene_0_copy.animate.set_y(-2)
-                )
+                self.play(gene_0_copy.animate.set_y(-2))
             else:
                 gene_1_copy = p1_gene.copy()
                 copied_genes.append(gene_1_copy)
-                self.play(
-                    gene_1_copy.animate.set_y(-2)
-                )
+                self.play(gene_1_copy.animate.set_y(-2))
 
             self.next_slide()
 
@@ -1705,7 +1739,9 @@ class PushAlternation(Slide):
 # Slide 14
 class PushLexicase(Slide):
     def construct(self):
-        ptext = pseudocode_transition(3, 3, True, False, True, True, self, add_text=True)
+        ptext = pseudocode_transition(
+            3, 3, True, False, True, True, self, add_text=True
+        )
 
         # first: think about error functions in general
         axes = Axes(x_range=(-4, 4), y_range=(-4, 4), tips=False).scale(0.75)
@@ -1715,23 +1751,15 @@ class PushLexicase(Slide):
         arbitrary_func = axes.plot(lambda x: x**3 + 3 * x**2, color=BLUE)
         arb_func_tex = Tex(r"$x^3 + 3x^2$").next_to(ptext, DOWN)
 
-        self.play(
-            Write(axes)
-        )
+        self.play(Write(axes))
 
-        self.play(
-            Write(arbitrary_func),
-            Write(arb_func_tex),
-            run_time=2
-        )
+        self.play(Write(arbitrary_func), Write(arb_func_tex), run_time=2)
 
         # plot red dots and dotted line to true point to show error
         # Also throw sum of squares equation in there to prove a point
         mse_tex = Tex(r"$\frac{1}{n} \Sigma (y_i - \hat{y}_i)^2$").scale(2).to_edge(DR)
 
-        self.play(
-            Write(mse_tex)
-        )
+        self.play(Write(mse_tex))
 
         d0 = Dot(axes.c2p(-3, 3), color=RED)
         d1 = Dot(axes.c2p(-2, 0), color=RED)
@@ -1743,51 +1771,33 @@ class PushLexicase(Slide):
 
         self.next_slide()
 
-        self.play(
-            Write(d0),
-            Write(d1),
-            Write(d2)
-        )
+        self.play(Write(d0), Write(d1), Write(d2))
 
         line0 = DashedLine(d0, bd0, color=RED)
         line1 = DashedLine(d1, bd1, color=RED)
         line2 = DashedLine(d2, bd2, color=RED)
 
-        self.play(
-            Write(line0),
-            Write(line1),
-            Write(line2)
-        )
+        self.play(Write(line0), Write(line1), Write(line2))
 
-        self.play(
-            Write(bd0),
-            Write(bd1),
-            Write(bd2)
-        )
+        self.play(Write(bd0), Write(bd1), Write(bd2))
 
         self.next_slide()
 
         # mse of this function would be (9 + 16 + 4) / 3 = 9.666666666
         error_tex = Text("Error: 9.6666").to_edge(UR)
 
-        self.play(
-            Write(error_tex)
-        )
+        self.play(Write(error_tex))
 
         self.next_slide()
 
-        self.play(
-            Unwrite(mse_tex)
-        )
+        self.play(Unwrite(mse_tex))
 
         self.next_slide()
 
         vector_error_text = Text("Error: [3, 4, 2]").to_edge(UR)
 
         # reveal individual error right here. BIG REVEAL pog
-        self.play(
-            Transform(error_tex, vector_error_text)
-        )
+        self.play(Transform(error_tex, vector_error_text))
 
         self.next_slide()
 
@@ -1806,7 +1816,7 @@ class PushLexicase(Slide):
             Unwrite(bd2),
             Unwrite(line0),
             Unwrite(line1),
-            Unwrite(line2)
+            Unwrite(line2),
         )
 
         self.next_slide()
@@ -1828,14 +1838,70 @@ class PushLexicase(Slide):
             [1, 4, 8, 8, 10],
             [6, 4, 5, 9, 11],
             [3, 4, 8, 2, 1],
+            [1, 1, 1, 1, 1],
             [15, 1, 0, 0, 0],
-            [1, 1, 1, 1, 1]
         ]
-        scores_str: list[list[str]] = [[str(element) for element in row] for row in scores]
+        scores_str: list[list[str]] = [
+            [str(element) for element in row] for row in scores
+        ]
         ind_labels = [Text(f"ind{n}") for n in range(5)]
 
         lexicase_table = Table(scores_str, ind_labels, include_outer_lines=True)
+        # save to show off specialist retention later
+        lexicase_table.save_state()
 
-        self.play(
-            Write(lexicase_table)
+        self.play(Write(lexicase_table))
+
+        self.next_slide()
+
+        # select col 2 for case #1
+        # self.play(lexicase_table.get_columns()[2].animate.set_color(YELLOW))
+        flash_color(lexicase_table.get_columns()[2], YELLOW, self, next_slide=True)
+
+        # disregard other cases that aren't good enough
+        self.play(lexicase_table.get_rows()[3:5].animate.set_color(RED))
+
+        self.next_slide()
+
+        # select col 3 for case #2
+        flash_color(lexicase_table.get_columns()[3][:3], YELLOW, self, next_slide=True)
+
+        self.play(lexicase_table.get_rows()[1].animate.set_color(RED))
+
+        self.next_slide()
+
+        # select col 5 for case #4
+        fifth_column = lexicase_table.get_columns()[5]
+        flash_color(
+            VGroup(fifth_column[0], fifth_column[2]), YELLOW, self, next_slide=True
         )
+
+        self.play(lexicase_table.get_rows()[2].animate.set_color(RED))
+
+        # declare ind 0 the winner
+        self.play(lexicase_table.get_rows()[0].animate.set_color(GREEN))
+
+        self.next_slide()
+
+        # Show off specialist retention here
+        self.play(lexicase_table.animate.restore())
+
+        self.next_slide()
+
+        # select col 1 for case #0
+        flash_color(lexicase_table.get_columns()[1], YELLOW, self, next_slide=True)
+
+        self.play(lexicase_table.get_rows()[0:4].animate.set_color(RED))
+        self.play(lexicase_table.get_rows()[4].animate.set_color(GREEN))
+
+        # Done with lexicase selection
+        self.next_slide()
+
+        self.play(Unwrite(lexicase_table))
+
+        # I think that's done with the presentation too
+        # This is sad. I gotta do some fine tuning of the code but this is it
+        # makes me sad.
+        #
+        # I put around 50 hours of work into these slides. It was worth it.
+        # If anyone else is reading this, I hope this helped understand genetic programming a little bit
