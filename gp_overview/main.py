@@ -236,6 +236,10 @@ class NNSlide(Slide):
         one_two_lines = connect_layers(layer_one, layer_two)
         two_three_lines = connect_layers(layer_two, layer_three)
 
+        # start with an empty slide
+        self.wait()
+        self.next_slide()
+
         self.play(
             Write(layer_one),
             Write(layer_two),
@@ -1658,7 +1662,9 @@ class PushAlternation(Slide):
             .set_opacity(0)
         )
 
-        self.play(Write(parents))
+        alternation_text = Text("Alternation").to_edge(UR)
+
+        self.play(Write(parents), Write(alternation_text))
 
         self.next_slide()
 
@@ -1731,6 +1737,7 @@ class PushAlternation(Slide):
             Unwrite(alt_rate_text),
             Unwrite(top_arrow),
             Unwrite(bottom_arrow),
+            Unwrite(alternation_text),
         )
 
         pseudocode_transition(4, 3, False, True, True, False, self, ptext)
