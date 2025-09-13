@@ -593,7 +593,7 @@ class ECLoopTreeInit(Slide):
         root_text = Text("+", font_size=circle_font_size)
         root_text.move_to(root_node.get_center())
 
-        self.play(Write(root_node), Write(root_text))
+        self.play(Write(root_node), Write(root_text), run_time=0.5)
 
         # end t=1
         # start t=2
@@ -605,38 +605,38 @@ class ECLoopTreeInit(Slide):
         )
         mult_text = Text("*", font_size=circle_font_size)
         mult_text.move_to(mult_node.get_center())
-        self.play(Write(mult_node), Write(mult_text))
+        self.play(Write(mult_node), Write(mult_text), run_time=0.5)
 
         root_mult_line = Line(root_node, mult_node)
-        self.play(Write(root_mult_line))
+        self.play(Write(root_mult_line), run_time=0.5)
 
         # end t=2
         # start t=3
         time3_text = gen_time_text(3)
-        self.play(TransformMatchingShapes(time2_text, time3_text))
+        self.play(TransformMatchingShapes(time2_text, time3_text), run_time=0.5)
 
         x_node = Circle(radius=circle_radius, color=BLUE).next_to(
             mult_node, DOWN + LEFT
         )
         x_text = Text("x", font_size=circle_font_size)
         x_text.move_to(x_node.get_center())
-        self.play(Write(x_node), Write(x_text))
+        self.play(Write(x_node), Write(x_text), run_time=0.5)
 
         mult_x_line = Line(mult_node, x_node)
-        self.play(Write(mult_x_line))
+        self.play(Write(mult_x_line), run_time=0.5)
 
         # end t=3
         # start t=4
         time4_text = gen_time_text(4)
-        self.play(TransformMatchingShapes(time3_text, time4_text))
+        self.play(TransformMatchingShapes(time3_text, time4_text), run_time=0.5)
 
         y_node = Circle(radius=circle_radius, color=BLUE).next_to(mult_node, DOWN * 2)
         y_text = Text("y", font_size=circle_font_size)
         y_text.move_to(y_node.get_center())
-        self.play(Write(y_node), Write(y_text))
+        self.play(Write(y_node), Write(y_text), run_time=0.5)
 
         mult_y_line = Line(mult_node, y_node)
-        self.play(Write(mult_y_line))
+        self.play(Write(mult_y_line), run_time=0.5)
 
         # end t=4
         # start t=5
@@ -648,10 +648,10 @@ class ECLoopTreeInit(Slide):
         )
         div_text = Text("/", font_size=circle_font_size)
         div_text.move_to(div_node.get_center())
-        self.play(Write(div_text), Write(div_node))
+        self.play(Write(div_text), Write(div_node), run_time=0.5)
 
         root_div_line = Line(root_node, div_node)
-        self.play(Write(root_div_line))
+        self.play(Write(root_div_line), run_time=0.5)
 
         # end t=5
         # start t=6
@@ -661,10 +661,10 @@ class ECLoopTreeInit(Slide):
         one_node = Circle(radius=circle_radius, color=BLUE).next_to(div_node, DOWN * 2)
         one_text = Text("1", font_size=circle_font_size)
         one_text.move_to(one_node.get_center())
-        self.play(Write(one_text), Write(one_node))
+        self.play(Write(one_text), Write(one_node), run_time=0.5)
 
         div_one_line = Line(div_node, one_node)
-        self.play(Write(div_one_line))
+        self.play(Write(div_one_line), run_time=0.5)
 
         # end t=6
         # start t=7
@@ -676,10 +676,10 @@ class ECLoopTreeInit(Slide):
         )
         zero_text = Text("0", font_size=circle_font_size)
         zero_text.move_to(zero_node.get_center())
-        self.play(Write(zero_text), Write(zero_node))
+        self.play(Write(zero_text), Write(zero_node), run_time=0.5)
 
         div_zero_line = Line(div_node, zero_node)
-        self.play(Write(div_zero_line))
+        self.play(Write(div_zero_line), run_time=0.5)
 
         self.next_slide()
 
@@ -726,7 +726,7 @@ class ECLoopTreeInit(Slide):
         root_text = Text("+", font_size=circle_font_size)
         root_text.move_to(root_node.get_center())
 
-        self.play(Write(root_node), Write(root_text))
+        self.play(Write(root_node), Write(root_text), run_time=0.5)
 
         # end t=1
         # start t=2
@@ -738,10 +738,10 @@ class ECLoopTreeInit(Slide):
         )
         x_text = Text("x", font_size=circle_font_size)
         x_text.move_to(x_node.get_center())
-        self.play(Write(x_node), Write(x_text))
+        self.play(Write(x_node), Write(x_text), run_time=0.5)
 
         root_x_line = Line(root_node, x_node)
-        self.play(Write(root_x_line))
+        self.play(Write(root_x_line), run_time=0.5)
 
         # end t=2
         # start t=3
@@ -753,10 +753,10 @@ class ECLoopTreeInit(Slide):
         )
         minus_text = Text("-", font_size=circle_font_size)
         minus_text.move_to(minus_node.get_center())
-        self.play(Write(minus_text), Write(minus_node))
+        self.play(Write(minus_text), Write(minus_node), run_time=0.5)
 
         root_minus_line = Line(root_node, minus_node)
-        self.play(Write(root_minus_line))
+        self.play(Write(root_minus_line), run_time=0.5)
 
         # end t=3
         # start t=4 and t=5
@@ -777,8 +777,8 @@ class ECLoopTreeInit(Slide):
         zero_text.move_to(zero_node.get_center())
         minus_zero_line = Line(minus_node, zero_node)
 
-        self.play(Write(one_text), Write(one_node), Write(zero_node), Write(zero_text))
-        self.play(Write(minus_one_line), Write(minus_zero_line))
+        self.play(Write(one_text), Write(one_node), Write(zero_node), Write(zero_text), run_time=0.5)
+        self.play(Write(minus_one_line), Write(minus_zero_line), run_time=0.5)
 
         self.next_slide()
 
