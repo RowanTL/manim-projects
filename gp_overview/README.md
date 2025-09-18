@@ -9,7 +9,7 @@ The presentation takes place on September 18th, 2025 6PM CST @ Tech Artista Cent
 1) Follow the official instructions for !(Manim Community Edition)[https://docs.manim.community/en/stable/installation/uv.html]
 2) `uv venv`
 3) `source .venv/bin/activate` or the appropriate command for your shell.
-4) `uv pip install manim-slides[manim]`
+4) `uv pip install manim-slides[manim] PySide6`
 5) `make render`
 6) `make slides`
 
