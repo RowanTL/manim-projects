@@ -6,19 +6,22 @@ The presentation takes place on September 18th, 2025 6PM CST @ Tech Artista Cent
 
 ## How to build
 
-A venv would be beneficial here. These instructions do not create one. Ensure you are using manim version
-`v0.19.0`.
-
 1) Follow the official instructions for !(Manim Community Edition)[https://docs.manim.community/en/stable/installation/uv.html]
-2) `uv pip install -U manim-slides[manim]`
-3) `make render`
-4) `make slides`
+2) `uv venv`
+3) `source .venv/bin/activate` or the appropriate command for your shell.
+4) `uv pip install manim-slides[manim]`
+5) `make render`
+6) `make slides`
 
 At this point, a Qt looking window should appear with the presentation.
 Use the arrow keys to move from slide to slide.
 
-Note: I've had `step 3` freeze at the end while generating the reverse
+### Notes
+
+I've had `step 3` freeze at the end while generating the reverse
 animations. If this happens, `ctrl+c` then re-run the command.
+
+I'm using manim version 0.19.0.
 
 ### Quirks
 
