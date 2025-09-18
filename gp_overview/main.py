@@ -286,6 +286,8 @@ class NNSlide(Slide):
             Unwrite(two_three_lines),
         )
 
+        self.wait()
+
 
 # Slide 2
 class ShowPopulation(Slide):
@@ -341,6 +343,11 @@ class ShowPopulation(Slide):
                 rrects[3], RoundedRectangle(color=YELLOW).scale(0.5).move_to(rrects[3])
             ),
         )
+
+        self.next_slide()
+
+        self.play(Unwrite(rrects))
+        self.wait()
 
 
 # Slide 3
@@ -406,6 +413,7 @@ class TitleSlide(Slide):
         self.next_slide()
 
         self.play(Unwrite(title), Unwrite(name))
+        self.wait()
 
 
 # Slide 5
@@ -544,6 +552,8 @@ class GeneticProgrammingDescription(Slide):
             Unwrite(big_num_text),
             Unwrite(full_big_num_text),
         )
+
+        self.wait()
 
 
 # Slide 6
@@ -777,7 +787,13 @@ class ECLoopTreeInit(Slide):
         zero_text.move_to(zero_node.get_center())
         minus_zero_line = Line(minus_node, zero_node)
 
-        self.play(Write(one_text), Write(one_node), Write(zero_node), Write(zero_text), run_time=0.5)
+        self.play(
+            Write(one_text),
+            Write(one_node),
+            Write(zero_node),
+            Write(zero_text),
+            run_time=0.5,
+        )
         self.play(Write(minus_one_line), Write(minus_zero_line), run_time=0.5)
 
         self.next_slide()
@@ -1335,6 +1351,7 @@ class PushDescription(Slide):
             Unwrite(exec_1),
             Transform(float_zero, Text("0").next_to(add_group, UP, buff=0.5)),
         )
+        self.wait()
 
         self.next_slide()
 
@@ -1368,6 +1385,7 @@ class PushDescription(Slide):
         )
         self.next_slide()
         self.play(Transform(div_group, div_group_copy), Unwrite(exec_0))
+        self.wait()
         self.next_slide()
         self.play(
             Unwrite(div_group),
@@ -1375,6 +1393,7 @@ class PushDescription(Slide):
             Unwrite(stack_groups),
             Unwrite(str_example),
         )
+        self.wait()
 
 
 # Slide 11
@@ -1448,6 +1467,7 @@ class PushGenome(Slide):
             Unwrite(genome[0]),
             genome[1].animate.next_to(exec_stack_copy, UP * 0.5),
         )
+        self.wait()
 
         self.next_slide()
 
@@ -1512,7 +1532,7 @@ class PushUMAD(Slide):
         self.next_slide()
 
         # random chance for addition failed
-        flash_color(wall, RED, self)
+        flash_color(wall, RED, self, next_slide=True)
 
         self.next_slide()
 
@@ -1524,7 +1544,7 @@ class PushUMAD(Slide):
         self.next_slide()
 
         # random chance for insertion infront has succeeded
-        flash_color(wall, GREEN, self)
+        flash_color(wall, GREEN, self, next_slide=True)
 
         self.next_slide()
 
@@ -1548,11 +1568,12 @@ class PushUMAD(Slide):
         self.next_slide()
 
         # chance for addition failed here too
-        flash_color(wall, RED, self)
+        flash_color(wall, RED, self, next_slide=True)
 
         self.next_slide()
 
         self.play(Unwrite(arrow), Unwrite(wall))
+        self.wait()
 
         self.next_slide()
 
@@ -1622,6 +1643,8 @@ class PushUMAD(Slide):
             Unwrite(umad_text),
             Unwrite(umad_deletion),
         )
+
+        self.wait()
 
 
 # Slide 13
@@ -1747,7 +1770,7 @@ class PushAlternation(Slide):
 class PushLexicase(Slide):
     def construct(self):
         ptext = pseudocode_transition(
-            3, 3, True, False, True, True, self, add_text=True
+            3, 3, True, False, True, True, self, add_text=True, pause_after=False
         )
 
         # first: think about error functions in general
@@ -1798,6 +1821,7 @@ class PushLexicase(Slide):
         self.next_slide()
 
         self.play(Unwrite(mse_tex))
+        self.wait()
 
         self.next_slide()
 
@@ -1825,15 +1849,13 @@ class PushLexicase(Slide):
             Unwrite(line1),
             Unwrite(line2),
         )
-
-        self.next_slide()
-
-        self.play(Unwrite(error_tex))
+        self.wait()
 
         self.next_slide()
 
         # Don't need this anymore
-        self.play(Unwrite(ptext))
+        self.play(Unwrite(error_tex), Unwrite(ptext))
+        self.wait()
 
         self.next_slide()
 
@@ -1856,8 +1878,11 @@ class PushLexicase(Slide):
         lexicase_table = Table(scores_str, ind_labels, include_outer_lines=True)
         # save to show off specialist retention later
         lexicase_table.save_state()
+        lexicase_label = Text("Lexicase Selection", font_size=CIRCLE_FONT_SIZE).next_to(
+            lexicase_table, UP
+        )
 
-        self.play(Write(lexicase_table))
+        self.play(Write(lexicase_table), Write(lexicase_label))
 
         self.next_slide()
 
@@ -1904,7 +1929,8 @@ class PushLexicase(Slide):
         # Done with lexicase selection
         self.next_slide()
 
-        self.play(Unwrite(lexicase_table))
+        self.play(Unwrite(lexicase_table), Unwrite(lexicase_label))
+        self.wait()
 
         # I think that's done with the presentation too
         # This is sad. I gotta do some fine tuning of the code but this is it
