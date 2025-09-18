@@ -1212,7 +1212,7 @@ class ECLoopGenChildren(Slide):
 
         root_node = create_node("+").move_to(UP * 3)
         x_node = create_node("x").next_to(root_node, DOWN + LEFT)
-        replace_node = create_node("3", color=RED).next_to(root_node, DOWN + RIGHT)
+        replace_node = create_node("3", color=YELLOW).next_to(root_node, DOWN + RIGHT)
         root_x_line = Line(root_node, x_node)
         root_replace_line = Line(root_node, replace_node)
 
