@@ -3,7 +3,7 @@ from manim_slides.slide import Slide
 from typing import Final
 
 QUOTE: Final[str] = r"Surivival of the Fittest"
-AUTHOR: Final[str] = "-Anne Frank"
+AUTHOR: Final[str] = "-Charles Darwin"
 AUTHOR_FONT_SIZE: Final[int] = 30
 
 
