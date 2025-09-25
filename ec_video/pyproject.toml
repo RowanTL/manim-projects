@@ -1,0 +1,7 @@
+[project]
+name = "ec-video"
+version = "0.1.0"
+description = "A visual explanation of evolutionary computing"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
