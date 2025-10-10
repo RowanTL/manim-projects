@@ -1,6 +1,5 @@
-def main():
-    print("Hello from rodrigues-formula-short!")
+from manim import *
 
-
-if __name__ == "__main__":
-    main()
+class FormulaScene(Scene):
+    def construct(self):
+        pass
