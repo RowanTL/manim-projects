@@ -27,4 +27,5 @@ class Rotation(ThreeDScene):
         self.begin_3dillusion_camera_rotation(rate=2)
         self.wait(PI / 2)
         self.stop_3dillusion_camera_rotation()
+        self.play(Rotate(arrow, PI / 2, Z_AXIS, about_point=ORIGIN))
         self.play(FadeOut(axes), FadeOut(arrow))
