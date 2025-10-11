@@ -17,11 +17,11 @@ class FormulaScene(Scene):
         n_hat: MathTex = (
             MathTex(
                 r"\mathbf{[\hat n]}_\times = "
-                r"\begin{pmatrix}"
+                r"\begin{bmatrix}"
                 r"0 & -\hat n_z & \hat n_y \\"
                 r"\hat n_z & 0 & -\hat n_x \\"
                 r"-\hat n_y & \hat n_x & 0"
-                r"\end{pmatrix}"
+                r"\end{bmatrix}"
             )
             .scale(0.5)
             .next_to(rodrigues_formula, DOWN)
