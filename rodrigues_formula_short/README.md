@@ -1,0 +1,18 @@
+# Overview
+
+This is a short I'd like to upload speaking over the basics of Rodrigues' formula
+
+Not sure when this is gonna be uploaded.
+
+It is possible to make short form content with manim.
+
+## How to build
+
+1) Follow the official instructions for !(Manim Community Edition)[https://docs.manim.community/en/stable/installation/uv.html]
+2) `uv venv`
+3) `source .venv/bin/activate` or the appropriate command for your shell.
+4) `uv pip install manim`
+5) `todo` will probably set up a make file eventually
+### Notes
+
+I'm using manim version 0.19.0.
