@@ -13,6 +13,19 @@ It is possible to make short form content with manim.
 3) `source .venv/bin/activate` or the appropriate command for your shell.
 4) `uv pip install manim`
 5) `todo` will probably set up a make file eventually
+
 ### Notes
 
 I'm using manim version 0.19.0.
+
+## Outline of the video
+
+- Start by showing the equation
+  - Show it in action first and then move onto the derivation
+  - Stick with the book's version
+  - Show what [n_\times] looks like
+- Show an example of the equation in action with a simple 3D matrix
+  - Illustrate rotation somehow
+    - Draw a circle with theta following it perhaps
+  - Maybe rotate `PI / 2` or `3PI / 2` if crazy
+- Then show math book derivation for those who are interested
