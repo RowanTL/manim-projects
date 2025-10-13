@@ -20,6 +20,7 @@ def compute_rodrigues(
         npt.NDArray[np.integer | np.floating],  # n_mat_sq
         npt.NDArray[np.integer | np.floating],  # sin_n_mat
         npt.NDArray[np.integer | np.floating],  # cos_n_mat_sq
+        npt.NDArray[np.integer | np.floating],  # rot_mat
         npt.NDArray[np.integer | np.floating],  # u
     ]
 ):
@@ -40,6 +41,7 @@ def compute_rodrigues(
             npt.NDArray[np.integer | np.floating],  # n_mat_sq
             npt.NDArray[np.integer | np.floating],  # sin_n_mat
             npt.NDArray[np.integer | np.floating],  # cos_n_mat_sq
+            npt.NDArray[np.integer | np.floating],  # rot_mat
             npt.NDArray[np.integer | np.floating],  # u
         ]
     """
@@ -53,9 +55,10 @@ def compute_rodrigues(
     sin_n_mat = np.sin(theta) * n_mat
     cos_n_mat_sq = (1 - np.cos(theta)) * n_mat_sq
 
-    u = np.matmul(v, (identity + sin_n_mat + cos_n_mat_sq))
+    rot_matrix = identity + sin_n_mat + cos_n_mat_sq
+    u = np.matmul(v, rot_matrix)
     if return_steps:
-        return (identity, n_mat, n_mat_sq, sin_n_mat, cos_n_mat_sq, u)
+        return (identity, n_mat, n_mat_sq, sin_n_mat, cos_n_mat_sq, rot_matrix, u)
     else:
         return u
 
@@ -178,9 +181,9 @@ class DoTheMathScene(ThreeDScene):
             .to_edge(UL)
         )
         theta_tex = (
-            MathTex(r"\theta = \pi / 2", color=YELLOW).scale(GLOBAL_SCALE).to_edge(UP)
+            MathTex(r"\theta = -\pi / 2", color=YELLOW).scale(GLOBAL_SCALE).to_edge(UP)
         )
-        theta = PI / 2
+        theta = -PI / 2
         self.add_fixed_orientation_mobjects(v_text, axis_rotation_text, theta_tex)
         self.add_fixed_in_frame_mobjects(v_text, axis_rotation_text, theta_tex)
 
@@ -200,8 +203,8 @@ class DoTheMathScene(ThreeDScene):
         self.play(Write(rotation_arc))
 
         # calculate the full rodrigues transformation
-        (identity, n_mat, n_mat_sq, sin_n_mat, cos_n_mat_sq, u) = compute_rodrigues(
-            np.array(v), np.array(axis_of_rotation), theta, True
+        (identity, n_mat, n_mat_sq, sin_n_mat, cos_n_mat_sq, rot_mat, u) = (
+            compute_rodrigues(np.array(v), np.array(axis_of_rotation), theta, True)
         )
         # show n_mat
         n_mat_matrix = Matrix(n_mat).scale(GLOBAL_SCALE).move_to(UP * 2)
@@ -227,6 +230,81 @@ class DoTheMathScene(ThreeDScene):
         self.add_fixed_in_frame_mobjects(n_sq_equal_tex, n_sq_mat_matrix)
         self.play(Write(n_sq_equal_tex), Write(n_sq_mat_matrix), run_time=0.5)
         self.wait()
+        # show sin(theta) * n_mat
+        sin_n_mat_matrix = Matrix(sin_n_mat).scale(GLOBAL_SCALE).move_to(UP * 2)
+        sin_n_equal_tex = (
+            MathTex(r"\sin{{\theta}}\mathbf{[\hat{n}]}_\times = ")
+            .scale(GLOBAL_SCALE)
+            .next_to(sin_n_mat_matrix, LEFT * 0.75)
+        ).set_color_by_tex(r"\theta", YELLOW)
+        self.play(Unwrite(n_sq_equal_tex), Unwrite(n_sq_mat_matrix), run_time=0.5)
+        self.add_fixed_orientation_mobjects(sin_n_mat_matrix, sin_n_equal_tex)
+        self.add_fixed_in_frame_mobjects(sin_n_mat_matrix, sin_n_equal_tex)
+        self.play(Write(sin_n_mat_matrix), Write(sin_n_equal_tex), run_time=0.5)
+        self.wait()
+        # show (1 - cos(theta)) * n_mat_sq
+        cos_n_mat_sq_matrix = (
+            Matrix(sin_n_mat).scale(GLOBAL_SCALE).move_to(UP * 2 + RIGHT)
+        )
+        cos_n_sq_equal_tex = (
+            MathTex(r"(1 - \cos{{\theta}})\mathbf{[\hat{n}]}_\times^2 = ")
+            .scale(GLOBAL_SCALE)
+            .next_to(cos_n_mat_sq_matrix, LEFT * 0.75)
+        ).set_color_by_tex(r"\theta", YELLOW)
+        self.play(Unwrite(sin_n_mat_matrix), Unwrite(sin_n_equal_tex), run_time=0.5)
+        self.add_fixed_orientation_mobjects(cos_n_mat_sq_matrix, cos_n_sq_equal_tex)
+        self.add_fixed_in_frame_mobjects(cos_n_mat_sq_matrix, cos_n_sq_equal_tex)
+        self.play(Write(cos_n_mat_sq_matrix), Write(cos_n_sq_equal_tex), run_time=0.5)
+        self.wait()
+        # show the addition of the Identity + sin_n_mat + cos_n_mat_sq
+        rot_tex: MathTex = (
+            MathTex(
+                r"I + \sin{{\theta}} [\mathbf{\hat{n}}]_\times + (1 - \cos{{\theta}})"
+            )
+            .scale(GLOBAL_SCALE)
+            .move_to(UP * 2)
+            .set_color_by_tex(r"\theta", YELLOW)
+        )
+        self.play(
+            Unwrite(cos_n_mat_sq_matrix), Unwrite(cos_n_sq_equal_tex), run_time=0.5
+        )
+        self.add_fixed_orientation_mobjects(rot_tex)
+        self.add_fixed_in_frame_mobjects(rot_tex)
+        self.play(Write(rot_tex), run_time=0.5)
+        self.wait()
+        # transform rot_tex into rot_matrix
+        rot_mat_matrix = (
+            Matrix(rot_mat.astype(np.int64)).scale(GLOBAL_SCALE).move_to(UP * 2)
+        )
+        self.play(Unwrite(rot_tex), run_time=0.5)
+        self.add_fixed_orientation_mobjects(rot_mat_matrix)
+        self.add_fixed_in_frame_mobjects(rot_mat_matrix)
+        self.play(Write(rot_mat_matrix), run_time=0.5)
+        self.wait()
+        # multiply rot_mat by v
+        blue_v = (
+            MathTex(r"{{v}} \cdot")
+            .scale(GLOBAL_SCALE)
+            .next_to(rot_mat_matrix, LEFT * 0.75)
+        ).set_color_by_tex(r"v", BLUE)
+        self.add_fixed_orientation_mobjects(blue_v)
+        self.add_fixed_in_frame_mobjects(blue_v)
+        self.play(Write(blue_v))
+        self.wait()
+        self.play(Unwrite(blue_v), Unwrite(rot_mat_matrix), run_time=0.5)
+        # Convert blue_v and rot_mat_matrix into final green u vector
+        u_tex = (
+            MathTex(r"\mathbf{u} = " + str(u.astype(np.int64).tolist()))
+            .scale(GLOBAL_SCALE)
+            .move_to(UP * 2)
+        ).set_color_by_tex("u", GREEN)
+        self.add_fixed_orientation_mobjects(u_tex)
+        self.add_fixed_in_frame_mobjects(u_tex)
+        self.play(Write(u_tex), run_time=0.5)
+        self.wait()
+        # show u vector
+        u_arrow = Arrow3D(axes.c2p(0, 0, 0), axes.c2p(*u), color=GREEN)
+        self.play(FadeIn(u_arrow), run_time=0.5)
         # Destroy the entire scene
         self.play(
             FadeOut(axes),
