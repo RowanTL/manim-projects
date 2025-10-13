@@ -60,6 +60,7 @@ def compute_rodrigues(
         return u
 
 
+# unused function
 def mat_to_mathtex(
     arr: list[list[int | float]] | npt.NDArray[npt.NDArray[np.floating | np.integer]],
 ) -> str:
@@ -205,7 +206,7 @@ class DoTheMathScene(ThreeDScene):
         # show n_mat
         n_mat_matrix = Matrix(n_mat).scale(GLOBAL_SCALE).move_to(UP * 2)
         n_equal_tex = (
-            MathTex(r"\mathbf{\hat{n}} = ")
+            MathTex(r"\mathbf{[\hat{n}]}_\times = ")
             .scale(GLOBAL_SCALE)
             .next_to(n_mat_matrix, LEFT * 0.75)
         )
@@ -213,9 +214,20 @@ class DoTheMathScene(ThreeDScene):
         self.add_fixed_in_frame_mobjects(n_equal_tex, n_mat_matrix)
         self.play(Write(n_equal_tex), Write(n_mat_matrix))
         self.wait()
-        self.play(Unwrite(n_equal_tex), Unwrite(n_mat_matrix))
-        # Destroy the entire scene
+        # show n_mat_sq
+        #   transform n_equal_tex and n_mat_matrix into the squared equivalent
+        n_sq_mat_matrix = Matrix(n_mat_sq).scale(GLOBAL_SCALE).move_to(UP * 2)
+        n_sq_equal_tex = (
+            MathTex(r"\mathbf{[\hat{n}]}_\times^2 = ")
+            .scale(GLOBAL_SCALE)
+            .next_to(n_sq_mat_matrix, LEFT * 0.75)
+        )
+        self.play(Unwrite(n_equal_tex), Unwrite(n_mat_matrix), run_time=0.5)
+        self.add_fixed_orientation_mobjects(n_sq_equal_tex, n_sq_mat_matrix)
+        self.add_fixed_in_frame_mobjects(n_sq_equal_tex, n_sq_mat_matrix)
+        self.play(Write(n_sq_equal_tex), Write(n_sq_mat_matrix), run_time=0.5)
         self.wait()
+        # Destroy the entire scene
         self.play(
             FadeOut(axes),
             FadeOut(rotation_arrow),
