@@ -5,6 +5,7 @@ slides
 
 # Python
 *.pyc
+__pycache__
 
 # Jetbrains
 .idea
