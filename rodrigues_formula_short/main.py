@@ -282,7 +282,7 @@ class DoTheMathSlide(ThreeDSlide):
         self.add_fixed_orientation_mobjects(rot_mat_matrix)
         self.add_fixed_in_frame_mobjects(rot_mat_matrix)
         self.play(Write(rot_mat_matrix), run_time=0.5)
-        self.next_slide()
+        self.slide()
         # multiply rot_mat by v
         blue_v = (
             MathTex(r"{{v}} \cdot")
