@@ -122,7 +122,7 @@ class FormulaSlide(Slide):
         self.play(
             Write(rodrigues_formula), Write(n_hat), Write(rodrigues_text), run_time=2
         )
-        self.wait()
+        self.next_slide()
         self.play(
             Unwrite(rodrigues_formula),
             Unwrite(n_hat),
@@ -143,16 +143,17 @@ class RotationSlide(ThreeDSlide):
             end=main_vec,
             color=BLUE,
         )
-        self.play(FadeIn(axes), FadeIn(arrow))
+        self.play(FadeIn(axes), FadeIn(arrow), run_time=0.5)
         self.begin_3dillusion_camera_rotation(rate=2)
         self.wait(PI / 2)
         self.stop_3dillusion_camera_rotation()
         angle_arc = Arc(
             radius=2.0 * GLOBAL_SCALE, start_angle=-PI / 2, angle=PI / 2, color=YELLOW
         )
-        self.play(Write(angle_arc))
-        self.play(Rotate(arrow, PI / 2, Z_AXIS, about_point=ORIGIN))
-        self.play(FadeOut(axes), FadeOut(arrow))
+        self.play(Write(angle_arc), run_time=0.5)
+        self.next_slide()
+        self.play(Rotate(arrow, PI / 2, Z_AXIS, about_point=ORIGIN), run_time=0.5)
+        self.play(FadeOut(axes), FadeOut(arrow), run_time=0.5)
 
 
 class DoTheMathSlide(ThreeDSlide):
@@ -217,7 +218,7 @@ class DoTheMathSlide(ThreeDSlide):
         self.add_fixed_orientation_mobjects(n_equal_tex, n_mat_matrix)
         self.add_fixed_in_frame_mobjects(n_equal_tex, n_mat_matrix)
         self.play(Write(n_equal_tex), Write(n_mat_matrix))
-        self.wait()
+        self.next_slide()
         # show n_mat_sq
         #   transform n_equal_tex and n_mat_matrix into the squared equivalent
         n_sq_mat_matrix = Matrix(n_mat_sq).scale(GLOBAL_SCALE).move_to(UP * 2)
@@ -230,7 +231,7 @@ class DoTheMathSlide(ThreeDSlide):
         self.add_fixed_orientation_mobjects(n_sq_equal_tex, n_sq_mat_matrix)
         self.add_fixed_in_frame_mobjects(n_sq_equal_tex, n_sq_mat_matrix)
         self.play(Write(n_sq_equal_tex), Write(n_sq_mat_matrix), run_time=0.5)
-        self.wait()
+        self.next_slide()
         # show sin(theta) * n_mat
         sin_n_mat_matrix = Matrix(sin_n_mat).scale(GLOBAL_SCALE).move_to(UP * 2)
         sin_n_equal_tex = (
@@ -242,7 +243,7 @@ class DoTheMathSlide(ThreeDSlide):
         self.add_fixed_orientation_mobjects(sin_n_mat_matrix, sin_n_equal_tex)
         self.add_fixed_in_frame_mobjects(sin_n_mat_matrix, sin_n_equal_tex)
         self.play(Write(sin_n_mat_matrix), Write(sin_n_equal_tex), run_time=0.5)
-        self.wait()
+        self.next_slide()
         # show (1 - cos(theta)) * n_mat_sq
         cos_n_mat_sq_matrix = (
             Matrix(sin_n_mat).scale(GLOBAL_SCALE).move_to(UP * 2 + RIGHT)
@@ -256,7 +257,7 @@ class DoTheMathSlide(ThreeDSlide):
         self.add_fixed_orientation_mobjects(cos_n_mat_sq_matrix, cos_n_sq_equal_tex)
         self.add_fixed_in_frame_mobjects(cos_n_mat_sq_matrix, cos_n_sq_equal_tex)
         self.play(Write(cos_n_mat_sq_matrix), Write(cos_n_sq_equal_tex), run_time=0.5)
-        self.wait()
+        self.next_slide()
         # show the addition of the Identity + sin_n_mat + cos_n_mat_sq
         rot_tex: MathTex = (
             MathTex(
@@ -272,7 +273,7 @@ class DoTheMathSlide(ThreeDSlide):
         self.add_fixed_orientation_mobjects(rot_tex)
         self.add_fixed_in_frame_mobjects(rot_tex)
         self.play(Write(rot_tex), run_time=0.5)
-        self.wait()
+        self.next_slide()
         # transform rot_tex into rot_matrix
         rot_mat_matrix = (
             Matrix(rot_mat.astype(np.int64)).scale(GLOBAL_SCALE).move_to(UP * 2)
@@ -281,7 +282,7 @@ class DoTheMathSlide(ThreeDSlide):
         self.add_fixed_orientation_mobjects(rot_mat_matrix)
         self.add_fixed_in_frame_mobjects(rot_mat_matrix)
         self.play(Write(rot_mat_matrix), run_time=0.5)
-        self.wait()
+        self.slide()
         # multiply rot_mat by v
         blue_v = (
             MathTex(r"{{v}} \cdot")
@@ -291,7 +292,7 @@ class DoTheMathSlide(ThreeDSlide):
         self.add_fixed_orientation_mobjects(blue_v)
         self.add_fixed_in_frame_mobjects(blue_v)
         self.play(Write(blue_v))
-        self.wait()
+        self.next_slide()
         self.play(Unwrite(blue_v), Unwrite(rot_mat_matrix), run_time=0.5)
         # Convert blue_v and rot_mat_matrix into final green u vector
         u_tex = (
@@ -302,7 +303,7 @@ class DoTheMathSlide(ThreeDSlide):
         self.add_fixed_orientation_mobjects(u_tex)
         self.add_fixed_in_frame_mobjects(u_tex)
         self.play(Write(u_tex), run_time=0.5)
-        self.wait()
+        self.next_slide()
         # show u vector
         u_arrow = Arrow3D(axes.c2p(0, 0, 0), axes.c2p(*u), color=GREEN)
         self.play(FadeIn(u_arrow), run_time=0.5)
