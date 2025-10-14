@@ -128,6 +128,7 @@ class FormulaScene(Scene):
             Unwrite(rodrigues_text),
             run_time=2,
         )
+        self.wait(0.5)
 
 
 class RotationScene(ThreeDScene):
@@ -151,7 +152,8 @@ class RotationScene(ThreeDScene):
         )
         self.play(Write(angle_arc))
         self.play(Rotate(arrow, PI / 2, Z_AXIS, about_point=ORIGIN))
-        self.play(FadeOut(axes), FadeOut(arrow))
+        self.play(FadeOut(axes), FadeOut(arrow), FadeOut(angle_arc))
+        self.wait(0.5)
 
 
 class DoTheMathScene(ThreeDScene):
@@ -244,7 +246,7 @@ class DoTheMathScene(ThreeDScene):
         self.wait()
         # show (1 - cos(theta)) * n_mat_sq
         cos_n_mat_sq_matrix = (
-            Matrix(sin_n_mat).scale(GLOBAL_SCALE).move_to(UP * 2 + RIGHT)
+            Matrix(np.rint(cos_n_mat_sq)).scale(GLOBAL_SCALE).move_to(UP * 2 + RIGHT)
         )
         cos_n_sq_equal_tex = (
             MathTex(r"(1 - \cos{{\theta}})\mathbf{[\hat{n}]}_\times^2 = ")
@@ -254,7 +256,7 @@ class DoTheMathScene(ThreeDScene):
         self.play(Unwrite(sin_n_mat_matrix), Unwrite(sin_n_equal_tex), run_time=0.5)
         self.add_fixed_orientation_mobjects(cos_n_mat_sq_matrix, cos_n_sq_equal_tex)
         self.add_fixed_in_frame_mobjects(cos_n_mat_sq_matrix, cos_n_sq_equal_tex)
-        self.play(Write(cos_n_mat_sq_matrix), Write(cos_n_sq_equal_tex), run_time=0.5)
+        self.play(Write(cos_n_mat_sq_matrix), Write(cos_n_sq_equal_tex), run_time=0.75)
         self.wait()
         # show the addition of the Identity + sin_n_mat + cos_n_mat_sq
         rot_tex: MathTex = (
@@ -266,7 +268,7 @@ class DoTheMathScene(ThreeDScene):
             .set_color_by_tex(r"\theta", YELLOW)
         )
         self.play(
-            Unwrite(cos_n_mat_sq_matrix), Unwrite(cos_n_sq_equal_tex), run_time=0.5
+            Unwrite(cos_n_mat_sq_matrix), Unwrite(cos_n_sq_equal_tex), run_time=0.75
         )
         self.add_fixed_orientation_mobjects(rot_tex)
         self.add_fixed_in_frame_mobjects(rot_tex)
@@ -314,4 +316,7 @@ class DoTheMathScene(ThreeDScene):
             Unwrite(axis_rotation_text),
             Unwrite(theta_tex),
             Unwrite(rotation_arc),
+            FadeOut(u_arrow),
+            Unwrite(u_tex),
         )
+        self.wait(0.5)
