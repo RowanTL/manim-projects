@@ -1,5 +1,4 @@
 from manim import *
-from manim_slides.slide import Slide, ThreeDSlide
 from typing import Final
 import numpy as np
 import numpy.typing as npt
@@ -91,7 +90,7 @@ if __name__ == "__main__":
     print(compute_rodrigues(v, n, theta))
 
 
-class FormulaSlide(Slide):
+class FormulaScene(Scene):
     def construct(self):
         rodrigues_formula: MathTex = (
             # cool little trick to make subgroups is to use {{}}
@@ -131,7 +130,7 @@ class FormulaSlide(Slide):
         )
 
 
-class RotationSlide(ThreeDSlide):
+class RotationScene(ThreeDScene):
     def construct(self):
         axes = ThreeDAxes(X_RANGE, Y_RANGE, Z_RANGE).scale(GLOBAL_SCALE)
         self.set_camera_orientation(phi=75 * DEGREES, theta=-45 * DEGREES)
@@ -155,7 +154,7 @@ class RotationSlide(ThreeDSlide):
         self.play(FadeOut(axes), FadeOut(arrow))
 
 
-class DoTheMathSlide(ThreeDSlide):
+class DoTheMathScene(ThreeDScene):
     def construct(self):
         # n_hat in the formula
         axes = (

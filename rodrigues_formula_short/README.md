@@ -11,10 +11,8 @@ It is possible to make short form content with manim.
 1) Follow the official instructions for !(Manim Community Edition)[https://docs.manim.community/en/stable/installation/uv.html]
 2) `uv venv`
 3) `source .venv/bin/activate` or the appropriate command for your shell.
-4) `uv pip install manim manim-slides[manim]`
-5) `make render` (does this by default with just `make`)
-6) `make slides`
-7) (Optional) `make clean` to get rid of any files when done
+4) `uv pip install manim`
+5) `todo` will probably set up a make file eventually
 
 ### Notes
 
