@@ -6,13 +6,15 @@ Not sure when this is gonna be uploaded.
 
 It is possible to make short form content with manim.
 
+Video is live at ![https://www.youtube.com/watch?v=NUVZflqQz-o](https://www.youtube.com/watch?v=NUVZflqQz-o)
+
 ## How to build
 
-1) Follow the official instructions for !(Manim Community Edition)[https://docs.manim.community/en/stable/installation/uv.html]
+1) Follow the official instructions for ![Manim Community Edition](https://docs.manim.community/en/stable/installation/uv.html)
 2) `uv venv`
 3) `source .venv/bin/activate` or the appropriate command for your shell.
 4) `uv pip install manim`
-5) `todo` will probably set up a make file eventually
+5) `make slides` and `make render`
 
 ### Notes
 
