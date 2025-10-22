@@ -5,6 +5,7 @@ from typing import Final
 SIN_FUNC_SCALING_FACTOR: Final[float] = 0.2
 AXES_RANGE: Final[list[int]] = [-4, 4]
 GLOBAL_SCALE: Final[float] = 0.45
+GLOBAL_RUN_TIME: Final[float] = 0.75
 
 
 def sin_func(x, y):
@@ -25,6 +26,7 @@ def normal_func(x, y):
 
 class SinSurface(ThreeDScene):
     def construct(self):
+        # create axis, surface, and set camrea orientation
         axes = ThreeDAxes(
             x_range=AXES_RANGE, y_range=AXES_RANGE, x_length=8, y_length=8
         ).scale(GLOBAL_SCALE)
@@ -36,6 +38,25 @@ class SinSurface(ThreeDScene):
             fill_opacity=0.7,
         )
         self.set_camera_orientation(theta=70 * DEGREES, phi=75 * DEGREES)
-        self.play(FadeIn(axes), FadeIn(surface))
+
+        # create surface equation text
+        sin_func_tex = (
+            MathTex(r"z = 0.2\sin(x^2 + y^2)", color=BLUE)
+            .scale(GLOBAL_SCALE)
+            .to_edge(UP)
+        )
+        self.add_fixed_orientation_mobjects(sin_func_tex)
+        self.add_fixed_in_frame_mobjects(sin_func_tex)
+
+        # Fade the axis, surface, and equation in
+        self.play(
+            FadeIn(axes), FadeIn(surface), Write(sin_func_tex), run_time=GLOBAL_RUN_TIME
+        )
         self.wait()
-        self.play(FadeOut(axes), FadeOut(surface))
+
+        self.play(
+            FadeOut(axes),
+            FadeOut(surface),
+            Unwrite(sin_func_tex),
+            run_time=GLOBAL_RUN_TIME,
+        )
