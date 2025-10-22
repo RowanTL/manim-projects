@@ -45,14 +45,25 @@ class SinSurface(ThreeDScene, VoiceoverScene):
             .scale(GLOBAL_SCALE)
             .to_edge(UP)
         )
-        self.add_fixed_orientation_mobjects(sin_func_tex)
-        self.add_fixed_in_frame_mobjects(sin_func_tex)
 
         # Fade the axis, surface, and equation in
         self.add_sound("voiceover/fade_a_s_e_in.wav")
-        self.play(FadeIn(axes), FadeIn(surface), Write(sin_func_tex), run_time=1.2)
+        self.play(FadeIn(axes), FadeIn(surface))
+        self.add_fixed_orientation_mobjects(sin_func_tex)
+        self.add_fixed_in_frame_mobjects(sin_func_tex)
+        self.play(Write(sin_func_tex))
         self.wait()
 
+        # show a sphere representing the sun somewhere in the world
+        sun = Sphere(center=axes.c2p(3, -3, 3), radius=0.2).set_color(YELLOW)
+        self.add_sound("voiceover/sun_sphere.wav")
+        self.play(FadeIn(sun))
+        sun_rays = []
+        for num in range(5):
+            sun_rays.append(Arrow3D(start = sun.get_center(), end=np.array([1])))
+        self.wait(3)
+
+        # Remove everything from the scene
         self.play(
             FadeOut(axes),
             FadeOut(surface),
