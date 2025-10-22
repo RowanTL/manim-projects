@@ -1,11 +1,11 @@
 from manim import *
+from manim_voiceover import VoiceoverScene
 import numpy as np
 from typing import Final
 
 SIN_FUNC_SCALING_FACTOR: Final[float] = 0.2
 AXES_RANGE: Final[list[int]] = [-4, 4]
 GLOBAL_SCALE: Final[float] = 0.45
-GLOBAL_RUN_TIME: Final[float] = 0.75
 
 
 def sin_func(x, y):
@@ -24,7 +24,7 @@ def normal_func(x, y):
     return (-1 * partial_x(x, y), -1 * partial_y(x, y), 1)
 
 
-class SinSurface(ThreeDScene):
+class SinSurface(ThreeDScene, VoiceoverScene):
     def construct(self):
         # create axis, surface, and set camrea orientation
         axes = ThreeDAxes(
@@ -41,7 +41,7 @@ class SinSurface(ThreeDScene):
 
         # create surface equation text
         sin_func_tex = (
-            MathTex(r"z = 0.2\sin(x^2 + y^2)", color=BLUE)
+            MathTex(r"z = \frac{1}{5}\sin(x^2 + y^2)", color=BLUE)
             .scale(GLOBAL_SCALE)
             .to_edge(UP)
         )
@@ -49,14 +49,14 @@ class SinSurface(ThreeDScene):
         self.add_fixed_in_frame_mobjects(sin_func_tex)
 
         # Fade the axis, surface, and equation in
-        self.play(
-            FadeIn(axes), FadeIn(surface), Write(sin_func_tex), run_time=GLOBAL_RUN_TIME
-        )
+        self.add_sound("voiceover/fade_a_s_e_in.wav")
+        self.play(FadeIn(axes), FadeIn(surface), Write(sin_func_tex), run_time=1.2)
         self.wait()
 
         self.play(
             FadeOut(axes),
             FadeOut(surface),
             Unwrite(sin_func_tex),
-            run_time=GLOBAL_RUN_TIME,
+            run_time=1.2,
         )
+        self.wait()
