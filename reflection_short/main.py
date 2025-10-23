@@ -4,8 +4,8 @@ import numpy as np
 from typing import Final
 
 SIN_FUNC_SCALING_FACTOR: Final[float] = 0.2
-AXES_RANGE: Final[list[int]] = [-4, 4]
-GLOBAL_SCALE: Final[float] = 0.45
+AXES_RANGE: Final[list[int]] = [-3, 3]
+GLOBAL_SCALE: Final[float] = 0.55
 
 
 def sin_func(x, y):
@@ -54,20 +54,26 @@ class SinSurface(ThreeDScene, VoiceoverScene):
         self.play(Write(sin_func_tex))
         self.wait()
 
-        # show a sphere representing the sun somewhere in the world
+        # show a sphere representing the sun somewhere in the world with rays
         sun = Sphere(center=axes.c2p(3, -3, 3), radius=0.2).set_color(YELLOW)
         self.add_sound("voiceover/sun_sphere.wav")
         self.play(FadeIn(sun))
-        sun_rays = []
-        for num in range(5):
-            sun_rays.append(Arrow3D(start = sun.get_center(), end=np.array([1])))
-        self.wait(3)
+        sun_rays = VGroup(
+            Arrow3D(start=sun.get_center(), end=axes.c2p(0, -3, 3), color=YELLOW),
+            Arrow3D(start=sun.get_center(), end=axes.c2p(0, -3, 0), color=YELLOW),
+            Arrow3D(start=sun.get_center(), end=axes.c2p(3, 0, 0), color=YELLOW),
+            Arrow3D(start=sun.get_center(), end=axes.c2p(0, 0, 0), color=YELLOW),
+        )
+        self.play(FadeIn(sun_rays))
+        self.wait()
+        self.play(FadeOut(sun_rays))
 
         # Remove everything from the scene
         self.play(
             FadeOut(axes),
             FadeOut(surface),
             Unwrite(sin_func_tex),
+            FadeOut(sun),
             run_time=1.2,
         )
         self.wait()
