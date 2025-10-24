@@ -99,27 +99,27 @@ class SinSurface(ThreeDScene):
         self.wait(2)
         # x never changes, so no need to track that
         # current_point_y = ValueTracker(1.5)
-        point_path: ParametricFunction = ParametricFunction(
-            lambda t: axes.c2p(*parametric_sin_func(t)),
-            t_range=(1.5, -1.5),
-        ).set_opacity(0)
-        current_point_y.add_updater()
-        normal_arrow: Arrow3D = always_redraw(
-            lambda: Arrow3D(
-                start=current_point_dot.get_center(),
-                end=axes.c2p(
-                    normal_func(
-                        axes.c2p(current_point_dot.get_center())[0],  # problem line
-                        axes.c2p(current_point_dot.get_center())[
-                            1
-                        ],  # have no information on current position with respect to axis
-                    )
-                ),
-            )
-        )
-        self.play(FadeIn(normal_arrow))
-        self.wait()
-        self.play(FadeOut(normal_arrow))
+        # point_path: ParametricFunction = ParametricFunction(
+        #     lambda t: axes.c2p(*parametric_sin_func(t)),
+        #     t_range=(1.5, -1.5),
+        # ).set_opacity(0)
+        # current_point_y.add_updater()
+        # normal_arrow: Arrow3D = always_redraw(
+        #     lambda: Arrow3D(
+        #         start=current_point_dot.get_center(),
+        #         end=axes.c2p(
+        #             normal_func(
+        #                 axes.c2p(current_point_dot.get_center())[0],  # problem line
+        #                 axes.c2p(current_point_dot.get_center())[
+        #                     1
+        #                 ],  # have no information on current position with respect to axis
+        #             )
+        #         ),
+        #     )
+        # )
+        # self.play(FadeIn(normal_arrow))
+        # self.wait()
+        # self.play(FadeOut(normal_arrow))
 
         # Remove everything from the scene
         self.play(
