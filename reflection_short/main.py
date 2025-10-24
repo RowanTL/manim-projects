@@ -39,7 +39,7 @@ class SinSurface(ThreeDScene):
             lambda x, y: axes.c2p(*sin_func(x, y)),
             u_range=AXES_RANGE,
             v_range=AXES_RANGE,
-            resolution=8,
+            resolution=[8],
             fill_opacity=0.7,
         )
         self.set_camera_orientation(theta=70 * DEGREES, phi=75 * DEGREES)
@@ -84,7 +84,7 @@ class SinSurface(ThreeDScene):
             lambda t: axes.c2p(*parametric_sin_func(t)),
             t_range=(-1.5, 1.5),
         ).set_opacity(0)
-        incident_ray: Arrow3D = always_redraw(
+        incident_ray = always_redraw(
             lambda: Arrow3D(
                 start=sun.get_center(), end=current_point_dot.get_center(), color=YELLOW
             )
