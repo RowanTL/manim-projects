@@ -4,6 +4,7 @@ from typing import Final
 
 SIN_FUNC_SCALING_FACTOR: Final[float] = 0.4
 AXES_RANGE: Final[list[int]] = [-3, 3]
+PARAMETRIC_RANGE: Final[tuple[float, float]] = (-1.5, 1.5)
 GLOBAL_SCALE: Final[float] = 0.55
 
 
@@ -84,7 +85,7 @@ class SinSurface(ThreeDScene):
         current_point_dot: Dot3D = Dot3D(axes.c2p(*sin_func(1, -1.5))).set_opacity(0)
         point_path: ParametricFunction = ParametricFunction(
             lambda t: axes.c2p(*parametric_sin_func(t)),
-            t_range=(-1.5, 1.5),
+            t_range=PARAMETRIC_RANGE,
         ).set_opacity(0)
         incident_ray = always_redraw(
             lambda: Arrow3D(
@@ -101,7 +102,7 @@ class SinSurface(ThreeDScene):
         self.wait(2)
         point_path_rev: ParametricFunction = ParametricFunction(
             lambda t: axes.c2p(*rev_parametric_sin_func(t)),
-            t_range=(-1.5, 1.5),
+            t_range=PARAMETRIC_RANGE,
         ).set_opacity(0)
         normal_arrow = always_redraw(
             lambda: Arrow3D(
