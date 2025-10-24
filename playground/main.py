@@ -5,7 +5,7 @@ import numpy as np
 
 class ThreeDPlayGround(ThreeDScene):
     SIN_FUNC_SCALING_FACTOR: Final[float] = 0.4
-    AXES_RANGE: Final[list[int]] = [-5, 5]
+    AXES_RANGE: Final[list[int]] = [-3, 3]
 
     def sin_func(self, x, y):
         return np.array([x, y, self.SIN_FUNC_SCALING_FACTOR * np.sin(x**2 + y**2)])
@@ -17,10 +17,13 @@ class ThreeDPlayGround(ThreeDScene):
         return 2 * self.SIN_FUNC_SCALING_FACTOR * y * np.cos(x**2 + y**2)
 
     def normal_func(self, x, y):
-        return (-1 * self.partial_x(x, y), -1 * self.partial_y(x, y), 1)
+        return (-self.partial_x(x, y), -self.partial_y(x, y), 1)
 
     def parametric_sin_func(self, t):
         return (1, t, self.SIN_FUNC_SCALING_FACTOR * np.sin(1 + t**2))
+
+    def rev_parametric_sin_func(self, t):
+        return (1, t, -self.SIN_FUNC_SCALING_FACTOR * np.sin(1 + t**2))
 
     def construct(self):
         axes = ThreeDAxes(
@@ -34,8 +37,9 @@ class ThreeDPlayGround(ThreeDScene):
             fill_opacity=0.7,
         )
         self.set_camera_orientation(theta=70 * DEGREES, phi=75 * DEGREES)
-        self.add(axes, surface)
-        current_point_dot: Dot3D = Dot3D(axes.c2p(*self.sin_func(1, -1.5)))
+        scene_group = VGroup(axes, surface).rotate(PI / 2)
+        self.add(scene_group)
+        current_point_dot: Dot3D = Dot3D(axes.c2p(*self.sin_func(1, 1.5)))
         point_path: ParametricFunction = ParametricFunction(
             lambda t: axes.c2p(*self.parametric_sin_func(t)),
             t_range=(-1.5, 1.5),
@@ -43,11 +47,15 @@ class ThreeDPlayGround(ThreeDScene):
         normal_vec = always_redraw(
             lambda: Arrow3D(
                 start=current_point_dot.get_center(),
-                end=axes.p2c(
-                    self.normal_func(
-                        current_point_dot.get_x(), current_point_dot.get_y()
-                    )
-                ),
+                end=(
+                    lambda p: (
+                        lambda x, y, z: axes.c2p(
+                            x + self.normal_func(x, y)[0],
+                            y + self.normal_func(x, y)[1],
+                            z + self.normal_func(x, y)[2],
+                        )
+                    )(*axes.p2c(p))
+                )(current_point_dot.get_center()),
                 color=RED,
             )
         )
