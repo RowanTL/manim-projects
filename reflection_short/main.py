@@ -1,5 +1,6 @@
 from manim import *
 import numpy as np
+import numpy.typing as npt
 from typing import Final
 
 SIN_FUNC_SCALING_FACTOR: Final[float] = 0.4
@@ -21,7 +22,7 @@ def partial_y(x, y):
 
 
 def normal_func(x, y):
-    return (-1 * partial_x(x, y), -1 * partial_y(x, y), 1)
+    return np.array([-1 * partial_x(x, y), -1 * partial_y(x, y), 1])
 
 
 def parametric_sin_func(t):
@@ -30,6 +31,10 @@ def parametric_sin_func(t):
 
 def rev_parametric_sin_func(t):
     return (1, -t, SIN_FUNC_SCALING_FACTOR * np.sin(1 + t**2))
+
+
+def my_unit(v):
+    return v / np.linalg.norm(v)
 
 
 class SinSurface(ThreeDScene):
@@ -127,7 +132,42 @@ class SinSurface(ThreeDScene):
         self.wait()
 
         # show the reflected ray now
-        
+        reflected_ray = always_redraw(
+            lambda: (
+                lambda start, inc_ray_vec, normal_vec: Arrow3D(
+                    start=start,
+                    end=start
+                    + axes.c2p(
+                        *(
+                            2 * np.dot(normal_vec, inc_ray_vec) * normal_vec
+                            - inc_ray_vec
+                        )
+                    )
+                    * 0.3,  # scale for visual length
+                    color=GREEN,
+                )
+            )(
+                current_point_dot.get_center(),
+                my_unit(
+                    axes.p2c(incident_ray.get_start())
+                    - axes.p2c(incident_ray.get_end())
+                ),
+                my_unit(
+                    axes.p2c(normal_arrow.get_end())
+                    - axes.p2c(normal_arrow.get_start())
+                ),
+            )
+        )
+        self.play(FadeIn(reflected_ray))
+        point_path: ParametricFunction = ParametricFunction(
+            lambda t: axes.c2p(*parametric_sin_func(t)),
+            t_range=PARAMETRIC_RANGE,
+        ).set_opacity(0)
+        self.play(
+            MoveAlongPath(current_point_dot, point_path),
+            run_time=2,
+            rate_func=linear,
+        )
 
         # Remove everything from the scene
         self.play(
@@ -135,6 +175,7 @@ class SinSurface(ThreeDScene):
             Unwrite(sin_func_tex),
             FadeOut(incident_ray),
             FadeOut(normal_arrow),
+            FadeOut(reflected_ray),
             run_time=1.2,
         )
         self.wait()
