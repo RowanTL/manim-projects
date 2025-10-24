@@ -15,3 +15,7 @@ The yellow sphere appearing above the surface represents the sun emitting light 
 Zooming into the plane and placing an incident ray originating from
 our light source, we can visualize how a perfect specular reflection
 works, or in other words, how a perfect mirror reflects light.
+
+# show normals of the surface
+
+todo

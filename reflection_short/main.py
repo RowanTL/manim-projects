@@ -95,7 +95,6 @@ class SinSurface(ThreeDScene):
         self.play(FadeIn(incident_ray))
 
         # Show normals of the surface
-        # need to calculate them
         self.play(
             MoveAlongPath(current_point_dot, point_path), run_time=2, rate_func=linear
         )
@@ -126,13 +125,16 @@ class SinSurface(ThreeDScene):
             rate_func=linear,
         )
         self.wait()
-        self.play(FadeOut(normal_arrow))
+
+        # show the reflected ray now
+        
 
         # Remove everything from the scene
         self.play(
             FadeOut(scene_group),
             Unwrite(sin_func_tex),
             FadeOut(incident_ray),
+            FadeOut(normal_arrow),
             run_time=1.2,
         )
         self.wait()
