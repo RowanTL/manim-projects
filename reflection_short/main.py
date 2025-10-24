@@ -1,4 +1,5 @@
 from manim import *
+from manim.typing import Point3D
 from manim_voiceover import VoiceoverScene
 import numpy as np
 from typing import Final
@@ -22,6 +23,10 @@ def partial_y(x, y):
 
 def normal_func(x, y):
     return (-1 * partial_x(x, y), -1 * partial_y(x, y), 1)
+
+
+def parametric_sin_func(t):
+    return (1, t, SIN_FUNC_SCALING_FACTOR * np.sin(1 + t**2))
 
 
 class SinSurface(ThreeDScene):
@@ -76,8 +81,8 @@ class SinSurface(ThreeDScene):
 
         current_point_dot: Dot3D = Dot3D(axes.c2p(*sin_func(1, -1.5))).set_opacity(0)
         point_path: ParametricFunction = ParametricFunction(
-            lambda t: axes.c2p(1, t, SIN_FUNC_SCALING_FACTOR * np.sin(1 + t**2)),
-            t_range=[-1.5, 1.5],
+            lambda t: axes.c2p(*parametric_sin_func(t)),
+            t_range=(-1.5, 1.5),
         ).set_opacity(0)
         incident_ray: Arrow3D = always_redraw(
             lambda: Arrow3D(
@@ -92,6 +97,13 @@ class SinSurface(ThreeDScene):
             MoveAlongPath(current_point_dot, point_path), run_time=2, rate_func=linear
         )
         self.wait(2)
+        # x never changes, so no need to track that
+        # current_point_y = ValueTracker(1.5)
+        point_path: ParametricFunction = ParametricFunction(
+            lambda t: axes.c2p(*parametric_sin_func(t)),
+            t_range=(1.5, -1.5),
+        ).set_opacity(0)
+        current_point_y.add_updater()
         normal_arrow: Arrow3D = always_redraw(
             lambda: Arrow3D(
                 start=current_point_dot.get_center(),
