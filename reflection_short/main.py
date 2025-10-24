@@ -1,6 +1,4 @@
 from manim import *
-from manim.typing import Point3D
-from manim_voiceover import VoiceoverScene
 import numpy as np
 from typing import Final
 
@@ -97,29 +95,33 @@ class SinSurface(ThreeDScene):
             MoveAlongPath(current_point_dot, point_path), run_time=2, rate_func=linear
         )
         self.wait(2)
-        # x never changes, so no need to track that
-        # current_point_y = ValueTracker(1.5)
-        # point_path: ParametricFunction = ParametricFunction(
-        #     lambda t: axes.c2p(*parametric_sin_func(t)),
-        #     t_range=(1.5, -1.5),
-        # ).set_opacity(0)
-        # current_point_y.add_updater()
-        # normal_arrow: Arrow3D = always_redraw(
-        #     lambda: Arrow3D(
-        #         start=current_point_dot.get_center(),
-        #         end=axes.c2p(
-        #             normal_func(
-        #                 axes.c2p(current_point_dot.get_center())[0],  # problem line
-        #                 axes.c2p(current_point_dot.get_center())[
-        #                     1
-        #                 ],  # have no information on current position with respect to axis
-        #             )
-        #         ),
-        #     )
-        # )
-        # self.play(FadeIn(normal_arrow))
-        # self.wait()
-        # self.play(FadeOut(normal_arrow))
+        point_path_rev: ParametricFunction = ParametricFunction(
+            lambda t: axes.c2p(*parametric_sin_func(t)),
+            t_range=(-1.5, 1.5),
+        ).set_opacity(0)
+        normal_arrow = always_redraw(
+            lambda: Arrow3D(
+                start=current_point_dot.get_center(),
+                end=(
+                    lambda p: (
+                        lambda x, y, z: axes.c2p(
+                            x + normal_func(x, y)[0],
+                            y + normal_func(x, y)[1],
+                            z + normal_func(x, y)[2],
+                        )
+                    )(*axes.p2c(p))
+                )(current_point_dot.get_center()),
+                color=RED,
+            )
+        )
+        self.play(FadeIn(normal_arrow))
+        self.play(
+            MoveAlongPath(current_point_dot, point_path_rev),
+            run_time=2,
+            rate_func=linear,
+        )
+        self.wait()
+        self.play(FadeOut(normal_arrow))
 
         # Remove everything from the scene
         self.play(
