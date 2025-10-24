@@ -27,6 +27,10 @@ def parametric_sin_func(t):
     return (1, t, SIN_FUNC_SCALING_FACTOR * np.sin(1 + t**2))
 
 
+def rev_parametric_sin_func(t):
+    return (1, -t, SIN_FUNC_SCALING_FACTOR * np.sin(1 + t**2))
+
+
 class SinSurface(ThreeDScene):
     def construct(self):
         # create axis, surface, and set camrea orientation
@@ -96,7 +100,7 @@ class SinSurface(ThreeDScene):
         )
         self.wait(2)
         point_path_rev: ParametricFunction = ParametricFunction(
-            lambda t: axes.c2p(*parametric_sin_func(t)),
+            lambda t: axes.c2p(*rev_parametric_sin_func(t)),
             t_range=(-1.5, 1.5),
         ).set_opacity(0)
         normal_arrow = always_redraw(

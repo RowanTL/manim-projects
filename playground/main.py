@@ -23,7 +23,7 @@ class ThreeDPlayGround(ThreeDScene):
         return (1, t, self.SIN_FUNC_SCALING_FACTOR * np.sin(1 + t**2))
 
     def rev_parametric_sin_func(self, t):
-        return (1, t, -self.SIN_FUNC_SCALING_FACTOR * np.sin(1 + t**2))
+        return (1, -t, self.SIN_FUNC_SCALING_FACTOR * np.sin(1 + t**2))
 
     def construct(self):
         axes = ThreeDAxes(
@@ -41,7 +41,7 @@ class ThreeDPlayGround(ThreeDScene):
         self.add(scene_group)
         current_point_dot: Dot3D = Dot3D(axes.c2p(*self.sin_func(1, 1.5)))
         point_path: ParametricFunction = ParametricFunction(
-            lambda t: axes.c2p(*self.parametric_sin_func(t)),
+            lambda t: axes.c2p(*self.rev_parametric_sin_func(t)),
             t_range=(-1.5, 1.5),
         ).set_opacity(0)
         normal_vec = always_redraw(
