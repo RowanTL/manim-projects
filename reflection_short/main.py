@@ -151,6 +151,7 @@ class SinSurface(ThreeDScene):
                                 * np.dot(normal_vec_logical, inc_ray_vec_logical)
                                 * normal_vec_logical
                             )
+                            * 2.0
                         )
                     ),
                     color=GREEN,
