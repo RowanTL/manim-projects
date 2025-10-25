@@ -84,7 +84,7 @@ class SinSurface(ThreeDScene):
         # Group everything and move everything closer to the camera
         scene_group: VGroup = VGroup(sun, axes, surface)
         self.add_sound("voiceover/close_camera.wav")
-        self.play(scene_group.animate.shift(RIGHT * 2 + UP * 7 + OUT))
+        self.play(scene_group.animate.shift(RIGHT * 2 + UP * 5.5 + OUT))
         self.play(Rotate(scene_group, PI / 2))
 
         current_point_dot: Dot3D = Dot3D(axes.c2p(*sin_func(1, -1.5))).set_opacity(0)
