@@ -25,7 +25,7 @@ object in 3D space.
 
 Used ManimCE only
 
-![link to video](https://youtube.com/shorts/NUVZflqQz-o?si=LmPuaJKsJz5B9Cv_)
+[link to video](https://youtube.com/shorts/NUVZflqQz-o?si=LmPuaJKsJz5B9Cv_)
 
 ### Specular Reflection Short
 
