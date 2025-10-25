@@ -134,25 +134,35 @@ class SinSurface(ThreeDScene):
         # show the reflected ray now
         reflected_ray = always_redraw(
             lambda: (
-                lambda start, inc_ray_vec, normal_vec: Arrow3D(
-                    start=start,
-                    end=start
-                    + axes.c2p(
+                # This outer lambda just calls the inner one with the current values
+                lambda start_world, inc_ray_vec_logical, normal_vec_logical: Arrow3D(
+                    start=start_world,
+                    # We calculate the end point in logical coordinates first,
+                    # then convert the *final point* to world coordinates.
+                    end=axes.c2p(
                         *(
-                            2 * np.dot(normal_vec, inc_ray_vec) * normal_vec
-                            - inc_ray_vec
+                            # 1. Get the logical coordinates of the start point
+                            axes.p2c(start_world)
+                            # 2. Calculate the reflected vector in logical space
+                            + (
+                                # This is the correct reflection formula: I - 2*dot(I,N)*N
+                                inc_ray_vec_logical
+                                - 2
+                                * np.dot(normal_vec_logical, inc_ray_vec_logical)
+                                * normal_vec_logical
+                            )
                         )
-                    )
-                    * 0.3,  # scale for visual length
+                    ),
                     color=GREEN,
                 )
             )(
-                current_point_dot.get_center(),
-                my_unit(
-                    axes.p2c(incident_ray.get_start())
-                    - axes.p2c(incident_ray.get_end())
+                # These are the arguments for the inner lambda:
+                current_point_dot.get_center(),  # start_world (world space)
+                my_unit(  # inc_ray_vec_logical (logical space)
+                    axes.p2c(incident_ray.get_end())
+                    - axes.p2c(incident_ray.get_start())
                 ),
-                my_unit(
+                my_unit(  # normal_vec_logical (logical space)
                     axes.p2c(normal_arrow.get_end())
                     - axes.p2c(normal_arrow.get_start())
                 ),
