@@ -10,6 +10,8 @@ Unlike my other projects, `uv` is utilized here more :)
 
 # Notes for later
 
+- I would like to add the equation to calculate reflection somewhere in this short
+
 It would be wise to split these up into smaller scenes later.
 It would take a small amount of effort to do this now, but I don't feel like it.
 future things todo lol
