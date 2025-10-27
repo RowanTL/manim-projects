@@ -86,8 +86,8 @@ class SinSurface(ThreeDScene):
 
         # Group everything and move everything closer to the camera
         scene_group: VGroup = VGroup(sun, axes, surface)
-        self.play(scene_group.animate.shift(RIGHT * 2 + UP * 5.5 + OUT))
-        self.play(Rotate(scene_group, PI / 2))
+        self.play(scene_group.animate.shift(RIGHT * 2 + UP * 5.5 + OUT), run_time=2.0)
+        self.play(Rotate(scene_group, PI / 2), run_time=2.0)
 
         self.add_fixed_orientation_mobjects(reflection_tex)
         self.add_fixed_in_frame_mobjects(reflection_tex)

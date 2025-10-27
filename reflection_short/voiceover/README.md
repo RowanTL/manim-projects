@@ -12,10 +12,23 @@ The yellow sphere appearing above the surface represents the sun emitting light 
 
 ## Move everything closer to camera (close_camera.wav)
 
-Zooming into the plane and placing an incident ray originating from
-our light source, we can visualize how a perfect specular reflection
-works, or in other words, how a perfect mirror reflects light.
+new:
 
-# show normals of the surface
+Zooming into the plane and analyzing the reflection equation, we can see how the light reflected
+vector is computed via the surface's unit normal and incident light vectors.
 
-todo
+old:
+
+Zooming into the plane, looking at the vector reflection formula above, and placing
+an incident ray originating from our light source, we can visualize
+how a perfect specular reflection works, or in other words, how a perfect mirror reflects light.
+
+# incident ray and normal arrow explanation (inc_normal.wav)
+
+The yellow arrow represents the incident light ray while the red arrow represents the
+surfaces normal
+
+# green arrow explanation (green_arrow.wav)
+
+Following this formula using the information from the incident vector and normal vector,
+we can calculate the final reflection vector as shown by the green arrow. Simple as.
