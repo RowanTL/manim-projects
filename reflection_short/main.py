@@ -6,7 +6,7 @@ from typing import Final
 SIN_FUNC_SCALING_FACTOR: Final[float] = 0.4
 AXES_RANGE: Final[list[int]] = [-3, 3]
 PARAMETRIC_RANGE: Final[tuple[float, float]] = (-1.5, 1.5)
-GLOBAL_SCALE: Final[float] = 0.55
+GLOBAL_SCALE: Final[float] = 0.45
 
 
 def sin_func(x, y):
