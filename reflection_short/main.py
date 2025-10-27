@@ -58,9 +58,13 @@ class SinSurface(ThreeDScene):
             .scale(GLOBAL_SCALE)
             .to_edge(UP)
         )
+        reflection_tex = (
+            MathTex(r"{{L_r}} = {{L_i}} - 2({{L_i}} \cdot {{N}}){{N}}")
+            .scale(GLOBAL_SCALE)
+            .next_to(sin_func_tex, DOWN)
+        )
 
         # Fade the axis, surface, and equation in
-        self.add_sound("voiceover/fade_a_s_e_in.wav")
         self.play(FadeIn(axes), FadeIn(surface))
         self.add_fixed_orientation_mobjects(sin_func_tex)
         self.add_fixed_in_frame_mobjects(sin_func_tex)
@@ -69,7 +73,6 @@ class SinSurface(ThreeDScene):
 
         # show a sphere representing the sun somewhere in the world with rays
         sun = Sphere(center=axes.c2p(3, -3, 3), radius=0.2).set_color(YELLOW)
-        self.add_sound("voiceover/sun_sphere.wav")
         self.play(FadeIn(sun))
         sun_rays = VGroup(
             Arrow3D(start=sun.get_center(), end=axes.c2p(0, -3, 3), color=YELLOW),
@@ -83,9 +86,12 @@ class SinSurface(ThreeDScene):
 
         # Group everything and move everything closer to the camera
         scene_group: VGroup = VGroup(sun, axes, surface)
-        self.add_sound("voiceover/close_camera.wav")
         self.play(scene_group.animate.shift(RIGHT * 2 + UP * 5.5 + OUT))
         self.play(Rotate(scene_group, PI / 2))
+
+        self.add_fixed_orientation_mobjects(reflection_tex)
+        self.add_fixed_in_frame_mobjects(reflection_tex)
+        self.play(Write(reflection_tex), run_time=2.0)
 
         current_point_dot: Dot3D = Dot3D(axes.c2p(*sin_func(1, -1.5))).set_opacity(0)
         point_path: ParametricFunction = ParametricFunction(
@@ -97,7 +103,9 @@ class SinSurface(ThreeDScene):
                 start=sun.get_center(), end=current_point_dot.get_center(), color=YELLOW
             )
         )
-        self.play(FadeIn(incident_ray))
+        self.play(
+            FadeIn(incident_ray), reflection_tex.animate.set_color_by_tex("L_i", YELLOW)
+        )
 
         # Show normals of the surface
         self.play(
@@ -123,7 +131,9 @@ class SinSurface(ThreeDScene):
                 color=RED,
             )
         )
-        self.play(FadeIn(normal_arrow))
+        self.play(
+            FadeIn(normal_arrow), reflection_tex.animate.set_color_by_tex("N", RED)
+        )
         self.play(
             MoveAlongPath(current_point_dot, point_path_rev),
             run_time=2,
@@ -169,7 +179,9 @@ class SinSurface(ThreeDScene):
                 ),
             )
         )
-        self.play(FadeIn(reflected_ray))
+        self.play(
+            FadeIn(reflected_ray), reflection_tex.animate.set_color_by_tex("L_r", GREEN)
+        )
         point_path: ParametricFunction = ParametricFunction(
             lambda t: axes.c2p(*parametric_sin_func(t)),
             t_range=PARAMETRIC_RANGE,
@@ -187,6 +199,7 @@ class SinSurface(ThreeDScene):
             FadeOut(incident_ray),
             FadeOut(normal_arrow),
             FadeOut(reflected_ray),
+            Unwrite(reflection_tex),
             run_time=1.2,
         )
         self.wait()
