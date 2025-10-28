@@ -4,6 +4,8 @@ A basic manim short describing types of reflections I've studying.
 
 I'll talk about specular and diffuse reflections in this video.
 
+[https://www.youtube.com/watch?v=mtSck_ztIwo](https://www.youtube.com/watch?v=mtSck_ztIwo)
+
 # How to build
 
 Unlike my other projects, `uv` is utilized here more :)
