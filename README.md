@@ -25,11 +25,11 @@ object in 3D space.
 
 Used ManimCE only
 
-[link to video](https://youtube.com/shorts/NUVZflqQz-o?si=LmPuaJKsJz5B9Cv_)
+[link to short](https://youtube.com/shorts/NUVZflqQz-o?si=LmPuaJKsJz5B9Cv_)
 
 ### Specular Reflection Short
 
-*almost done*
+*complete*
 
 This is to be a short uploaded to youtube covering the math behind how light reflects off a perfectly
 reflective surface in a single direction. In other words, the surface is perfectly reflective mirror.
@@ -37,7 +37,9 @@ Inspired by looking into the different types of [BRDFs](https://en.wikipedia.org
 
 Used ManimCE only
 
-**link soon**
+[link to video](https://www.youtube.com/watch?v=mtSck_ztIwo)
+
+It was uploaded as a video instead of a short for some reason :(
 
 ### EC Video
 
