@@ -7,19 +7,41 @@ TEXT_SCALE: Final[float] = 0.40
 
 class LinEqSolutions(Scene):
     def construct(self):
-        inf_text: Text = Text("Infinitely many points").scale(TEXT_SCALE).to_edge(UP)
+        solutions_type: Text = (
+            Text("System of Equations solutions:", color=YELLOW)
+            .scale(TEXT_SCALE)
+            .to_edge(UP)
+        )
+        inf_text: Text = (
+            Text("Infinitely many points")
+            .scale(TEXT_SCALE)
+            .next_to(solutions_type, DOWN)
+        )
         one_point_text: Text = (
-            Text("Exactly one point", color=YELLOW)
+            Text("Exactly one point", color=BLUE)
             .scale(TEXT_SCALE)
             .next_to(inf_text, DOWN)
         )
         no_text: Text = (
-            Text("No points").scale(TEXT_SCALE).next_to(one_point_text, DOWN)
+            Text("No points", color=PURPLE)
+            .scale(TEXT_SCALE)
+            .next_to(one_point_text, DOWN)
         )
 
-        self.play(Write(inf_text), Write(one_point_text), Write(no_text))
-        self.wait()
-        self.play(Unwrite(inf_text), Unwrite(one_point_text), Unwrite(no_text))
+        r_time = 0.97
+        self.play(Write(solutions_type))
+        self.play(Write(inf_text))
+        self.play(Write(one_point_text))
+        self.play(Write(no_text))
+        # self.play(Write(inf_text), Write(one_point_text), Write(no_text))
+        self.play(
+            Unwrite(inf_text),
+            Unwrite(one_point_text),
+            Unwrite(no_text),
+            Unwrite(solutions_type),
+            run_time=0.5,
+        )
+        self.wait(0.25)
 
 
 class TwoDSystems(Scene):
@@ -28,11 +50,11 @@ class TwoDSystems(Scene):
             MathTex("y = x").scale(TEXT_SCALE).to_edge(UP)
         )  # solution with infinitely many points
         self.play(Write(eq_0_wrong_form))  # In the wrong form
-        self.wait()
+        self.wait(2)
 
         eq_0: MathTex = MathTex("x - y = 0").scale(TEXT_SCALE).to_edge(UP)
-        self.play(Transform(eq_0_wrong_form, eq_0))  # fix the form
-        self.wait()
+        self.play(Transform(eq_0_wrong_form, eq_0), run_time=2)  # fix the form
+        self.wait(2)
 
         eq_0_wrong_form.save_state()
         eq_0_with_coefs: MathTex = MathTex("1x - 1y = 0").scale(TEXT_SCALE).to_edge(UP)
@@ -95,7 +117,7 @@ class TwoDSystems(Scene):
         )
         eq_2_line = axes.plot(lambda x: 2 * x, color=PURPLE, stroke_width=1)
         self.play(Write(eq_2), Write(eq_2_line))
-        self.wait()
+        self.wait(2)
 
         # move the third line for no solutions
         eq_2.save_state()  # revert back later if needed
@@ -109,7 +131,7 @@ class TwoDSystems(Scene):
             eq_2_line.animate.move_to(axes.c2p(0, -2)),
             Unwrite(eq_0_dot),
         )
-        self.wait()
+        self.wait(3)
 
         # remove everything from the scene
         self.play(
@@ -120,6 +142,7 @@ class TwoDSystems(Scene):
             Unwrite(eq_0_line),
             Unwrite(eq_1_line),
             Unwrite(eq_2_line),
+            run_time=0.75,
         )
         self.wait()
 
