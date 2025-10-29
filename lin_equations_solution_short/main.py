@@ -1,22 +1,89 @@
 from manim import *
 from typing import Final
 
-GLOBAL_SCALE: Final[float] = 0.45
+GLOBAL_SCALE: Final[float] = 0.38
+TEXT_SCALE: Final[float] = 0.40
 
 
 class LinEqSolutions(Scene):
     def construct(self):
-        text_scale: float = 0.40
-        inf_text: Text = Text("Infinitely many points").scale(text_scale).to_edge(UP)
+        inf_text: Text = Text("Infinitely many points").scale(TEXT_SCALE).to_edge(UP)
         one_point_text: Text = (
             Text("Exactly one point", color=YELLOW)
-            .scale(text_scale)
+            .scale(TEXT_SCALE)
             .next_to(inf_text, DOWN)
         )
         no_text: Text = (
-            Text("No points").scale(text_scale).next_to(one_point_text, DOWN)
+            Text("No points").scale(TEXT_SCALE).next_to(one_point_text, DOWN)
         )
 
         self.play(Write(inf_text), Write(one_point_text), Write(no_text))
         self.wait()
         self.play(Unwrite(inf_text), Unwrite(one_point_text), Unwrite(no_text))
+
+
+class TwoDSystems(Scene):
+    def shake_function(self, mob, alpha):
+        # alpha goes from 0 to 1 during the animation
+        # use sine for smooth oscillation
+        offset = 0.1 * np.sin(50 * alpha * PI)  # frequency * amplitude
+        mob.move_to(ORIGIN + RIGHT * offset)
+
+    def construct(self):
+        eq_0_wrong_form: MathTex = (
+            MathTex("y = x").scale(TEXT_SCALE).to_edge(UP)
+        )  # solution with infinitely many points
+        self.play(Write(eq_0_wrong_form))  # In the wrong form
+        self.wait()
+
+        eq_0: MathTex = MathTex("x - y = 0").scale(TEXT_SCALE).to_edge(UP)
+        self.play(Transform(eq_0_wrong_form, eq_0))  # fix the form
+        self.wait()
+
+        eq_0_wrong_form.save_state()
+        eq_0_with_coefs: MathTex = MathTex("1x - 1y = 0").scale(TEXT_SCALE).to_edge(UP)
+        # Show coefficients then revert back to no coefficients
+        self.play(Transform(eq_0_wrong_form, eq_0_with_coefs))
+        self.wait()
+        self.play(eq_0_wrong_form.animate.restore())
+
+        axes: Axes = (
+            Axes(x_range=[-4, 4], y_range=[-4, 4], x_length=8, y_length=8)
+            .scale(GLOBAL_SCALE)
+            .set_color(YELLOW)
+        )
+        self.play(Write(axes))
+        self.wait()
+
+        # has infinitely many solutions
+        eq_0_line = axes.plot(lambda x: x, color=WHITE, stroke_width=1)
+        self.play(Write(eq_0_line))
+        self.wait()
+
+        # use a dot to show the infinitely many solutions
+        eq_0_dot: Dot = (
+            Dot(axes.c2p(0, 0), radius=0.10, color=PURPLE)
+            .scale(GLOBAL_SCALE)
+            .set_z_index(1)
+        )  # stops from being drawn over
+        self.play(FadeIn(eq_0_dot))
+        self.play(
+            eq_0_dot.animate.move_to(axes.c2p(4, 4)), run_time=1.5, rate_func=linear
+        )
+        self.play(
+            eq_0_dot.animate.move_to(axes.c2p(-4, -4)), run_time=2.0, rate_func=linear
+        )
+        self.play(
+            eq_0_dot.animate.move_to(axes.c2p(0, 0)), run_time=1.5, rate_func=linear
+        )
+        self.wait()
+
+        # show off only one solution
+        eq_1: MathTex = (
+            MathTex("x + y = 0", color=BLUE)
+            .scale(TEXT_SCALE)
+            .next_to(eq_0_wrong_form, DOWN)
+        )
+        eq_1_line = axes.plot(lambda x: -x, color=BLUE, stroke_width=1)
+        self.play(Write(eq_1), Write(eq_1_line))
+        self.wait()
