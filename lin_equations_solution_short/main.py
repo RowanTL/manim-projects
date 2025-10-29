@@ -23,12 +23,6 @@ class LinEqSolutions(Scene):
 
 
 class TwoDSystems(Scene):
-    def shake_function(self, mob, alpha):
-        # alpha goes from 0 to 1 during the animation
-        # use sine for smooth oscillation
-        offset = 0.1 * np.sin(50 * alpha * PI)  # frequency * amplitude
-        mob.move_to(ORIGIN + RIGHT * offset)
-
     def construct(self):
         eq_0_wrong_form: MathTex = (
             MathTex("y = x").scale(TEXT_SCALE).to_edge(UP)
@@ -62,7 +56,7 @@ class TwoDSystems(Scene):
 
         # use a dot to show the infinitely many solutions
         eq_0_dot: Dot = (
-            Dot(axes.c2p(0, 0), radius=0.10, color=PURPLE)
+            Dot(axes.c2p(0, 0), radius=0.10, color=PURE_GREEN)
             .scale(GLOBAL_SCALE)
             .set_z_index(1)
         )  # stops from being drawn over
@@ -82,8 +76,56 @@ class TwoDSystems(Scene):
         eq_1: MathTex = (
             MathTex("x + y = 0", color=BLUE)
             .scale(TEXT_SCALE)
-            .next_to(eq_0_wrong_form, DOWN)
+            .next_to(eq_0_wrong_form, DOWN * 0.5)
         )
         eq_1_line = axes.plot(lambda x: -x, color=BLUE, stroke_width=1)
         self.play(Write(eq_1), Write(eq_1_line))
+        self.wait()
+
+        # Flash dot with red surroundings to show it can't move
+        # only one solution now
+        self.play(Flash(eq_0_dot, line_length=0.1, line_stroke_width=1, color=PURE_RED))
+        self.wait()
+
+        # Show a third line for only one solution
+        eq_2: MathTex = (
+            MathTex("2x - y = 0", color=PURPLE)
+            .scale(TEXT_SCALE)
+            .next_to(eq_1, DOWN * 0.5)
+        )
+        eq_2_line = axes.plot(lambda x: 2 * x, color=PURPLE, stroke_width=1)
+        self.play(Write(eq_2), Write(eq_2_line))
+        self.wait()
+
+        # move the third line for no solutions
+        eq_2.save_state()  # revert back later if needed
+        eq_2_no_point: MathTex = (
+            MathTex("2x - y = 2", color=PURPLE)
+            .scale(TEXT_SCALE)
+            .next_to(eq_1, DOWN * 0.5)
+        )
+        self.play(
+            Transform(eq_2, eq_2_no_point),
+            eq_2_line.animate.move_to(axes.c2p(0, -2)),
+            Unwrite(eq_0_dot),
+        )
+        self.wait()
+
+        # remove everything from the scene
+        self.play(
+            Unwrite(eq_0_wrong_form),
+            Unwrite(eq_1),
+            Unwrite(eq_2),
+            Unwrite(axes),
+            Unwrite(eq_0_line),
+            Unwrite(eq_1_line),
+            Unwrite(eq_2_line),
+        )
+        self.wait()
+
+
+class ThreeDNext(Scene):
+    def construct(self):
+        next_text: Text = Text("3D next!", color=BLUE)
+        self.play(Write(next_text))
         self.wait()
