@@ -41,12 +41,23 @@ Used ManimCE only
 
 It was uploaded as a video instead of a short for some reason :(
 
-### 2D Linear System of Equations Short
+### 2D Linear Systems of Equations Short
+
+*complete*
 
 This is a short visually describing the different possible solutions to a linear system of equations.
 I felt like I needed to re-learn some linear algebra, so this is the "back to the basics" so to speak.
 
 [link to video](https://youtube.com/shorts/lQy5CdTiQYc?si=jrPBXp0RQN_Cw1-G)
+
+### 3D Linear Systems of Equations Short
+
+*incomplete*
+
+A 3D version of the 2D short above. There are a few differences in 3 dimensions. Thinking about the differences
+between 2D and 3D help grasp how the different solution types come about.
+
+**link soon**
 
 ### EC Video
 
