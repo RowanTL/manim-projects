@@ -1,8 +1,47 @@
 from manim import *
 from typing import Final
+import numpy as np
 
 GLOBAL_SCALE: Final[float] = 0.38
 TEXT_SCALE: Final[float] = 0.40
+
+
+class DoubleArrow3D(VGroup):
+    def __init__(
+        self,
+        start,
+        end,
+        color=WHITE,
+        buff=0,
+        cut=0.2,  # distance to trim from each end along the line
+        **kwargs,
+    ):
+        super().__init__()
+
+        # Ensure numpy arrays
+        start = np.array(start, dtype=float)
+        end = np.array(end, dtype=float)
+
+        # Direction vector from start → end
+        direction = end - start
+        length = np.linalg.norm(direction)
+
+        if length == 0:
+            raise ValueError(
+                "Start and end points are identical; arrow has zero length."
+            )
+
+        # Normalize
+        unit_dir = direction / length
+
+        # Shift both ends inward by `cut` distance
+        start_cut = start + unit_dir * cut
+        end_cut = end - unit_dir * cut
+
+        # Create two opposing 3D arrows
+        arrow1 = Arrow3D(start=start_cut, end=end, color=color, **kwargs)
+        arrow2 = Arrow3D(start=end_cut, end=start, color=color, **kwargs)
+        self.add(arrow1, arrow2)
 
 
 class LinEqSolutions(Scene):
@@ -28,12 +67,10 @@ class LinEqSolutions(Scene):
             .next_to(one_point_text, DOWN)
         )
 
-        r_time = 0.97
         self.play(Write(solutions_type))
         self.play(Write(inf_text))
         self.play(Write(one_point_text))
         self.play(Write(no_text))
-        # self.play(Write(inf_text), Write(one_point_text), Write(no_text))
         self.play(
             Unwrite(inf_text),
             Unwrite(one_point_text),
@@ -44,104 +81,133 @@ class LinEqSolutions(Scene):
         self.wait(0.25)
 
 
-class ThreeDSystems(Scene):
+class ThreeDSystems(ThreeDScene):
+    def flash_color(
+        self, mob: Mobject, color: ManimColor, wait_time: int | float = 0, **kwargs
+    ) -> None:
+        mob.save_state()
+        self.play(mob.animate.set_color(color), **kwargs)
+        if wait_time > 0:
+            self.wait(wait_time)
+        self.play(mob.animate.restore())
+
+        return
+
     def construct(self):
-        eq_0_wrong_form: MathTex = (
-            MathTex("y = x").scale(TEXT_SCALE).to_edge(UP)
-        )  # solution with infinitely many points
-        self.play(Write(eq_0_wrong_form))  # In the wrong form
-        self.wait(2)
+        self.set_camera_orientation(theta=70 * DEGREES, phi=75 * DEGREES)
+        eq_0: MathTex = MathTex("x + y + z = 0").scale(TEXT_SCALE).to_edge(UP)
 
-        eq_0: MathTex = MathTex("x - y = 0").scale(TEXT_SCALE).to_edge(UP)
-        self.play(Transform(eq_0_wrong_form, eq_0), run_time=2)  # fix the form
-        self.wait(2)
-
-        eq_0_wrong_form.save_state()
-        eq_0_with_coefs: MathTex = MathTex("1x - 1y = 0").scale(TEXT_SCALE).to_edge(UP)
-        # Show coefficients then revert back to no coefficients
-        self.play(Transform(eq_0_wrong_form, eq_0_with_coefs))
-        self.wait()
-        self.play(eq_0_wrong_form.animate.restore())
-
-        axes: Axes = (
-            Axes(x_range=[-4, 4], y_range=[-4, 4], x_length=8, y_length=8)
+        axes: ThreeDAxes = (
+            ThreeDAxes(
+                x_range=[-4, 4],
+                y_range=[-4, 4],
+                z_range=[-4, 4],
+                x_length=8,
+                y_length=8,
+                z_length=8,
+            )
             .scale(GLOBAL_SCALE)
             .set_color(YELLOW)
         )
-        self.play(Write(axes))
-        self.wait()
-
+        self.begin_ambient_camera_rotation(rate=0.15)
         # has infinitely many solutions
-        eq_0_line = axes.plot(lambda x: x, color=WHITE, stroke_width=1)
-        self.play(Write(eq_0_line))
-        self.wait()
+        eq_0_surface: Surface = Surface(
+            lambda x, y: np.array([x, y, -x - y]),
+            u_range=[-4, 4],
+            v_range=[-4, 4],
+            resolution=(16, 16),
+            checkerboard_colors=[WHITE, GRAY_A, GRAY_B],
+            fill_opacity=0.6,
+        ).scale(GLOBAL_SCALE)
+        self.add_fixed_orientation_mobjects(eq_0)
+        self.add_fixed_in_frame_mobjects(eq_0)
+        self.play(FadeIn(axes), Write(eq_0), FadeIn(eq_0_surface))
 
-        # use a dot to show the infinitely many solutions
-        eq_0_dot: Dot = (
-            Dot(axes.c2p(0, 0), radius=0.10, color=PURE_GREEN)
-            .scale(GLOBAL_SCALE)
-            .set_z_index(1)
-        )  # stops from being drawn over
-        self.play(FadeIn(eq_0_dot))
-        self.play(
-            eq_0_dot.animate.move_to(axes.c2p(4, 4)), run_time=1.5, rate_func=linear
+        # use a line to show the infinitely many solutions with multiple free variables
+        # shows this by rotating the line PI radians around the surface
+        eq_0_line: DoubleArrow3D = DoubleArrow3D(
+            start=axes.c2p(-4, -4, 8),
+            end=axes.c2p(4, 4, -8),
+            color=PURE_GREEN,
         )
+        normal_vec = np.array([1, 1, 1]) / np.sqrt(3)
+        self.play(FadeIn(eq_0_line))
         self.play(
-            eq_0_dot.animate.move_to(axes.c2p(-4, -4)), run_time=2.0, rate_func=linear
+            Rotate(eq_0_line, angle=PI, axis=normal_vec, about_point=ORIGIN, run_time=4)
         )
-        self.play(
-            eq_0_dot.animate.move_to(axes.c2p(0, 0)), run_time=1.5, rate_func=linear
+
+        # show infinitely many solutions with only one free variable
+        eq_1: MathTex = (
+            MathTex("-x - y + z = 0", color=BLUE)
+            .scale(TEXT_SCALE)
+            .next_to(eq_0, DOWN * 0.5)
         )
-        self.wait()
+        eq_1_surface: Surface = Surface(
+            lambda x, y: np.array([x, y, x + y]),
+            u_range=[-4, 4],
+            v_range=[-4, 4],
+            resolution=(16, 16),
+            checkerboard_colors=[BLUE_C, BLUE_D, BLUE_E],
+            fill_opacity=0.6,
+        ).scale(GLOBAL_SCALE)
+        self.add_fixed_orientation_mobjects(eq_1)
+        self.add_fixed_in_frame_mobjects(eq_1)
+        self.play(FadeIn(eq_1_surface), Write(eq_1), FadeOut(eq_0_line))
+        eq_1_line: DoubleArrow3D = DoubleArrow3D(
+            start=axes.c2p(4, -4, 0),
+            end=axes.c2p(-4, 4, 0),
+            color=PURE_GREEN,
+        )
+        self.play(FadeIn(eq_1_line))
+        self.wait(1)
+        self.flash_color(
+            eq_1_line, PURE_RED, wait_time=1
+        )  # to show there infinite solutions along the x and y free variables
+        self.wait(1)
 
         # show off only one solution
-        eq_1: MathTex = (
-            MathTex("x + y = 0", color=BLUE)
-            .scale(TEXT_SCALE)
-            .next_to(eq_0_wrong_form, DOWN * 0.5)
-        )
-        eq_1_line = axes.plot(lambda x: -x, color=BLUE, stroke_width=1)
-        self.play(Write(eq_1), Write(eq_1_line))
-        self.wait()
-
-        # Flash dot with red surroundings to show it can't move
-        # only one solution now
-        self.play(Flash(eq_0_dot, line_length=0.1, line_stroke_width=1, color=PURE_RED))
-        self.wait()
-
-        # Show a third line for only one solution
         eq_2: MathTex = (
-            MathTex("2x - y = 0", color=PURPLE)
+            MathTex("x + 2y + 2z = 0", color=GOLD)
             .scale(TEXT_SCALE)
             .next_to(eq_1, DOWN * 0.5)
         )
-        eq_2_line = axes.plot(lambda x: 2 * x, color=PURPLE, stroke_width=1)
-        self.play(Write(eq_2), Write(eq_2_line))
-        self.wait(2)
-
-        # move the third line for no solutions
-        eq_2.save_state()  # revert back later if needed
-        eq_2_no_point: MathTex = (
-            MathTex("2x - y = 2", color=PURPLE)
-            .scale(TEXT_SCALE)
-            .next_to(eq_1, DOWN * 0.5)
-        )
-        self.play(
-            Transform(eq_2, eq_2_no_point),
-            eq_2_line.animate.move_to(axes.c2p(0, -2)),
-            Unwrite(eq_0_dot),
-        )
+        eq_2_surface: Surface = Surface(
+            lambda x, y: np.array([x, y, -x / 2 + -y]),
+            u_range=[-4, 4],
+            v_range=[-4, 4],
+            resolution=(16, 16),
+            checkerboard_colors=[GOLD_A, GOLD_B, GOLD_C],
+            fill_opacity=0.6,
+        ).scale(GLOBAL_SCALE)
+        self.play(Write(eq_2), FadeIn(eq_2_surface), FadeOut(eq_1_line))
+        self.wait(1)
+        eq_3_dot: Dot3D = Dot3D(axes.c2p(0, 0, 0), color=PURE_GREEN)
+        self.play(FadeIn(eq_3_dot))  # shows there's only one solution
         self.wait(3)
 
-        # remove everything from the scene
-        self.play(
-            Unwrite(eq_0_wrong_form),
-            Unwrite(eq_1),
-            Unwrite(eq_2),
-            Unwrite(axes),
-            Unwrite(eq_0_line),
-            Unwrite(eq_1_line),
-            Unwrite(eq_2_line),
-            run_time=0.75,
-        )
-        self.wait()
+        # # move the third surface out of intersect for no solutions
+        # eq_2.save_state()  # revert back later if needed
+        # eq_2_no_point: MathTex = (
+        #     MathTex("2x - y = 2", color=PURPLE)
+        #     .scale(TEXT_SCALE)
+        #     .next_to(eq_1, DOWN * 0.5)
+        # )
+        # self.play(
+        #     Transform(eq_2, eq_2_no_point),
+        #     eq_2_line.animate.move_to(axes.c2p(0, -2)),
+        #     Unwrite(eq_0_dot),
+        # )
+        # self.wait(3)
+
+        # # remove everything from the scene
+        # self.play(
+        #     Unwrite(eq_0_wrong_form),
+        #     Unwrite(eq_1),
+        #     Unwrite(eq_2),
+        #     Unwrite(axes),
+        #     Unwrite(eq_0_line),
+        #     Unwrite(eq_1_line),
+        #     Unwrite(eq_2_line),
+        #     run_time=0.75,
+        # )
+        # self.wait()
