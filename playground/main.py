@@ -3,39 +3,6 @@ from typing import Final
 import numpy as np
 
 
-class ThreeDRotate(ThreeDScene):
-    SIN_FUNC_SCALING_FACTOR: Final[float] = 0.4
-    AXES_RANGE: Final[list[int]] = [-3, 3]
-    TEXT_SCALE: Final[float] = 0.40
-
-    def sin_func(self, x, y):
-        return np.array([x, y, self.SIN_FUNC_SCALING_FACTOR * np.sin(x**2 + y**2)])
-
-    def construct(self):
-        axes = ThreeDAxes(
-            x_range=self.AXES_RANGE, y_range=self.AXES_RANGE, x_length=8, y_length=8
-        )
-        surface = Surface(
-            lambda x, y: axes.c2p(*self.sin_func(x, y)),
-            u_range=self.AXES_RANGE,
-            v_range=self.AXES_RANGE,
-            resolution=[8],
-            fill_opacity=0.7,
-        )
-        axes_group = VGroup(axes, surface)
-        self.set_camera_orientation(theta=70 * DEGREES, phi=75 * DEGREES)
-        self.add(axes_group)
-        always_rotate(axes_group)
-
-        self.wait(2)
-        eq_0: MathTex = MathTex("x - y = 0").scale(self.TEXT_SCALE).to_edge(UP)
-        self.add_fixed_orientation_mobjects(eq_0)
-        self.add_fixed_in_frame_mobjects(eq_0)
-        self.play(Write(eq_0))
-
-        self.wait(3)
-
-
 class ThreeDPlayGround(ThreeDScene):
     SIN_FUNC_SCALING_FACTOR: Final[float] = 0.4
     AXES_RANGE: Final[list[int]] = [-3, 3]
