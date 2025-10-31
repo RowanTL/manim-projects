@@ -179,35 +179,10 @@ class ThreeDSystems(ThreeDScene):
             checkerboard_colors=[GOLD_A, GOLD_B, GOLD_C],
             fill_opacity=0.6,
         ).scale(GLOBAL_SCALE)
+        self.add_fixed_orientation_mobjects(eq_2)
+        self.add_fixed_in_frame_mobjects(eq_2)
         self.play(Write(eq_2), FadeIn(eq_2_surface), FadeOut(eq_1_line))
         self.wait(1)
         eq_3_dot: Dot3D = Dot3D(axes.c2p(0, 0, 0), color=PURE_GREEN)
         self.play(FadeIn(eq_3_dot))  # shows there's only one solution
-        self.wait(3)
-
-        # # move the third surface out of intersect for no solutions
-        # eq_2.save_state()  # revert back later if needed
-        # eq_2_no_point: MathTex = (
-        #     MathTex("2x - y = 2", color=PURPLE)
-        #     .scale(TEXT_SCALE)
-        #     .next_to(eq_1, DOWN * 0.5)
-        # )
-        # self.play(
-        #     Transform(eq_2, eq_2_no_point),
-        #     eq_2_line.animate.move_to(axes.c2p(0, -2)),
-        #     Unwrite(eq_0_dot),
-        # )
-        # self.wait(3)
-
-        # # remove everything from the scene
-        # self.play(
-        #     Unwrite(eq_0_wrong_form),
-        #     Unwrite(eq_1),
-        #     Unwrite(eq_2),
-        #     Unwrite(axes),
-        #     Unwrite(eq_0_line),
-        #     Unwrite(eq_1_line),
-        #     Unwrite(eq_2_line),
-        #     run_time=0.75,
-        # )
-        # self.wait()
+        # self.wait(43)
