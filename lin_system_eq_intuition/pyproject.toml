@@ -11,4 +11,4 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-manim-exts = { git = "https://github.com/RowanTL/manim_exts.git", rev = "36dcd6ad1db1bbf45cb07e28076e367745c9e535" }
+manim-exts = { git = "https://github.com/RowanTL/manim_exts.git" }

@@ -15,7 +15,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "manim", specifier = ">=0.19.0" },
-    { name = "manim-exts", git = "https://github.com/RowanTL/manim_exts.git?rev=36dcd6ad1db1bbf45cb07e28076e367745c9e535" },
+    { name = "manim-exts", git = "https://github.com/RowanTL/manim_exts.git" },
     { name = "opencv-python-headless", specifier = ">=4.12.0.88" },
 ]
 
@@ -225,7 +225,7 @@ wheels = [
 [[package]]
 name = "manim-exts"
 version = "0.1.0"
-source = { git = "https://github.com/RowanTL/manim_exts.git?rev=36dcd6ad1db1bbf45cb07e28076e367745c9e535#36dcd6ad1db1bbf45cb07e28076e367745c9e535" }
+source = { git = "https://github.com/RowanTL/manim_exts.git#36dcd6ad1db1bbf45cb07e28076e367745c9e535" }
 dependencies = [
     { name = "manim" },
 ]
