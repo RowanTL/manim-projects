@@ -61,6 +61,16 @@ between 2D and 3D help grasp how the different solution types come about.
 
 [link to video](https://youtube.com/shorts/Rb6a_pyU8v8?si=XV__WPIpFLn1rmb2)
 
+### Linear Systems Transformations Intuition
+
+*Incomplete*
+
+A short describing how a transforming a linear system of equations doesn't actually change anything about
+the solution. As humans, we don't immediately see the solution, so we must modify the equations to see
+the solution.
+
+**link soon**
+
 ### EC Video
 
 *Incomplete*
