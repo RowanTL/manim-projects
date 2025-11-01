@@ -67,7 +67,7 @@ class LinEqSolutions(Scene):
             .next_to(one_point_text, DOWN)
         )
 
-        self.play(Write(solutions_type))
+        self.play(Write(solutions_type), run_time=2)
         self.play(Write(inf_text))
         self.play(Write(one_point_text))
         self.play(Write(no_text))
@@ -135,6 +135,7 @@ class ThreeDSystems(ThreeDScene):
         self.play(
             Rotate(eq_0_line, angle=PI, axis=normal_vec, about_point=ORIGIN, run_time=4)
         )
+        self.wait(1.75)
 
         # show infinitely many solutions with only one free variable
         eq_1: MathTex = (
@@ -183,6 +184,6 @@ class ThreeDSystems(ThreeDScene):
         self.add_fixed_in_frame_mobjects(eq_2)
         self.play(Write(eq_2), FadeIn(eq_2_surface), FadeOut(eq_1_line))
         self.wait(1)
-        eq_3_dot: Dot3D = Dot3D(axes.c2p(0, 0, 0), color=PURE_GREEN)
+        eq_3_dot: Dot3D = Dot3D(axes.c2p(0, 0, 0), color=PURE_RED)
         self.play(FadeIn(eq_3_dot))  # shows there's only one solution
-        # self.wait(43)
+        self.wait(32)
