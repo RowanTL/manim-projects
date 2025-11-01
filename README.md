@@ -16,6 +16,8 @@ I'm writing this with ManimCE and manim_slides.
 
 The presentation took place on September 18th, 2025 6PM CST @ Tech Artista Central West End in Saint Louis, MO
 
+[link to long video](https://www.youtube.com/watch?v=ZzYi_j2IYuY)
+
 ### Rodrigues' Formula Short
 
 *Complete*
