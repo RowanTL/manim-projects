@@ -2,7 +2,7 @@
 
 This is a 3D version of the 2D linear systems of equations short
 
-**link soon**
+[https://youtube.com/shorts/Rb6a_pyU8v8?si=XV__WPIpFLn1rmb2](https://youtube.com/shorts/Rb6a_pyU8v8?si=XV__WPIpFLn1rmb2)
 
 ## How to build
 

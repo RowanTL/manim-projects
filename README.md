@@ -18,7 +18,7 @@ The presentation took place on September 18th, 2025 6PM CST @ Tech Artista Centr
 
 ### Rodrigues' Formula Short
 
-*complete*
+*Complete*
 
 This is a short uploaded to youtube showing a mathematical formula to rotate an
 object in 3D space.
@@ -29,7 +29,7 @@ Used ManimCE only
 
 ### Specular Reflection Short
 
-*complete*
+*Complete*
 
 This is a short uploaded to youtube covering the math behind how light reflects off a perfectly
 reflective surface in a single direction. In other words, the surface is perfectly reflective mirror.
@@ -43,7 +43,7 @@ It was uploaded as a video instead of a short for some reason :(
 
 ### 2D Linear Systems of Equations Short
 
-*complete*
+*Complete*
 
 This is a short visually describing the different possible solutions to a linear system of equations.
 I felt like I needed to re-learn some linear algebra, so this is the "back to the basics" so to speak.
@@ -52,12 +52,12 @@ I felt like I needed to re-learn some linear algebra, so this is the "back to th
 
 ### 3D Linear Systems of Equations Short
 
-*incomplete*
+*Complete*
 
 A 3D version of the 2D short above. There are a few differences in 3 dimensions. Thinking about the differences
 between 2D and 3D help grasp how the different solution types come about.
 
-**link soon**
+[link to video](https://youtube.com/shorts/Rb6a_pyU8v8?si=XV__WPIpFLn1rmb2)
 
 ### EC Video
 
