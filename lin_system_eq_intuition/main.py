@@ -57,6 +57,33 @@ class TwoDSystemExample(Scene):
         )
         self.play(old_aug_matrix.animate.center())
 
+    def add_rows(
+        self,
+        old_aug_matrix: AugmentedMatrix,
+        new_aug_matrix: AugmentedMatrix,
+        add_row_idx: int,
+        other_row_idx: int,
+    ):
+        self.play(old_aug_matrix.animate.to_edge(DOWN))
+        old_rows = old_aug_matrix.matrix.get_rows()
+        add_row = old_rows[add_row_idx]
+        other_row = old_rows[other_row_idx]
+        other_row_copy = other_row.copy()
+
+        add_text: Text = Text("+")
+        self.play(
+            add_row.animate.to_edge(UP),
+            Write(add_text.next_to(add_row, DOWN * 0.5)),
+            other_row_copy.animate.next_to(add_text, DOWN * 0.5),
+        )
+
+        new_row = new_aug_matrix.matrix.get_rows()[add_row_idx]
+        new_row_center = new_row.get_center()
+        new_row.to_edge(UP)
+
+        self.play(FadeOut(other_row), FadeOut(add_text), Transform(add_row, new_row))
+        self.play(add_row.animate.move_to(new_row_center))
+
     def construct(self):
         system_tex: MathTex = MathTex(
             r"{{-x + y = 2}}\\{{2x + 2y = 4}}"
@@ -78,12 +105,15 @@ class TwoDSystemExample(Scene):
         )
         aug_matrix_div_row_1_by_2.matrix.set_row_colors(WHITE, BLUE)
         self.right_scale(system_tex, aug_matrix_div_row_1_by_2, MathTex(r"\div 2"), 1)
+        system_tex = aug_matrix_div_row_1_by_2
 
         # Show adding one equation to another doesn't do anything
         aug_matrix_row_1_plus_row_2: AugmentedMatrix = AugmentedMatrix(
             np.array([[-1, 1, 2], [0, 2, 4]])
         )
         aug_matrix_row_1_plus_row_2.matrix.set_row_colors(WHITE, BLUE)
+        self.add_rows(system_tex, aug_matrix_row_1_plus_row_2, 1, 0)
+        self.wait()
         # self.play(Transform(system_tex, aug_matrix_row_1_plus_row_2))
         # self.wait()
 
