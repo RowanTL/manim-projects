@@ -63,17 +63,15 @@ between 2D and 3D help grasp how the different solution types come about.
 
 ### Linear Systems Transformations Intuition
 
-*Incomplete*
+*Scraped*
 
 A short describing how a transforming a linear system of equations doesn't actually change anything about
 the solution. As humans, we don't immediately see the solution, so we must modify the equations to see
 the solution.
 
-**link soon**
-
 ### EC Video
 
-*Incomplete*
+*Scraped*
 
 This was supposed to be a video about Evolutionary Computing and how that works.
 I found I didn't have the motivation to do it.
