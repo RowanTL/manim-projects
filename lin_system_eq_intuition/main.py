@@ -40,6 +40,23 @@ class LinEqTransformations(Scene):
 
 
 class TwoDSystemExample(Scene):
+    def right_scale(
+        self,
+        old_aug_matrix: AugmentedMatrix,
+        new_aug_matrix: AugmentedMatrix,
+        scale_tex: MathTex,
+        row_num: int,
+    ):
+        self.play(old_aug_matrix.animate.to_edge(LEFT))
+        scale_tex.next_to(old_aug_matrix.matrix.get_rows()[row_num], RIGHT * 2)
+        self.play(Write(scale_tex))
+        self.wait()
+        self.play(Unwrite(scale_tex))
+        self.play(
+            Transform(old_aug_matrix, new_aug_matrix),
+        )
+        self.play(old_aug_matrix.animate.center())
+
     def construct(self):
         system_tex: MathTex = MathTex(
             r"{{-x + y = 2}}\\{{2x + 2y = 4}}"
@@ -51,15 +68,24 @@ class TwoDSystemExample(Scene):
         aug_matrix: AugmentedMatrix = AugmentedMatrix(np.array([[-1, 1, 2], [2, 2, 4]]))
         aug_matrix.matrix.set_row_colors(WHITE, BLUE)
 
-        self.play(Transform(system_tex, aug_matrix))
+        self.play(ReplacementTransform(system_tex, aug_matrix))
+        system_tex = aug_matrix
         self.wait()
 
+        # show off scaling doesn't change anything
         aug_matrix_div_row_1_by_2: AugmentedMatrix = AugmentedMatrix(
             np.array([[-1, 1, 2], [1, 1, 2]])
         )
         aug_matrix_div_row_1_by_2.matrix.set_row_colors(WHITE, BLUE)
-        self.play(Transform(system_tex, aug_matrix_div_row_1_by_2))
-        self.wait(2)
+        self.right_scale(system_tex, aug_matrix_div_row_1_by_2, MathTex(r"\div 2"), 1)
+
+        # Show adding one equation to another doesn't do anything
+        aug_matrix_row_1_plus_row_2: AugmentedMatrix = AugmentedMatrix(
+            np.array([[-1, 1, 2], [0, 2, 4]])
+        )
+        aug_matrix_row_1_plus_row_2.matrix.set_row_colors(WHITE, BLUE)
+        # self.play(Transform(system_tex, aug_matrix_row_1_plus_row_2))
+        # self.wait()
 
 
 class TwoDSystem(Scene):
@@ -77,3 +103,8 @@ class TwoDSystem(Scene):
         self.play(eq_1.animate.scale(0.5))
         self.wait()
         self.play(eq_1.animate.restore())
+
+        # show solution to system
+        sol_dot: Dot = Dot(axes.c2p(1, 1), color=PURE_RED)
+        self.play(FadeIn(sol_dot))
+        self.wait()
