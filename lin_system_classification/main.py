@@ -1,5 +1,6 @@
-from manim import *
 from typing import Final
+
+from manim import *
 
 GLOBAL_SCALE: Final[float] = 0.38
 TEXT_SCALE: Final[float] = 0.40
@@ -50,12 +51,17 @@ class EntireShort(Scene):
 
         ################ Animations start here
         self.play(Write(eq_0), FadeIn(axes), FadeIn(eq_0_line), FadeIn(solution_dot))
-        self.wait()
 
         # dot moves up and left and then back to the origin
         # system is consisent and not unique
-        self.play(solution_dot.animate.move_to(axes.c2p(-4, 4)), rate_func=linear)
-        self.play(solution_dot.animate.move_to(axes.c2p(0, 0)), rate_func=linear)
+        self.play(
+            solution_dot.animate.move_to(axes.c2p(-4, 4)),
+            rate_func=linear,
+            run_time=2,
+        )
+        self.play(
+            solution_dot.animate.move_to(axes.c2p(0, 0)), rate_func=linear, run_time=2
+        )
         self.wait()
 
         # show the overlap and still infinite solutions with two equations
@@ -73,7 +79,9 @@ class EntireShort(Scene):
         # solution is consistent and unique
         self.play(Write(eq_1), FadeIn(eq_1_line))
         self.wait()
-        self.play(Indicate(solution_dot, color=PURE_RED))
+        self.play(
+            Indicate(solution_dot, color=PURE_RED), run_time=2
+        )  # leave this error for now. Will get fixed in a later manim update
         self.wait()
 
         # going to transform these into a different line to show
@@ -86,5 +94,7 @@ class EntireShort(Scene):
         self.play(
             Transform(eq_1, inconsistent_eq_1),
             Transform(eq_1_line, inconsistent_eq_1_line),
+            FadeOut(solution_dot),
+            run_time=2,
         )
-        self.wait()
+        self.wait(4)

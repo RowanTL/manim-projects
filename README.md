@@ -63,13 +63,13 @@ between 2D and 3D help grasp how the different solution types come about.
 
 ### Linear Systems Solutions Terminology
 
-*In progress*
+*Complete*
 
 There is some terminology to classify the solution space of a linear system of equations. Is the system *consistent* or
 *inconsistent*? If the system is *consistent*, is the solution *unique*? This short illustrates this how these solutions
 come to be.
 
-**link when complete**
+[link to short](https://www.youtube.com/shorts/5EQBJOpfZHM)
 
 ### Linear Systems Transformations Intuition
 
