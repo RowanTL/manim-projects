@@ -4,6 +4,8 @@ There is some terminology to classify the solution space of a linear system of e
 *inconsistent*? If the system is *consistent*, is the solution *unique*? This short illustrates this how these solutions
 come to be.
 
+An extremely simple video for an extremely simple concept.
+
 ## How to build
 
 Follow the official instructions to install [ManimCE](https://docs.manim.community/en/stable/installation/uv.html). The
