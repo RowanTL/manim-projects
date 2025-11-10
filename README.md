@@ -73,10 +73,12 @@ come to be.
 
 ### Set Theory Basics: Union/Intersection
 
-**In Progress**
+*In Progress*
 
 I'm reading through a topology book and this is material in the first chapter. It was a good refresher on basic logic,
 and I would like to make a short covering how it functions.
+
+**link soon**
 
 ### Linear Systems Transformations Intuition
 
