@@ -75,9 +75,7 @@ class OverviewSlide(Slide):
         self.next_slide()
 
 
-# Need a slide describing user HttpRequest and Response
-# Basically go over responder implementation and how to do it
-# https://docs.rs/actix-web/latest/actix_web/trait.Responder.html
+# Want a slide that goes over what a HttpRequest struct contains
 
 
 # All of these types implement Responder
@@ -132,3 +130,8 @@ class ResponderSlide(Slide):
         )
         self.wait(0.5)
         self.next_slide()
+
+
+# Need a slide describing user HttpRequest and Response
+# Basically go over responder implementation and how to do it
+# https://docs.rs/actix-web/latest/actix_web/trait.Responder.html
