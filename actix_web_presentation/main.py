@@ -88,6 +88,72 @@ class OverviewSlide(Slide):
         self.next_slide()
 
 
+# Application Slide
+# Move the App from the previous slide to the top of the screen here later
+class ApplicationSlide(Slide):
+    def construct(self):
+        # Scene setup
+        # ...
+
+        # Definitions
+        app_text: Text = Text("actix_web::App").to_edge(UP)
+
+        table_scale: float = 0.8
+        routes_table: Table = (
+            Table(
+                [
+                    ["Route", "Request Type"],
+                    ["/index_html", "GET"],
+                    ["/update_user", "POST"],
+                    ["/delete_user", "DELETE"],
+                    ["/head_requst", "HEAD"],
+                ],
+                include_outer_lines=True,
+            )
+            .scale(table_scale)
+            .shift(DOWN)
+        )
+
+        # Eventually shift RIGHT by 2, color similar routes, then group them to explain
+        # how scope works
+        scope_table: Table = (
+            Table(
+                [["Route"], ["/users"], ["/users/{id}"], ["/dashboard"], ["/admin"]],
+                include_outer_lines=True,
+            )
+            .scale(table_scale)
+            .shift(DOWN)
+        )
+        api_v1_brace: Mobject = always_redraw(
+            lambda: Brace(
+                scope_table.get_rows()[1:3], direction=LEFT, color=BLUE
+            ).shift(LEFT)
+        )
+        admin_brace: Mobject = always_redraw(
+            lambda: Brace(scope_table.get_rows()[3:5], direction=LEFT, color=RED).shift(
+                LEFT
+            )
+        )
+        # Animations
+        self.play(Write(app_text))
+        self.next_slide()
+        self.play(Write(routes_table))
+        self.next_slide()
+        self.play(Unwrite(routes_table))
+        self.play(Write(scope_table))
+        self.next_slide()
+        self.play(
+            scope_table.animate.shift(RIGHT * 2),
+        )
+        self.play(
+            scope_table.get_rows()[1:3].animate.set_color(BLUE),
+            scope_table.get_rows()[3:5].animate.set_color(RED),
+            Write(api_v1_brace),
+            Write(admin_brace),
+        )  # numbers are the similar routes to be scoped later
+        self.next_slide()
+
+
 # All of these types implement Responder
 class ResponderSlide(Slide):
     def construct(self):
