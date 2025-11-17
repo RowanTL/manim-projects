@@ -88,9 +88,6 @@ class OverviewSlide(Slide):
         self.next_slide()
 
 
-# Want a slide that goes over what a HttpRequest struct contains
-
-
 # All of these types implement Responder
 class ResponderSlide(Slide):
     def construct(self):
