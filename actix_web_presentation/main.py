@@ -28,7 +28,7 @@ class OverviewSlide(Slide):
             stroke_width=2,
         )
         http_request_text: Text = (
-            Text("HttpRequest")
+            Text("impl FromRequest")
             .next_to(http_request_arrow, DOWN * 0.1)
             .scale(arrow_text_scale)
         )
@@ -40,9 +40,16 @@ class OverviewSlide(Slide):
             stroke_width=2,
         )
         http_response_text: Text = (
-            Text("HttpResponse")
+            Text("impl Responder")
             .next_to(http_response_arrow, UP * 0.1)
             .scale(arrow_text_scale)
+        )
+
+        basic_http_request_text: Text = (
+            Text("HttpRequest").move_to(http_request_text).scale(arrow_text_scale)
+        )
+        basic_http_response_text: Text = (
+            Text("HttpResponse").move_to(http_response_text).scale(arrow_text_scale)
         )
 
         # Animations
@@ -58,6 +65,12 @@ class OverviewSlide(Slide):
             Write(http_request_text),
             Write(http_response_arrow),
             Write(http_response_text),
+            run_time=2,
+        )
+        self.next_slide()
+        self.play(
+            Transform(http_request_text, basic_http_request_text),
+            Transform(http_response_text, basic_http_response_text),
             run_time=2,
         )
         self.next_slide()
