@@ -118,22 +118,22 @@ class ApplicationSlide(Slide):
         # how scope works
         scope_table: Table = (
             Table(
-                [["Route"], ["/users"], ["/users/{id}"], ["/dashboard"], ["/admin"]],
+                [["Route"], ["/users"], ["/users/{id}"], ["/dashboard"], ["/logs"]],
                 include_outer_lines=True,
             )
             .scale(table_scale)
             .shift(DOWN)
         )
-        api_v1_brace: Mobject = always_redraw(
-            lambda: Brace(
-                scope_table.get_rows()[1:3], direction=LEFT, color=BLUE
-            ).shift(LEFT)
+
+        api_v1_brace: Brace = Brace(
+            scope_table.get_rows()[1:3], direction=LEFT, color=BLUE
         )
-        admin_brace: Mobject = always_redraw(
-            lambda: Brace(scope_table.get_rows()[3:5], direction=LEFT, color=RED).shift(
-                LEFT
-            )
+        admin_brace: Brace = Brace(
+            scope_table.get_rows()[3:5], direction=LEFT, color=RED
         )
+        api_v1_text: Text = Text("/api/v1", color=BLUE).scale(table_scale)
+        admin_text: Text = Text("/admin", color=RED).scale(table_scale)
+
         # Animations
         self.play(Write(app_text))
         self.next_slide()
@@ -145,12 +145,33 @@ class ApplicationSlide(Slide):
         self.play(
             scope_table.animate.shift(RIGHT * 2),
         )
+        # reposition the braces and associated text for the next animation
+        api_v1_brace.next_to(scope_table.get_rows()[1:3], LEFT * 3.5)
+        admin_brace.next_to(scope_table.get_rows()[3:5], LEFT * 3.5).set_x(
+            api_v1_brace.get_x()  # makes the braces line up
+        )
+        api_v1_text.next_to(api_v1_brace, LEFT)
+        admin_text.next_to(admin_brace, LEFT)
+        # back to the animations
         self.play(
             scope_table.get_rows()[1:3].animate.set_color(BLUE),
             scope_table.get_rows()[3:5].animate.set_color(RED),
             Write(api_v1_brace),
             Write(admin_brace),
+            Write(api_v1_text),
+            Write(admin_text),
         )  # numbers are the similar routes to be scoped later
+        self.wait(0.5)
+        self.next_slide()
+        self.play(
+            Unwrite(app_text),
+            Unwrite(scope_table),
+            Unwrite(api_v1_brace),
+            Unwrite(admin_brace),
+            Unwrite(api_v1_text),
+            Unwrite(admin_text),
+        )
+        self.wait(0.25)
         self.next_slide()
 
 
