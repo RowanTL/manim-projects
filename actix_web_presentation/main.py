@@ -175,6 +175,50 @@ class ApplicationSlide(Slide):
         self.next_slide()
 
 
+# A slide for explaining extractors (impl FromRequest)
+class ExtractorSlide(Slide):
+    def construct(self):
+        # Scene setup
+        # ...
+
+        # Definitions
+        impl_from_request_text: Text = Text("impl FromRequest").to_edge(UP)
+
+        extractor_scale: float = 0.6
+        extractor_table: Table = (
+            Table(
+                [
+                    ["web::Path<T>", "Extracts path information (/users/{id})"],
+                    [
+                        "web::Query<T>",
+                        "Extracts query parameters info: \n(https://website.com&parameter1=value)",
+                    ],
+                    [
+                        "web::Json<T>",
+                        "Extracts json from request's body \n(Extraction configurable)",
+                    ],
+                    [
+                        "web::Form<T>",
+                        'Extract form data when \n"x-www-form-urlencoded" \ncontent type header passed',
+                    ],
+                    ["web::Bytes", "Extract the bytes of the request directly"],
+                ],
+                include_outer_lines=True,
+            )
+            .scale(extractor_scale)
+            .to_edge(DOWN)
+        )
+        # Animations
+        self.play(Write(impl_from_request_text))
+        self.next_slide()
+        self.play(Write(extractor_table))
+        self.next_slide()
+        self.play(
+            Unwrite(extractor_table), Unwrite(impl_from_request_text), run_time=0.5
+        )
+        self.wait(0.25)
+
+
 # All of these types implement Responder
 class ResponderSlide(Slide):
     def construct(self):
