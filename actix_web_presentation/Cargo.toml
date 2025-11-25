@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 actix-web = "4"
 bytes = "1"  # used internally in tokio. https://github.com/tokio-rs/bytes
+serde = "1"
