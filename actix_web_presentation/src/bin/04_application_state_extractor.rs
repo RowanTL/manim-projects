@@ -1,33 +1,53 @@
-use actix_web::{App, HttpServer, Responder, web};
-use std::cell::Cell;
+use actix_web::{App, HttpServer, Responder, get, web};
+use std::{
+    cell::Cell,
+    sync::Arc,
+    sync::atomic::{AtomicUsize, Ordering},
+};
 
+// Must use a combination of Cell and Arc to count across threads safely.
+// local count is for the current thread while global_count is for all threads.
 #[derive(Clone)]
 struct AppState {
-    count: Cell<usize>,
+    local_count: Cell<usize>,
+    global_count: Arc<AtomicUsize>,
 }
 
+#[get("/")]
 async fn show_count(data: web::Data<AppState>) -> impl Responder {
-    format!("count: {}", data.count.get())
+    format!(
+        "global_count: {}\nlocal_count: {}",
+        data.global_count.load(Ordering::Relaxed),
+        data.local_count.get()
+    )
 }
 
+#[get("/add")]
 async fn add_one(data: web::Data<AppState>) -> impl Responder {
-    let count = data.count.get();
-    data.count.set(count + 1);
+    data.global_count.fetch_add(1, Ordering::Relaxed);
 
-    format!("count: {}", data.count.get())
+    let local_count = data.local_count.get();
+    data.local_count.set(local_count + 1);
+
+    format!(
+        "global_count: {}\nlocal_count: {}",
+        data.global_count.load(Ordering::Relaxed),
+        data.local_count.get()
+    )
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let data = AppState {
-        count: Cell::new(0),
+        local_count: Cell::new(0),
+        global_count: Arc::new(AtomicUsize::new(0)),
     };
 
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(data.clone()))
-            .route("/", web::to(show_count))
-            .route("/add", web::to(add_one))
+            .service(show_count)
+            .service(add_one)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
@@ -44,25 +64,27 @@ mod tests {
     #[actix_web::test]
     async fn test_app_state_extractor() {
         let data = AppState {
-            count: Cell::new(0),
+            local_count: Cell::new(0),
+            global_count: Arc::new(AtomicUsize::new(0)),
         };
+
         let app = test::init_service(
             App::new()
                 .app_data(web::Data::new(data.clone()))
-                .route("/", web::to(show_count))
-                .route("/add", web::to(add_one)),
+                .service(show_count)
+                .service(add_one),
         )
         .await;
         let request = test::TestRequest::get().uri("/").to_request();
         let response: Bytes = test::call_and_read_body(&app, request).await;
-        assert_eq!(response, Bytes::from("count: 0"));
+        assert_eq!(response, Bytes::from("global_count: 0\nlocal_count: 0"));
 
         let request = test::TestRequest::get().uri("/add").to_request();
         let response: Bytes = test::call_and_read_body(&app, request).await;
-        assert_eq!(response, Bytes::from("count: 1"));
+        assert_eq!(response, Bytes::from("global_count: 1\nlocal_count: 1"));
 
         let request = test::TestRequest::get().uri("/").to_request();
         let response: Bytes = test::call_and_read_body(&app, request).await;
-        assert_eq!(response, Bytes::from("count: 1"));
+        assert_eq!(response, Bytes::from("global_count: 1\nlocal_count: 1"));
     }
 }
