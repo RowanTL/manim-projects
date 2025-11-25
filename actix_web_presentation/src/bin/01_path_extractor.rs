@@ -20,7 +20,7 @@ async fn main() -> std::io::Result<()> {
 #[cfg(test)]
 mod tests {
     use actix_web::{App, body::MessageBody, test};
-    use bytes::Bytes;
+    use bytes::Bytes; // library created & used by tokio-rs
 
     use super::*;
 
@@ -31,8 +31,5 @@ mod tests {
         let response = test::call_service(&app, request).await;
         let res_body = response.into_body();
         assert!(res_body.try_into_bytes().unwrap() == Bytes::from("Welcome jerry, user_id 1!"));
-        // let body_bytes = test::read_body(response).await;
-        // let body_str = std::str::from_utf8(&body_bytes).unwrap();
-        // assert_eq!(body_str, "Hello world!");
     }
 }

@@ -4,7 +4,7 @@ PYTHON_FILE = main.py
 
 # This is the hardcoded list of scenes you want to render
 # WARNING: The order of this list does matter!
-SCENE_LIST = OverviewSlide ResponderSlide
+SCENE_LIST = OverviewSlide ApplicationSlide ExtractorSlide ResponderSlide
 
 # The .PHONY declaration tells Make that these are not file names, but commands
 .PHONY: render slides clean
