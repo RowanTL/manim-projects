@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-actix-web = "4"
+actix-web = { version = "4", features = ["openssl"] }
 bytes = "1"  # used internally in tokio. https://github.com/tokio-rs/bytes
 serde = "1"
+openssl = { version = "0.10" }
