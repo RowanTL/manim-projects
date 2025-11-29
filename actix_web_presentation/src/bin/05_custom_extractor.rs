@@ -47,3 +47,49 @@ async fn main() -> std::io::Result<()> {
         .run()
         .await
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use actix_web::{App, body::to_bytes, test};
+    use bytes::Bytes;
+
+    #[actix_web::test]
+    async fn test_custom_extractor_ok() {
+        let app = test::init_service(App::new().service(index)).await;
+        let x = 1i64;
+        let y = 2i64;
+        let z = 3i64;
+
+        let mut payload = Vec::new();
+        payload.extend_from_slice(&x.to_be_bytes());
+        payload.extend_from_slice(&y.to_be_bytes());
+        payload.extend_from_slice(&z.to_be_bytes());
+        let payload = Bytes::from(payload);
+
+        let req = test::TestRequest::get()
+            .uri("/")
+            .set_payload(payload)
+            .to_request();
+        let resp = test::call_service(&app, req).await;
+
+        assert!(resp.status().is_success());
+        let body = to_bytes(resp.into_body()).await.unwrap();
+        assert_eq!(body, "1, 2, 3");
+    }
+
+    #[actix_web::test]
+    async fn test_custom_extractor_bad_request() {
+        let app = test::init_service(App::new().service(index)).await;
+
+        let payload = Bytes::from("invalid payload");
+
+        let req = test::TestRequest::get()
+            .uri("/")
+            .set_payload(payload)
+            .to_request();
+        let resp = test::call_service(&app, req).await;
+
+        assert_eq!(resp.status(), 400);
+    }
+}
