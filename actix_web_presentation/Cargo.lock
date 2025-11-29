@@ -214,6 +214,7 @@ dependencies = [
  "bytes",
  "openssl",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
