@@ -1,6 +1,6 @@
 use actix_web::{
-    App, HttpRequest, HttpResponse, HttpServer, Responder, Result, body::BoxBody, get,
-    http::header::ContentType, web,
+    App, HttpRequest, HttpResponse, HttpServer, Responder, body::BoxBody, get,
+    http::header::ContentType,
 };
 use serde::Serialize;
 
@@ -35,6 +35,7 @@ async fn main() -> std::io::Result<()> {
         .await
 }
 
+#[cfg(test)]
 mod tests {
     use actix_web::{App, http::header::ContentType, test};
 
@@ -50,6 +51,6 @@ mod tests {
         assert!(response.status().is_success());
         let body_bytes = test::read_body(response).await;
         let body_str = std::str::from_utf8(&body_bytes).unwrap();
-        assert_eq!(body_str, "Hello world!");
+        assert_eq!(body_str, "{\"name\":\"user\"}");
     }
 }
