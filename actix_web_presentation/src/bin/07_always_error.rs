@@ -15,3 +15,24 @@ async fn main() -> std::io::Result<()> {
         .run()
         .await
 }
+
+#[cfg(test)]
+mod tests {
+    use actix_web::{App, http::header::ContentType, test};
+
+    use super::*;
+
+    #[actix_web::test]
+    async fn test_always_error() {
+        let app = test::init_service(App::new().service(index)).await;
+        let request = test::TestRequest::default()
+            .insert_header(ContentType::plaintext())
+            .to_request();
+        let response = test::call_service(&app, request).await;
+        // Testing for a failure here. Notice the !
+        assert!(!response.status().is_success());
+        let body_bytes = test::read_body(response).await;
+        let body_str = std::str::from_utf8(&body_bytes).unwrap();
+        assert_eq!(body_str, "invalid utf-8 sequence of 1 bytes from index 1");
+    }
+}
