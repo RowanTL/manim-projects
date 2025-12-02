@@ -21,7 +21,9 @@ Install [manim](https://docs.manim.community/en/stable/installation/uv.html) pro
 ## Rust projects
 
 1) Install [rust](https://rust-lang.org/tools/install/)
-2) `cargo run --bin ##_example_file`. The examples can be found under the `src/bin` directory.
+2) `cargo run --bin ##_example_file`. The examples can be found under the `src/bin` directory. Notice
+  the lack of `.rs` at the end of the command above.
 
 Either use the integrated tests in each file or create your own curl requests to query
-the servers.
+the servers. The final `10_file_upload.rs` file has no `tests` module. I demonstrate this
+with `scripts/test_upload.sh`.
