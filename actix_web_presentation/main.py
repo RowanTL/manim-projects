@@ -332,9 +332,9 @@ class ResponderSlide(Slide):
 
         # Definitions
         responder_text_size: int = 60
-        responder_text: Text = Text("Responder", font_size=responder_text_size).to_edge(
-            UP
-        )
+        responder_text: Text = Text(
+            "impl Responder", font_size=responder_text_size
+        ).to_edge(UP)
 
         implementors_text_size: int = 30
         cow_text: Text = (
