@@ -1,7 +1,11 @@
+from typing import Final
+
 from manim import *
 from manim_slides.slide import Slide
 
 config.frame_rate = 15
+
+GLOBAL_SCALE: Final[float] = 0.75
 
 
 # A slide that gives a general overview on how actix web actually works
@@ -11,80 +15,31 @@ class OverviewSlide(Slide):
         # ...
 
         # Definitions
-        pi_user: SVGMobject = SVGMobject("assets/PiCreatures_erm.svg").to_edge(LEFT)
+        pi_user: SVGMobject = (
+            SVGMobject("assets/PiCreatures_erm.svg").to_corner(UL).scale(GLOBAL_SCALE)
+        )
 
-        box_scale: float = 0.7
-        http_server_box: Square = Square(pi_user.width).to_edge(RIGHT)
         http_server_text: Text = (
-            Text("HttpServer").next_to(http_server_box, UP * 0.5).scale(box_scale)
+            Text("HttpServer").to_edge(UP + RIGHT * 2).scale(GLOBAL_SCALE)
         )
-        app_text: Text = Text("App").move_to(http_server_box).scale(box_scale)
+        pi_http_server_arrow: Arrow = Arrow(
+            pi_user.get_right(), http_server_text.get_left()
+        ).scale(GLOBAL_SCALE)
 
-        arrow_text_scale = 0.5
-        http_request_arrow: Arrow = Arrow(
-            start=pi_user.get_corner(DR),
-            end=http_server_box.get_corner(DL),
-            color=BLUE,
-            stroke_width=2,
-        )
-        http_request_text: Text = (
-            Text("impl FromRequest")
-            .next_to(http_request_arrow, DOWN * 0.1)
-            .scale(arrow_text_scale)
-        )
-
-        http_response_arrow: Arrow = Arrow(
-            end=pi_user.get_corner(UR),
-            start=http_server_box.get_corner(UL),
-            color=BLUE,
-            stroke_width=2,
-        )
-        http_response_text: Text = (
-            Text("impl Responder")
-            .next_to(http_response_arrow, UP * 0.1)
-            .scale(arrow_text_scale)
-        )
-
-        basic_http_request_text: Text = (
-            Text("HttpRequest").move_to(http_request_text).scale(arrow_text_scale)
-        )
-        basic_http_response_text: Text = (
-            Text("HttpResponse").move_to(http_response_text).scale(arrow_text_scale)
-        )
+        app_text: Text = Text("App").next_to(http_server_text, DOWN).scale(GLOBAL_SCALE)
+        http_server_app_arrow: Arrow = Arrow(
+            http_server_text.get_bottom(), app_text.get_top()
+        ).scale(GLOBAL_SCALE)
 
         # Animations
-        self.play(
-            FadeIn(pi_user),
-            FadeIn(http_server_box),
-            FadeIn(http_server_text),
-            FadeIn(app_text),
-        )
+        self.play(FadeIn(pi_user))
+        self.wait(0.05)
         self.next_slide()
-        self.play(
-            Write(http_request_arrow),
-            Write(http_request_text),
-            Write(http_response_arrow),
-            Write(http_response_text),
-            run_time=2,
-        )
+        self.play(Write(http_server_text), Write(pi_http_server_arrow))
+        self.wait(0.05)
         self.next_slide()
-        self.play(
-            Transform(http_request_text, basic_http_request_text),
-            Transform(http_response_text, basic_http_response_text),
-            run_time=2,
-        )
-        self.next_slide()
-        self.play(
-            FadeOut(pi_user),
-            FadeOut(http_server_box),
-            FadeOut(http_server_text),
-            FadeOut(app_text),
-            Unwrite(http_request_arrow),
-            Unwrite(http_request_text),
-            Unwrite(http_response_arrow),
-            Unwrite(http_response_text),
-        )
-        self.wait(0.5)
+        self.play(Write(app_text), Write(http_server_app_arrow))
+        self.wait(0.05)
         self.next_slide()
 
 
