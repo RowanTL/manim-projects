@@ -197,6 +197,10 @@ class ApplicationSlide(Slide):
         # Definitions
         app_text: Text = Text("actix_web::App").to_edge(UP)
 
+        scope_text: Text = (
+            Text("Scope", color=YELLOW).to_edge(LEFT).shift(RIGHT + DOWN * 1.5)
+        )
+
         table_scale: float = 0.8
         routes_table: Table = (
             Table(
@@ -259,16 +263,18 @@ class ApplicationSlide(Slide):
             Write(admin_brace),
             Write(api_v1_text),
             Write(admin_text),
+            Write(scope_text),
         )  # numbers are the similar routes to be scoped later
         self.wait(0.5)
         self.next_slide()
         self.play(
             Unwrite(app_text),
-            Unwrite(scope_table),
+            Unwrite(scope_table, lag_ratio=0.02),
             Unwrite(api_v1_brace),
             Unwrite(admin_brace),
             Unwrite(api_v1_text),
             Unwrite(admin_text),
+            Unwrite(scope_text),
         )
         self.wait(0.25)
         self.next_slide()
