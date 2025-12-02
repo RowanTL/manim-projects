@@ -24,8 +24,6 @@ async fn user_info() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // let user_scope = web::scope("/users").service(all_users).service(user_info);
-
     HttpServer::new(|| {
         App::new()
             .service(
