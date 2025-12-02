@@ -19,17 +19,96 @@ class OverviewSlide(Slide):
             SVGMobject("assets/PiCreatures_erm.svg").to_corner(UL).scale(GLOBAL_SCALE)
         )
 
+        # user sends request to actix http server
         http_server_text: Text = (
             Text("HttpServer").to_edge(UP + RIGHT * 2).scale(GLOBAL_SCALE)
         )
         pi_http_server_arrow: Arrow = Arrow(
             pi_user.get_right(), http_server_text.get_left()
-        ).scale(GLOBAL_SCALE)
+        )
 
-        app_text: Text = Text("App").next_to(http_server_text, DOWN).scale(GLOBAL_SCALE)
+        # The http server takes an App factory
+        app_text: Text = (
+            Text("App").next_to(http_server_text, DOWN * 4).scale(GLOBAL_SCALE)
+        )
         http_server_app_arrow: Arrow = Arrow(
             http_server_text.get_bottom(), app_text.get_top()
-        ).scale(GLOBAL_SCALE)
+        )
+
+        # The App holds many different services
+        services_group: VGroup = (
+            VGroup(
+                Text("Service 1").scale(GLOBAL_SCALE),
+                Text("Service 2").scale(GLOBAL_SCALE),
+            )
+            .arrange(RIGHT, buff=0.5)
+            .next_to(app_text, DOWN * 4)
+        )
+        app_services_arrows: VGroup = VGroup()
+        for service in services_group:
+            app_services_arrows.add(Arrow(app_text.get_bottom(), service.get_top()))
+
+        ## Consolidate services into one `service(s)` text
+        service_s_text: Text = (
+            Text("Service(s)").scale(GLOBAL_SCALE).move_to(services_group.get_center())
+        )
+        app_service_s_arrow: Arrow = Arrow(
+            app_text.get_bottom(), service_s_text.get_top()
+        )
+
+        # The services point to different routes
+        routes_group: VGroup = (
+            VGroup(
+                Text("Route 1").scale(GLOBAL_SCALE), Text("Route 2").scale(GLOBAL_SCALE)
+            )
+            .arrange(RIGHT, buff=0.5)
+            .next_to(service_s_text, DOWN * 4)
+        )
+        service_s_routes_arrows: VGroup = VGroup()
+        for route in routes_group:
+            service_s_routes_arrows.add(
+                Arrow(service_s_text.get_bottom(), route.get_top())
+            )
+
+        # Consolidate multiple routes into one
+        route_s_text: Text = (
+            Text("Route(s)").scale(GLOBAL_SCALE).move_to(routes_group.get_center())
+        )
+        service_s_route_s_arrow: Arrow = Arrow(
+            service_s_text.get_bottom(), route_s_text.get_top()
+        )
+
+        # Handlers take in request defined by routes
+        handler_text: Text = (
+            Text("Handler").scale(GLOBAL_SCALE).next_to(route_s_text, DOWN * 4)
+        )
+        route_s_handler_arrow: Arrow = Arrow(
+            route_s_text.get_bottom(), handler_text.get_top()
+        )
+
+        # Extractors extract data from the request
+        extractor_text: Text = (
+            Text("Extractor").scale(GLOBAL_SCALE).next_to(handler_text, LEFT * 4)
+        )
+        handler_to_extractor_arrow: Arrow = Arrow(
+            handler_text.get_bottom(), extractor_text.get_bottom(), path_arc=-PI / 2
+        )
+
+        # Extractors "send" data back to the handler.
+        extractor_to_handler_arrow: Arrow = Arrow(
+            extractor_text.get_right(), handler_text.get_left()
+        )
+
+        # Have the handler send a response to the pi creature
+        # (The pi creature is now happy because of said response)
+        handler_to_user_arrow: Arrow = Arrow(
+            handler_text.get_corner(UL), pi_user.get_corner(DR)
+        )
+        happy_pi_user: SVGMobject = (
+            SVGMobject("assets/PiCreatures_hooray.svg")
+            .to_corner(UL)
+            .scale(GLOBAL_SCALE)
+        )
 
         # Animations
         self.play(FadeIn(pi_user))
@@ -41,6 +120,71 @@ class OverviewSlide(Slide):
         self.play(Write(app_text), Write(http_server_app_arrow))
         self.wait(0.05)
         self.next_slide()
+        # lag_ratio=0 writes all submobjects at the same time
+        self.play(
+            Write(services_group, lag_ratio=0), Write(app_services_arrows, lag_ratio=0)
+        )
+        self.wait(0.05)
+        self.next_slide()
+        # Note the similar variable names here.
+        self.play(
+            ReplacementTransform(services_group, service_s_text),
+            ReplacementTransform(app_services_arrows, app_service_s_arrow),
+        )
+        self.wait(0.5)
+        self.next_slide()
+
+        self.play(
+            Write(routes_group, lag_ratio=0),
+            Write(service_s_routes_arrows, lag_ratio=0),
+        )
+        self.wait(0.05)
+        self.next_slide()
+
+        self.play(
+            ReplacementTransform(routes_group, route_s_text),
+            ReplacementTransform(service_s_routes_arrows, service_s_route_s_arrow),
+        )
+        self.wait(0.5)
+        self.next_slide()
+
+        self.play(
+            Write(handler_text),
+            Write(route_s_handler_arrow),
+        )
+        self.wait(0.05)
+        self.next_slide()
+
+        self.play(Write(extractor_text), Write(handler_to_extractor_arrow))
+        self.wait(0.05)
+        self.next_slide()
+
+        self.play(Write(extractor_to_handler_arrow))
+        self.wait(0.05)
+        self.next_slide()
+
+        self.play(Write(handler_to_user_arrow), Transform(pi_user, happy_pi_user))
+        self.wait(0.05)
+        self.next_slide()
+
+        self.play(
+            FadeOut(pi_user),
+            Unwrite(http_server_text),
+            Unwrite(pi_http_server_arrow),
+            Unwrite(app_text),
+            Unwrite(http_server_app_arrow),
+            Unwrite(service_s_text),
+            Unwrite(app_service_s_arrow),
+            Unwrite(route_s_text),
+            Unwrite(service_s_route_s_arrow),
+            Unwrite(handler_text),
+            Unwrite(route_s_handler_arrow),
+            Unwrite(extractor_text),
+            Unwrite(handler_to_extractor_arrow),
+            Unwrite(extractor_to_handler_arrow),
+            Unwrite(handler_to_user_arrow),
+        )
+        self.wait(0.05)
 
 
 # Application Slide
