@@ -20,8 +20,8 @@ struct UploadForm {
     json: MpJson<Metadata>,
 }
 
-#[post("/videos")]
-pub async fn post_video(form: MultipartForm<UploadForm>) -> HttpResponse {
+#[post("/file")]
+pub async fn post_file(form: MultipartForm<UploadForm>) -> HttpResponse {
     let mut dir_builder: fs::DirBuilder = fs::DirBuilder::new();
     dir_builder.recursive(true);
     match dir_builder.create("uploads") {
@@ -63,7 +63,7 @@ pub async fn post_video(form: MultipartForm<UploadForm>) -> HttpResponse {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(move || App::new().service(post_video))
+    HttpServer::new(move || App::new().service(post_file))
         .bind(("127.0.0.1", 8080))?
         .run()
         .await
