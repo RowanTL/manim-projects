@@ -10,7 +10,7 @@ async fn static_str_response() -> &'static str {
     "This is a body"
 }
 
-#[get("/static_str")]
+#[get("/vec_u8")]
 async fn vec_u8_response() -> Vec<u8> {
     vec![1, 2, 3, 4, 5]
 }
