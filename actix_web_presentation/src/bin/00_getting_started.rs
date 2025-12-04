@@ -31,6 +31,7 @@ async fn main() -> std::io::Result<()> {
                     .route("/all", web::get().to(all_users))
                     .route("/info", web::get().to(user_info)),
             )
+            .service(hello)
             .service(echo)
             .route("/hey", web::get().to(manual_hello))
     })

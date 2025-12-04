@@ -22,6 +22,7 @@ async fn main() -> std::io::Result<()> {
                         }),
                     ),
             )
+            // returns a "" to the user
             .route("/", web::to(HttpResponse::Ok))
     })
     .bind(("127.0.0.1", 8080))?
