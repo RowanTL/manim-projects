@@ -3,7 +3,7 @@ from typing import Final
 from manim import *
 from manim_slides.slide import Slide
 
-config.frame_rate = 15
+config.frame_rate = 60
 
 GLOBAL_SCALE: Final[float] = 0.75
 
