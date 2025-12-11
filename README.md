@@ -2,6 +2,9 @@
 
 This repo contains my manim projects.
 
+Follow the instructions here to install [ManimCE](https://docs.manim.community/en/stable/installation/uv.html).
+All of these have their own separate [uv](https://docs.astral.sh/uv/#getting-started) projects attached to them.
+
 ## Projects
 
 ### GP-Overview
@@ -72,6 +75,8 @@ come to be.
 [link to short](https://www.youtube.com/shorts/5EQBJOpfZHM)
 
 ### Actix Web Presentation
+
+*Complete*
 
 A presentation I'm giving about actix web on December 4th, 2025
 6PM CST @ STL Rust. This will basically cover the handbook and go
