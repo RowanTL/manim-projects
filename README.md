@@ -84,6 +84,13 @@ through a few examples in real time.
 
 Using ManimCE and manim_slides for this.
 
+### Row Operation Determinant Impact Short
+
+*Scraped* (If I were to come back to a video, it would be this one first)
+
+A youtube short visually showing how row operations on a matrix impact how
+a determinant is calculated.
+
 ### Set Theory Basics: Union/Intersection
 
 *Scraped*
