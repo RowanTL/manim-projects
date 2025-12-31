@@ -86,7 +86,7 @@ Using ManimCE and manim_slides for this.
 
 ### EWMAC Short
 
-*In Progress*
+*Scraped* (In favor of creating an actual video)
 
 A youtube short describing the very basic idea of the EWMAC. I've been playing around with financial data recently
 so I thought this would be a fun video to make. Haven't uploaded in a while and feel like it. Seeing that people actually
