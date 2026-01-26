@@ -84,6 +84,16 @@ through a few examples in real time.
 
 Using ManimCE and manim_slides for this.
 
+[link to video](https://rumble.com/v72mid6-actix-web-unleashed.html?e9s=src_v1_cbl%2Csrc_v1_ucp_a) on rumble
+
+### Injective/Surjective Intuition
+
+*In Progress*
+
+A little short talking about some intuition I gained while thinking about injective and surjective
+functions. Essentially, a linear map from R^3 to R^2 is not injective and linear map from R^2 to R^3
+is not surjective.
+
 ### EWMAC Short
 
 *Scraped* (In favor of creating an actual video)
