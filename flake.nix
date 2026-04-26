@@ -51,14 +51,14 @@
           wayland
           libva
           libvdpau
-          libdrm         # <-- NEW
-          mesa           # <-- NEW
+          libdrm
+          mesa
           
           # Network / Security
           krb5
-          nss            # <-- NEW (Often needed for QtWebEngine/Media)
-          nspr           # <-- NEW
-          expat          # <-- NEW
+          nss 
+          nspr
+          expat
           
           # Core Graphics
           glib
