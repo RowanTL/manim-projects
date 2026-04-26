@@ -39,6 +39,7 @@
           # Core C++ and Math
           stdenv.cc.cc.lib
           zlib
+          zstd
           
           # Core Graphics
           glib
