@@ -1,5 +1,5 @@
 {
-  description = "Develop Shell with CUDA and python available";
+  description = "Manim and manim-slides ";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -24,14 +24,6 @@
       in pkgs.mkShell {
         packages = [
           (pkgs.python3.withPackages (pypkgs: with pypkgs; [
-            # torch
-            # torchvision
-            # torchaudio
-            # plyfile
-            # tqdm
-            # joblib
-            # opencv-python
-            # numpy
           ]))
           pkgs.uv
           pkgs.ffmpeg
@@ -43,6 +35,14 @@
           pkgs.ruff
           pkgs.ty
         ];
+        # Fix for "cannot open shared object file" errors from PyPI wheels.
+        # This tells the dynamic linker where to find these core libraries.
+        LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (with pkgs; [
+          stdenv.cc.cc.lib # Provides libstdc++.so.6
+          zlib             # Often needed by numpy/pandas
+          glib             # Often needed by OpenCV
+          libGL            # Needed by OpenCV
+        ]);
         shellHook = ''
           unset PYTHONPATH
         '';
