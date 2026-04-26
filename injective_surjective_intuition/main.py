@@ -39,7 +39,7 @@ class UnBijectiveScene(Scene):
 
         # The actual equation of the linear map
         lin_map_equation: MathTex = (
-            MathTex(r"T = x_1").next_to(lin_map, DOWN).scale(0.9)
+            MathTex(r"T(x, y) = x").next_to(lin_map, DOWN).scale(0.9)
         )
 
         # Dots in R^2 to be mapped into R
@@ -60,6 +60,10 @@ class UnBijectiveScene(Scene):
 
         # Dot in which the two lines in injective_lines join at in R
         r_1_dot: Dot = Dot(axes.c2p(1, 0), color=PURPLE)
+
+        # Move group along the axis
+        injective_group: VGroup = VGroup()
+        # injective_group
 
         ## Animations
         # Write function down
