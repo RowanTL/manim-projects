@@ -50,6 +50,8 @@
 
           # Audio
           libpulseaudio
+          pipewire
+          alsa-lib
 
           # Desktop / Windowing basics
           libxkbcommon
