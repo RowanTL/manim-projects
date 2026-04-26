@@ -45,6 +45,9 @@
           glib
           libGL
 
+          # Network / Security
+          krb5
+
           # Audio
           libpulseaudio
 
