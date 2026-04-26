@@ -45,6 +45,9 @@
           glib
           libGL
 
+          # Audio
+          libpulseaudio
+
           # Desktop / Windowing basics
           libxkbcommon
           fontconfig
