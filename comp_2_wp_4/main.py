@@ -1,8 +1,8 @@
 from manim import *
-
+from manim_slides import Slide
 
 # Slide 0
-class IntroSlide(Scene):
+class IntroSlide(Slide):
     def construct(self):
         # circle = Circle()  # create a circle
         # circle.set_fill(PINK, opacity=0.5)  # set color and transparency
