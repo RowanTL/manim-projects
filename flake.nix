@@ -42,8 +42,6 @@
         ];
         shellHook = ''
           unset PYTHONPATH
-          uv sync
-          . .venv/bin/activate
         '';
       };
     };
