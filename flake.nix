@@ -36,6 +36,7 @@
           pkgs.ty
         ];
         LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (with pkgs; [
+          # Core C++ and Math
           stdenv.cc.cc.lib
           zlib
           
@@ -43,18 +44,25 @@
           glib
           libGL
 
-          # Desktop / Windowing libraries required by PyPI Qt wheels
+          # Desktop / Windowing basics
           libxkbcommon
           fontconfig
+          freetype
           dbus
+
+          # Extensive X11 / XCB support (Usually required by PyQt6/PySide6 wheels)
           xorg.libX11
           xorg.libxcb
           xorg.libXext
           xorg.libXrender
           xorg.libXi
+          xorg.xcbutil
+          xorg.xcbutilwm
+          xorg.xcbutilimage
+          xorg.xcbutilkeysyms
+          xorg.xcbutilrenderutil
+          xorg.xcbutilcursor # Usually the exact missing file for PyQt6
         ]);
-        # To prevent Qt from throwing warnings about missing Wayland plugins, 
-        # it's usually safest to force it to use X11/xcb when running through Nix + PyPI wheels
         QT_QPA_PLATFORM = "xcb";
         shellHook = ''
           unset PYTHONPATH
