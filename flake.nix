@@ -40,6 +40,8 @@
           pkgs.pkg-config
           pkgs.texlive.combined.scheme-full
           pkgs.ninja
+          pkgs.ruff
+          pkgs.ty
         ];
         shellHook = ''
           unset PYTHONPATH
