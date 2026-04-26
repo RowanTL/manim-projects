@@ -16,6 +16,7 @@
         # Define the Python environment and include Manim
         pythonEnv = pkgs.python3.withPackages (ps: with ps; [
           manim
+          manim-slides
           numpy
           ruff
           ty
