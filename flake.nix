@@ -17,6 +17,8 @@
         pythonEnv = pkgs.python3.withPackages (ps: with ps; [
           manim
           numpy
+          ruff
+          ty
         ]);
 
       in
