@@ -41,17 +41,28 @@
           zlib
           zstd
           
-          # Core Graphics
-          glib
-          libGL
-
-          # Network / Security
-          krb5
-
-          # Audio
+          # Audio / Multimedia
           libpulseaudio
           pipewire
           alsa-lib
+          
+          # Video / Hardware Acceleration
+          libglvnd
+          wayland
+          libva
+          libvdpau
+          libdrm         # <-- NEW
+          mesa           # <-- NEW
+          
+          # Network / Security
+          krb5
+          nss            # <-- NEW (Often needed for QtWebEngine/Media)
+          nspr           # <-- NEW
+          expat          # <-- NEW
+          
+          # Core Graphics
+          glib
+          libGL
 
           # Desktop / Windowing basics
           libxkbcommon
@@ -59,19 +70,23 @@
           freetype
           dbus
 
-          # Extensive X11 / XCB support (Usually required by PyQt6/PySide6 wheels)
+          # Extensive X11 / XCB support
           xorg.libX11
           xorg.libxcb
           xorg.libXext
           xorg.libXrender
           xorg.libXi
+          xorg.libXrandr
+          xorg.libXcomposite # <-- NEW
+          xorg.libXdamage    # <-- NEW
+          xorg.libXfixes     # <-- NEW
+          xorg.libXcursor    # <-- NEW
           xorg.xcbutil
           xorg.xcbutilwm
           xorg.xcbutilimage
           xorg.xcbutilkeysyms
           xorg.xcbutilrenderutil
           xorg.xcbutilcursor
-          xorg.libXrandr
         ]);
         QT_QPA_PLATFORM = "xcb";
         shellHook = ''
