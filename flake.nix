@@ -70,7 +70,8 @@
           xorg.xcbutilimage
           xorg.xcbutilkeysyms
           xorg.xcbutilrenderutil
-          xorg.xcbutilcursor # Usually the exact missing file for PyQt6
+          xorg.xcbutilcursor
+          xorg.libXrandr
         ]);
         QT_QPA_PLATFORM = "xcb";
         shellHook = ''
