@@ -71,22 +71,22 @@
           dbus
 
           # Extensive X11 / XCB support
-          xorg.libX11
-          xorg.libxcb
-          xorg.libXext
-          xorg.libXrender
-          xorg.libXi
-          xorg.libXrandr
-          xorg.libXcomposite # <-- NEW
-          xorg.libXdamage    # <-- NEW
-          xorg.libXfixes     # <-- NEW
-          xorg.libXcursor    # <-- NEW
-          xorg.xcbutil
-          xorg.xcbutilwm
-          xorg.xcbutilimage
-          xorg.xcbutilkeysyms
-          xorg.xcbutilrenderutil
-          xorg.xcbutilcursor
+          libx11
+          libxcb
+          libxext
+          libxrender
+          libxi
+          libxrandr
+          libxcomposite
+          libxdamage
+          libxfixes 
+          libxcursor
+          libxcb-util
+          libxcb-wm
+          libxcb-image
+          libxcb-keysyms
+          libxcb-render-util
+          libxcb-cursor
         ]);
         QT_QPA_PLATFORM = "xcb";
         shellHook = ''
