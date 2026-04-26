@@ -36,6 +36,8 @@
             # LaTeX environment for rendering math equations.
             # Note: scheme-full is large but guarantees you won't miss obscure packages.
             texlive.combined.scheme-full 
+
+            vlc # Play the videos back
           ];
 
           shellHook = ''
