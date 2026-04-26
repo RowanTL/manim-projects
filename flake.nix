@@ -35,14 +35,27 @@
           pkgs.ruff
           pkgs.ty
         ];
-        # Fix for "cannot open shared object file" errors from PyPI wheels.
-        # This tells the dynamic linker where to find these core libraries.
         LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (with pkgs; [
-          stdenv.cc.cc.lib # Provides libstdc++.so.6
-          zlib             # Often needed by numpy/pandas
-          glib             # Often needed by OpenCV
-          libGL            # Needed by OpenCV
+          stdenv.cc.cc.lib
+          zlib
+          
+          # Core Graphics
+          glib
+          libGL
+
+          # Desktop / Windowing libraries required by PyPI Qt wheels
+          libxkbcommon
+          fontconfig
+          dbus
+          xorg.libX11
+          xorg.libxcb
+          xorg.libXext
+          xorg.libXrender
+          xorg.libXi
         ]);
+        # To prevent Qt from throwing warnings about missing Wayland plugins, 
+        # it's usually safest to force it to use X11/xcb when running through Nix + PyPI wheels
+        QT_QPA_PLATFORM = "xcb";
         shellHook = ''
           unset PYTHONPATH
         '';
