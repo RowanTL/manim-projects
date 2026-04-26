@@ -1,51 +1,50 @@
 {
-  description = "Python development environment for Manim";
+  description = "Develop Shell with CUDA and python available";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
+  outputs =
+    { nixpkgs, ... }:
+    let
+      inherit (nixpkgs) lib;
+      # forAllSystems = lib.genAttrs lib.systems.flakeExposed;
+      system = "x86_64-linux";
+    in
+    {
+      devShells."${system}".default = let
         pkgs = import nixpkgs {
           inherit system;
+
+          config = {
+            allowUnfree = true;
+          };
         };
-
-        # Define the Python environment and include Manim
-        pythonEnv = pkgs.python3.withPackages (ps: with ps; [
-          manim
-          manim-slides
-          numpy
-          ruff
-          ty
-        ]);
-
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            pythonEnv
-            
-            # System dependencies required by Manim
-            ffmpeg
-            cairo
-            pango
-            pkg-config
-
-            # LaTeX environment for rendering math equations.
-            # Note: scheme-full is large but guarantees you won't miss obscure packages.
-            texlive.combined.scheme-full 
-
-            vlc # Play the videos back
-          ];
-
-          shellHook = ''
-            echo "Python: $(python --version)"
-            echo "Manim:  $(manim --version)"
-          '';
-        };
-      }
-    );
+      in pkgs.mkShell {
+        packages = [
+          (pkgs.python3.withPackages (pypkgs: with pypkgs; [
+            # torch
+            # torchvision
+            # torchaudio
+            # plyfile
+            # tqdm
+            # joblib
+            # opencv-python
+            # numpy
+          ]))
+          pkgs.uv
+          pkgs.ffmpeg
+          pkgs.cairo
+          pkgs.pango
+          pkgs.pkg-config
+          pkgs.texlive.combined.scheme-full
+        ];
+        shellHook = ''
+          unset PYTHONPATH
+          uv sync
+          . .venv/bin/activate
+        '';
+      };
+    };
 }
