@@ -1,0 +1,11 @@
+[project]
+name = "comp_2_wp_4_presentation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "manim==0.20.1",
+    "manim-slides[manim]==5.6.0",
+    "pyside6>=6.10.0",
+]
