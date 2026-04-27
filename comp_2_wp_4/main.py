@@ -8,15 +8,23 @@ from manim_slides.slide.manim import Slide
 class IntroSlide(Slide):
     def construct(self):
         # declarations
-        title_text: Text = Text("Dissuading E-Cigarette Use").to_edge(UP)
+        title_text: Paragraph = Paragraph(
+            "Dissuading E-Cigarette Use",
+            "in Adolescents and Young Adults",
+            alignment="center",
+        ).to_edge(UP)
         name_text: Text = Text("Rowan Torbitzky-Lane").scale(0.5).set_color(BLUE)
 
         # animations
-        self.play(Write(title_text))
-
+        self.next_slide()
+        self.wait(0.25)
         self.next_slide()
 
         self.play(Write(name_text))
+
+        self.next_slide()
+
+        self.play(Write(title_text))
 
         self.next_slide()
 
@@ -83,7 +91,11 @@ class WhyProblemSlide(Slide):
         juul_pod_cigarette_image_arrow: Arrow = Arrow(
             start=juul_pod_image.get_right(), end=cigarette_image.get_left()
         )
-        question_mark_text: Text = Text("?").next_to(juul_pod_cigarette_image_arrow, UP)
+        question_mark_text: Text = (
+            Text("nicotine amount?")
+            .scale(0.5)
+            .next_to(juul_pod_cigarette_image_arrow, UP)
+        )
         self.play(
             Write(cigarette_image),
             Write(juul_pod_cigarette_image_arrow),
@@ -181,6 +193,14 @@ class MentalHealthProblemSlide(Slide):
         externalization_group: VGroup = VGroup(
             externalization_definition, externalization_text
         )
+        rice_citation: Text = (
+            Text(
+                "Rice, Timothy R., et al. “Adolescent Vaping: Revisiting Developmental Perspectives on Adolescent Substance Use in the Digital Age.” The Psychoanalytic Study of the Child, Taylor & Francis, July 2025, pp. 1–19, https://doi.org/10.1080/00797308.2025.2533680."
+            )
+            .set_color(GREY)
+            .scale(0.15)
+            .to_edge(DOWN)
+        )
 
         # animations
         self.play(
@@ -191,7 +211,7 @@ class MentalHealthProblemSlide(Slide):
         self.next_slide()
 
         # self.play(FadeIn(wheresmyjuul_image), Write(wheresmyjuul_text))
-        self.play(Write(externalization_group))
+        self.play(Write(externalization_group), Write(rice_citation))
 
         self.next_slide()
 
@@ -204,6 +224,17 @@ class MentalHealthProblemSlide(Slide):
             FadeIn(wheresmyjuul_image),
             Transform(externalization_group, wheresmyjuul_text),
         )
+
+        self.next_slide()
+
+        self.play(
+            FadeOut(wheresmyjuul_image),
+            Unwrite(externalization_group),
+            Unwrite(mental_health_text),
+            Unwrite(rice_citation),
+            run_time=0.5,
+        )
+        self.wait(0.25)
 
 
 # Unhyped campaign vermont, should probably source that
@@ -326,3 +357,4 @@ class ProperPresentSolutionSlide(Slide):
             run_time=0.5,
         )
         self.wait(0.25)
+
