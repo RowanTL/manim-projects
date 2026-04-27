@@ -206,13 +206,38 @@ class MentalHealthProblemSlide(Slide):
         )
 
 
+# Unhyped campaign vermont, should probably source that
+# at the bottom of the screen
 class ProperPresentSolutionSlide(Slide):
     def construct(self):
         # declarations
-        stick_man_tie: SVGMobject = SVGMobject(
-            "images/stick-man-with-tie.svg"
-        ).set_color(WHITE)
+        in_class_solution_text: Text = (
+            Text("Solution 1").set_color(BLUE).to_edge(UP).scale(0.75)
+        )
+        stick_teacher_tie: SVGMobject = (
+            SVGMobject("images/stick-man-with-tie.svg").set_color(WHITE).scale(0.75)
+        )
+        stick_students_vgroup: VGroup = (
+            VGroup(
+                *[
+                    SVGMobject("images/stick-man.svg").set_color(WHITE).scale(0.4)
+                    for _ in range(14)
+                ]
+            )
+            .arrange_in_grid(rows=2, cols=7)
+            .to_edge(DOWN)
+        )
+        board_rect: Rectangle = Rectangle(height=2, width=10).next_to(
+            in_class_solution_text, DOWN
+        )
+        # move stick_teacher_tie
+        stick_teacher_tie.next_to(board_rect, DOWN)
 
         # animations
-        self.play(Write(stick_man_tie))
+        self.play(
+            Write(stick_teacher_tie),
+            Write(stick_students_vgroup),
+            Write(board_rect),
+            Write(in_class_solution_text),
+        )
         self.wait(0.25)
