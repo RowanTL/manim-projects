@@ -204,3 +204,15 @@ class MentalHealthProblemSlide(Slide):
             FadeIn(wheresmyjuul_image),
             Transform(externalization_group, wheresmyjuul_text),
         )
+
+
+class ProperPresentSolutionSlide(Slide):
+    def construct(self):
+        # declarations
+        stick_man_tie: SVGMobject = SVGMobject(
+            "images/stick-man-with-tie.svg"
+        ).set_color(WHITE)
+
+        # animations
+        self.play(Write(stick_man_tie))
+        self.wait(0.25)
