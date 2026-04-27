@@ -215,12 +215,12 @@ class ProperPresentSolutionSlide(Slide):
             Text("Solution 1").set_color(BLUE).to_edge(UP).scale(0.75)
         )
         stick_teacher_tie: SVGMobject = (
-            SVGMobject("images/stick-man-with-tie.svg").set_color(WHITE).scale(0.75)
+            SVGMobject("images/stick-person-with-tie.svg").set_color(WHITE).scale(0.75)
         )
         stick_students_vgroup: VGroup = (
             VGroup(
                 *[
-                    SVGMobject("images/stick-man.svg").set_color(WHITE).scale(0.4)
+                    SVGMobject("images/stick-person.svg").set_color(WHITE).scale(0.4)
                     for _ in range(14)
                 ]
             )
