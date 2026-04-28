@@ -77,6 +77,14 @@ class WhyProblemSlide(Slide):
             Text("3.5%").scale(0.75).next_to(ms_total_rect, LEFT).set_color(RED)
         )
         ms_rect_group: VGroup = VGroup(ms_total_rect, ms_vaping_rect, ms_perc_text)
+        rice_citation: Text = (
+            Text(
+                "Rice, Timothy R., et al. “Adolescent Vaping: Revisiting Developmental Perspectives on Adolescent Substance Use in the Digital Age.” The Psychoanalytic Study of the Child, Taylor & Francis, July 2025, pp. 1–19, https://doi.org/10.1080/00797308.2025.2533680."
+            )
+            .set_color(GREY)
+            .scale(0.15)
+            .to_edge(DOWN)
+        )
 
         # animations
         self.play(Write(why_text))
@@ -100,6 +108,7 @@ class WhyProblemSlide(Slide):
             Write(cigarette_image),
             Write(juul_pod_cigarette_image_arrow),
             Write(question_mark_text),
+            Write(rice_citation),
         )
 
         self.next_slide()
@@ -159,6 +168,7 @@ class WhyProblemSlide(Slide):
             Unwrite(hs_text),
             Unwrite(ms_text),
             Unwrite(why_text),
+            Unwrite(rice_citation),
             run_time=0.5,
         )
         self.wait(0.25)
@@ -201,6 +211,12 @@ class MentalHealthProblemSlide(Slide):
             .scale(0.15)
             .to_edge(DOWN)
         )
+        favorable_response_paragraph: Paragraph = Paragraph(
+            '"This is a more convincing anti-vape ad than the real one"',
+            '"If this isn’t a sign of addiction then idk [I don’t know] what is anymore"',
+            '"this convinced me to quit"',
+            alignment="left",
+        ).scale(0.5)
 
         # animations
         self.play(
@@ -229,9 +245,84 @@ class MentalHealthProblemSlide(Slide):
 
         self.play(
             FadeOut(wheresmyjuul_image),
+            # Transform(externalization_group, favorable_response_paragraph),
             Unwrite(externalization_group),
+            Write(favorable_response_paragraph),
+        )
+        self.wait(0.25)
+
+        self.next_slide()
+
+        self.play(
+            Unwrite(favorable_response_paragraph),
+            # Unwrite(externalization_group),
             Unwrite(mental_health_text),
             Unwrite(rice_citation),
+            run_time=0.5,
+        )
+        self.wait(0.25)
+
+
+# Disallow the tagging of individuals under the age of 18
+# or all together as cigarette companies aren't allowed
+class CorporationInfluenceSlide(Slide):
+    def construct(self):
+        # definitions
+        corporate_problem_text: Text = (
+            Text("Corporation Influence").set_color(BLUE).to_edge(UP)
+        )
+        left_stick_person: SVGMobject = (
+            SVGMobject("images/stick-person.svg").shift(LEFT * 2).set_color(WHITE)
+        )
+        right_stick_person: SVGMobject = (
+            SVGMobject("images/stick-person.svg").shift(RIGHT * 2).set_color(WHITE)
+        )
+        stick_person_arrow: Arrow = Arrow(
+            start=left_stick_person.get_right(), end=right_stick_person.get_left()
+        )
+        stick_person_arrow_text: Text = (
+            Text("tags").scale(0.5).next_to(stick_person_arrow, UP)
+        )
+        incentivized_friend_tagging_text: Text = (
+            Text("Incentivized Friend Tagging")
+            .set_color(PURPLE)
+            .scale(0.9)
+            .next_to(corporate_problem_text, DOWN)
+        )
+        # arrow_cross: Cross = Cross(stick_person_arrow, stroke_color=RED).scale(1.2)
+        lee_citation: Text = (
+            Text(
+                "Lee, Juhan, et al. “E-Cigarette Marketing on Social Media: A Scoping Review.” Current Addiction Reports, vol. 10, no. 1, 16 Jan. 2023, pp. 29–37, https://doi.org/10.1007/s40429-022-00463-2. "
+            )
+            .set_color(GREY)
+            .scale(0.15)
+            .to_edge(DOWN)
+        )
+
+        # animations
+        self.play(Write(corporate_problem_text))
+
+        self.next_slide()
+
+        self.play(
+            Write(incentivized_friend_tagging_text),
+            Write(right_stick_person),
+            Write(left_stick_person),
+            Write(stick_person_arrow),
+            Write(stick_person_arrow_text),
+            Write(lee_citation),
+        )
+
+        self.next_slide()
+
+        self.play(
+            Unwrite(incentivized_friend_tagging_text),
+            Unwrite(right_stick_person),
+            Unwrite(left_stick_person),
+            Unwrite(stick_person_arrow),
+            Unwrite(stick_person_arrow_text),
+            Unwrite(corporate_problem_text),
+            Unwrite(lee_citation),
             run_time=0.5,
         )
         self.wait(0.25)
@@ -243,7 +334,7 @@ class ProperPresentSolutionSlide(Slide):
     def construct(self):
         # declarations
         in_class_solution_text: Text = (
-            Text("Solution Part 1").set_color(BLUE).to_edge(UP).scale(0.75)
+            Text("Direct Solution").set_color(BLUE).to_edge(UP).scale(0.75)
         )
         board_rect: Rectangle = Rectangle(height=2, width=10).next_to(
             in_class_solution_text, DOWN
@@ -358,3 +449,93 @@ class ProperPresentSolutionSlide(Slide):
         )
         self.wait(0.25)
 
+
+class IndirectSolutionSlide(Slide):
+    def construct(self):
+        # declarations
+        indirect_solution_text: Text = (
+            Text("Indirect Solution").set_color(BLUE).to_edge(UP)
+        )
+        how_solve: Paragraph = Paragraph(
+            "Continue to upload videos that",
+            "illicit favorable responses",
+            alignment="center",
+        ).scale(0.75)
+        rice_citation: Text = (
+            Text(
+                "Rice, Timothy R., et al. “Adolescent Vaping: Revisiting Developmental Perspectives on Adolescent Substance Use in the Digital Age.” The Psychoanalytic Study of the Child, Taylor & Francis, July 2025, pp. 1–19, https://doi.org/10.1080/00797308.2025.2533680."
+            )
+            .set_color(GREY)
+            .scale(0.15)
+            .to_edge(DOWN)
+        )
+
+        # animations
+        self.play(Write(indirect_solution_text))
+
+        self.next_slide()
+
+        self.play(Write(how_solve), Write(rice_citation))
+
+        self.next_slide()
+
+        self.play(
+            Unwrite(indirect_solution_text),
+            Unwrite(how_solve),
+            Unwrite(rice_citation),
+            run_time=0.5,
+        )
+        self.wait(0.25)
+
+
+class CorporationSolutionSlide(Slide):
+    def construct(self):
+        # declarations
+        limit_corporation_text: Text = (
+            Text("Limit Corporation Action").set_color(BLUE).to_edge(UP)
+        )
+        incentivized_friend_tagging_text: Text = (
+            Text("Incentivized Friend Tagging").set_color(PURPLE).scale(0.9)
+        )
+        incentivized_friend_tagging_cross: Cross = Cross(
+            incentivized_friend_tagging_text
+        ).scale(1.2)
+        lee_citation: Text = (
+            Text(
+                "Lee, Juhan, et al. “E-Cigarette Marketing on Social Media: A Scoping Review.” Current Addiction Reports, vol. 10, no. 1, 16 Jan. 2023, pp. 29–37, https://doi.org/10.1007/s40429-022-00463-2. "
+            )
+            .set_color(GREY)
+            .scale(0.15)
+            .to_edge(DOWN)
+        )
+
+        # animations
+        self.play(Write(limit_corporation_text))
+
+        self.next_slide()
+
+        self.play(Write(incentivized_friend_tagging_text), Write(lee_citation))
+
+        self.next_slide()
+
+        self.play(Write(incentivized_friend_tagging_cross))
+
+        self.next_slide()
+
+        self.play(
+            Unwrite(limit_corporation_text),
+            Unwrite(incentivized_friend_tagging_cross),
+            Unwrite(incentivized_friend_tagging_text),
+            Unwrite(lee_citation),
+            run_time=0.5,
+        )
+        self.wait()
+
+
+class ThankYouSlide(Slide):
+    def construct(self):
+        # declarations
+        thank_you_text: Text = Text("Thank You").set_color(BLUE)
+
+        # animations
+        self.play(Write(thank_you_text))
