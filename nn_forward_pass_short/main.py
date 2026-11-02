@@ -49,6 +49,7 @@ class NNVisualScene(Scene):
 
         # Edges first so the nodes are drawn on top of them.
         self.play(Write(self.edges), Write(self.layers), run_time=0.75)
+        self.wait(0.25)
 
 
 class BasicDeclarationScene(Scene):
