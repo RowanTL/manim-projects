@@ -1,0 +1,15 @@
+[project]
+name = "nn-video"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Rowan Torbitzky-Lane", email = "rowan.a.tl@protonmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "manim>=0.22.1"
+]
+
+[tool.ty.rules]
+invalid-argument-type = "ignore"
