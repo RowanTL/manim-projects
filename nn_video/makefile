@@ -10,7 +10,8 @@ SCENE_LIST = NNVisualScene FloatingPointSubset NaiveNNDefinitionScene LayerFunct
 .PHONY: render pre clean
 
 # Low quality preview settings (portrait, matching the aspect ratio in manim.cfg)
-PRE_RESOLUTION = 540,960
+# PRE_RESOLUTION = 540,960
+PRE_RESOLUTION = 960, 540
 PRE_FPS = 15
 
 # Default rule: runs the render command
