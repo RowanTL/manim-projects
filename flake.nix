@@ -30,7 +30,7 @@
           pkgs.cairo
           pkgs.pango
           pkgs.pkg-config
-          pkgs.texlive.combined.scheme-full
+          pkgs.texliveFull
           pkgs.ninja
           pkgs.ruff
           pkgs.ty
