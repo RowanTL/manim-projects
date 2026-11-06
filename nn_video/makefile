@@ -9,9 +9,8 @@ SCENE_LIST = NNVisualScene FloatingPointSubset NaiveNNDefinitionScene LayerFunct
 # The .PHONY declaration tells Make that these are not file names, but commands
 .PHONY: render pre clean
 
-# Low quality preview settings (portrait, matching the aspect ratio in manim.cfg)
-# PRE_RESOLUTION = 540,960
-PRE_RESOLUTION = 960, 540
+# Low quality preview settings (16:9, width,height with no space)
+PRE_RESOLUTION = 960,540
 PRE_FPS = 15
 
 # Default rule: runs the render command
