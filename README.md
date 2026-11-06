@@ -88,7 +88,7 @@ Using ManimCE and manim_slides for this.
 
 ### Injective/Surjective Intuition
 
-*In Progress*
+*Scraped*
 
 A little short talking about some intuition I gained while thinking about injective and surjective
 functions. Essentially, a linear map from R^3 to R^2 is not injective and linear map from R^2 to R^3
@@ -130,3 +130,9 @@ the solution.
 
 This was supposed to be a video about Evolutionary Computing and how that works.
 I found I didn't have the motivation to do it.
+
+### NN Forward Pass
+
+*Scraped*
+
+In favor of creating a full video rather than a short.
