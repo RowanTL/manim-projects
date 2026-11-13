@@ -151,16 +151,33 @@ class ForwardFormalizationStartScene(Scene):
         vector_diagram: VGroup = VGroup(vector_entries, vector_membership)
         vector_diagram.arrange(RIGHT, buff=0.4).move_to(ORIGIN)
 
+        function_set_definition: Tex = Tex(
+            r"Let $\mathcal{F} = \{f: \mathbb{F}^{p \times 1} \rightarrow "
+            r"\mathbb{F}^{q \times 1} \mid p, q \in \mathbb{Z}_+ \}$",
+            tex_to_color_map=TEX_COLOR_MAP,
+        )
+        function_set_summary: Tex = Tex(
+            r"$\mathcal{F} = \{f: \mathbb{F}^{p \times 1} \rightarrow "
+            r"\mathbb{F}^{q \times 1} \mid p, q \in \mathbb{Z}_+ \}$",
+            tex_to_color_map=TEX_COLOR_MAP,
+            tex_environment="flushleft",
+        ).scale(self.SUMMARY_SCALE)
+
         # Every summary lives in this one stack: left-aligned, top left corner.
         # To add another summary later, build it above and append it here.
         # Earlier entries stay put because the stack grows downward from the corner.
-        VGroup(f_and_q_summary, nk_summary, matrix_summary).arrange(
-            DOWN, aligned_edge=LEFT, buff=0.2
-        ).to_corner(UL)
+        VGroup(
+            f_and_q_summary, nk_summary, matrix_summary, function_set_summary
+        ).arrange(DOWN, aligned_edge=LEFT, buff=0.2).to_corner(UL)
 
         # Keep the sentences inside the frame
         max_width: float = config.frame_width - 1
-        for definition in (f_and_q_defition, nk_definition, matrix_definition):
+        for definition in (
+            f_and_q_defition,
+            nk_definition,
+            matrix_definition,
+            function_set_definition,
+        ):
             if definition.width > max_width:
                 definition.scale_to_fit_width(max_width)
 
@@ -185,6 +202,13 @@ class ForwardFormalizationStartScene(Scene):
         self.play(ReplacementTransform(matrix_diagram, vector_diagram), run_time=1.5)
         self.wait(0.25)
         self.play(FadeOut(vector_diagram), run_time=1.25)
+
+        self.play(Write(function_set_definition))
+
+        self.play(
+            ReplacementTransform(function_set_definition, function_set_summary),
+            run_time=1.25,
+        )
 
         # Finally, the neural network itself: a function from F^{n_1} to F^{n_k}
         # Edit a drumroll in here
