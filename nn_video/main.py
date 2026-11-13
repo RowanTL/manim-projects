@@ -11,15 +11,15 @@ TEX_COLOR_MAP: Final[dict[str, ManimColor]] = {
 
 class IntroScene(Scene):
     def construct(self):
-        how_to_text: Text = Text("How to Neural Network?")
-        haskell_code: Text = (
-            Text("Haskell code >:D", color=BLUE)
-            .next_to(how_to_text, DOWN * 2)
-            .scale(0.7)
-        )
+        how_to_text: Text = Text("Formal Neural Network?")
+        # haskell_code: Text = (
+        #     Text("Haskell code >:D", color=BLUE)
+        #     .next_to(how_to_text, DOWN * 2)
+        #     .scale(0.7)
+        # )
 
         self.play(Write(how_to_text))
-        self.play(Write(haskell_code))
+        # self.play(Write(haskell_code))
 
 
 class NeuralNetworkVisualScene(Scene):
@@ -138,14 +138,14 @@ class ForwardFormalizationStartScene(Scene):
         matrix_diagram: VGroup = VGroup(matrix_entries, matrix_membership)
         matrix_diagram.arrange(RIGHT, buff=0.4).move_to(ORIGIN)
 
-        # A generic length-p column vector, followed by "in F^p"
+        # A generic length-p column vector, followed by "in F^{p x 1}"
         vector_entries: Matrix = Matrix(
             [[r"x_{1}"], [r"x_{2}"], [r"\vdots"], [r"x_{p}"]],
             v_buff=0.9,
         )
         vector_entries.get_entries().set_color(RED)
         vector_membership: MathTex = MathTex(
-            r"\in \mathbb{F}^{p}",
+            r"\in \mathbb{F}^{p \times 1}",
             tex_to_color_map=TEX_COLOR_MAP,
         )
         vector_diagram: VGroup = VGroup(vector_entries, vector_membership)
@@ -208,9 +208,7 @@ class ForwardFormalizationStartScene(Scene):
             radius=0.6, start_angle=7 * PI / 6, angle=2 * PI / 3, color=YELLOW
         )
         smiley: VGroup = (
-            VGroup(smiley_face, smiley_eyes, smiley_mouth)
-            .scale(0.5)
-            .to_edge(DOWN)
+            VGroup(smiley_face, smiley_eyes, smiley_mouth).scale(0.5).to_edge(DOWN)
         )
 
         self.play(Create(smiley))
