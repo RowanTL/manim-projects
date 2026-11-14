@@ -181,6 +181,12 @@ class ForwardFormalizationStartScene(Scene):
             if definition.width > max_width:
                 definition.scale_to_fit_width(max_width)
 
+        # A lone fraktur f appears first, then shrinks into the bottom right corner.
+        # It returns at the end and expands into the full definition of the network.
+        fraktur_f: MathTex = MathTex(r"\mathfrak{f}").scale(2)
+        self.play(Write(fraktur_f))
+        self.play(fraktur_f.animate.scale(SUMMARY_SCALE).to_corner(DR), run_time=1.25)
+
         self.play(Write(f_and_q_definition))
 
         self.play(
@@ -217,10 +223,13 @@ class ForwardFormalizationStartScene(Scene):
             r"\mathfrak{f} :\mathbb{F}^{n_1} \rightarrow \mathbb{F}^{n_k}",
             tex_to_color_map=TEX_COLOR_MAP,
         )
-        VGroup(nn_intro, nn_function).arrange(DOWN, buff=0.5).move_to(ORIGIN)
+        nn_function.move_to(DOWN * 0.8)
+        nn_intro.next_to(nn_function, UP, buff=0.5)
 
         self.play(Write(nn_intro))
-        self.play(Write(nn_function))
+        # The lone fraktur f returns to the center and expands into its final form
+        self.play(fraktur_f.animate.scale(1 / SUMMARY_SCALE).move_to(nn_function))
+        self.play(ReplacementTransform(fraktur_f, nn_function))
 
         # A small smiley face at the bottom of the screen
         smiley_face: Circle = Circle(radius=1, color=YELLOW)
