@@ -3,6 +3,8 @@ from typing import Final
 
 from manim import *
 
+SUMMARY_SCALE: Final[float] = 0.6
+
 TEX_COLOR_MAP: Final[dict[str, ManimColor]] = {
     r"\mathbb{F}": PURPLE,
     r"\mathbb{Z}_+": BLUE,
@@ -84,10 +86,8 @@ class NeuralNetworkVisualScene(Scene):
 
 
 class ForwardFormalizationStartScene(Scene):
-    SUMMARY_SCALE: Final[float] = 0.6
-
     def construct(self):
-        f_and_q_defition: Tex = Tex(
+        f_and_q_definition: Tex = Tex(
             r"Let $\mathbb{F} \subset \mathbb{Q}$ be a finite set containing "
             r"all 64-bit floating point values",
             tex_to_color_map=TEX_COLOR_MAP,
@@ -97,7 +97,7 @@ class ForwardFormalizationStartScene(Scene):
             r"$\mathbb{F} \subset \mathbb{Q}$ \\ (64 bit floats)",
             tex_to_color_map=TEX_COLOR_MAP,
             tex_environment="flushleft",
-        ).scale(self.SUMMARY_SCALE)
+        ).scale(SUMMARY_SCALE)
         nk_definition: Tex = Tex(
             r"Let $k \in \mathbb{Z}_+$ and $n_1, n_2, \ldots, n_k \in \mathbb{Z}_+$.",
             tex_to_color_map=TEX_COLOR_MAP,
@@ -106,7 +106,7 @@ class ForwardFormalizationStartScene(Scene):
             r"$k \in \mathbb{Z}_+$ \\ $n_1, n_2, \ldots, n_k \in \mathbb{Z}_+$",
             tex_to_color_map=TEX_COLOR_MAP,
             tex_environment="flushleft",
-        ).scale(self.SUMMARY_SCALE)
+        ).scale(SUMMARY_SCALE)
 
         matrix_definition: Tex = Tex(
             r"For some $p, q \in \mathbb{Z}_+$, let $\mathbb{F}^{p \times q}$ "
@@ -117,7 +117,7 @@ class ForwardFormalizationStartScene(Scene):
             r"$\mathbb{F}^{p \times q}$",
             tex_to_color_map=TEX_COLOR_MAP,
             tex_environment="flushleft",
-        ).scale(self.SUMMARY_SCALE)
+        ).scale(SUMMARY_SCALE)
 
         # A generic p x q matrix, abbreviated with dots, followed by "in F^{p x q}"
         matrix_entries: Matrix = Matrix(
@@ -161,7 +161,7 @@ class ForwardFormalizationStartScene(Scene):
             r"\mathbb{F}^{q \times 1} \mid p, q \in \mathbb{Z}_+ \}$",
             tex_to_color_map=TEX_COLOR_MAP,
             tex_environment="flushleft",
-        ).scale(self.SUMMARY_SCALE)
+        ).scale(SUMMARY_SCALE)
 
         # Every summary lives in this one stack: left-aligned, top left corner.
         # To add another summary later, build it above and append it here.
@@ -173,7 +173,7 @@ class ForwardFormalizationStartScene(Scene):
         # Keep the sentences inside the frame
         max_width: float = config.frame_width - 1
         for definition in (
-            f_and_q_defition,
+            f_and_q_definition,
             nk_definition,
             matrix_definition,
             function_set_definition,
@@ -181,10 +181,10 @@ class ForwardFormalizationStartScene(Scene):
             if definition.width > max_width:
                 definition.scale_to_fit_width(max_width)
 
-        self.play(Write(f_and_q_defition))
+        self.play(Write(f_and_q_definition))
 
         self.play(
-            ReplacementTransform(f_and_q_defition, f_and_q_summary), run_time=1.25
+            ReplacementTransform(f_and_q_definition, f_and_q_summary), run_time=1.25
         )
 
         self.play(Write(nk_definition))
@@ -237,3 +237,173 @@ class ForwardFormalizationStartScene(Scene):
 
         self.play(Create(smiley))
         self.wait(2)
+
+
+class DenseLayerScene(Scene):
+    def construct(self):
+        dense_intro: Tex = Tex(
+            r"For some $p, q \in \mathbb{Z}_+$, define a dense layer function, "
+            r"$\ell_d \in \mathcal{F}$ such that",
+            tex_to_color_map=TEX_COLOR_MAP,
+        )
+        dense_signature: MathTex = MathTex(
+            r"\ell_d: \mathbb{F}^{q \times 1} \rightarrow \mathbb{F}^{p \times 1}",
+            tex_to_color_map=TEX_COLOR_MAP,
+        )
+        dense_definition: VGroup = VGroup(dense_intro, dense_signature).arrange(
+            DOWN, buff=0.5
+        )
+
+        # Keep the sentence inside the frame
+        max_width: float = config.frame_width - 1
+        if dense_definition.width > max_width:
+            dense_definition.scale_to_fit_width(max_width)
+        dense_definition.move_to(ORIGIN)
+
+        dense_summary: Tex = Tex(
+            r"$p, q \in \mathbb{Z}_+$ \\ $\ell_d \in \mathcal{F}$ \\ "
+            r"$\ell_d: \mathbb{F}^{q \times 1} \rightarrow \mathbb{F}^{p \times 1}$",
+            tex_to_color_map=TEX_COLOR_MAP,
+            tex_environment="flushleft",
+        ).scale(SUMMARY_SCALE)
+
+        # The weight matrix, input vector and bias vector of the dense layer
+        parameters_definition: MathTex = MathTex(
+            r"\begin{aligned}"
+            r"W &\in \mathbb{F}^{p \times q} \\"
+            r"X &\in \mathbb{F}^{q \times 1} \\"
+            r"B &\in \mathbb{F}^{p \times 1}"
+            r"\end{aligned}",
+            tex_to_color_map=TEX_COLOR_MAP,
+        )
+        parameters_summary: MathTex = MathTex(
+            r"\begin{aligned}"
+            r"W &\in \mathbb{F}^{p \times q} \\"
+            r"X &\in \mathbb{F}^{q \times 1} \\"
+            r"B &\in \mathbb{F}^{p \times 1}"
+            r"\end{aligned}",
+            tex_to_color_map=TEX_COLOR_MAP,
+        ).scale(SUMMARY_SCALE)
+
+        # What the dense layer actually computes
+        dense_rule_definition: MathTex = MathTex(
+            r"\ell_d(X) = WX + B",
+            tex_to_color_map=TEX_COLOR_MAP,
+        )
+        dense_rule_summary: MathTex = MathTex(
+            r"\ell_d(X) = WX + B",
+            tex_to_color_map=TEX_COLOR_MAP,
+        ).scale(SUMMARY_SCALE)
+
+        # Every summary lives in this one stack: left-aligned, top left corner.
+        # Earlier entries stay put because the stack grows downward from the corner.
+        VGroup(dense_summary, parameters_summary, dense_rule_summary).arrange(
+            DOWN, aligned_edge=LEFT, buff=0.2
+        ).to_corner(UL)
+
+        self.play(Write(dense_definition))
+
+        self.play(ReplacementTransform(dense_definition, dense_summary), run_time=1.25)
+
+        self.play(Write(parameters_definition))
+
+        self.play(
+            ReplacementTransform(parameters_definition, parameters_summary),
+            run_time=1.25,
+        )
+
+        self.play(Write(dense_rule_definition))
+
+        self.play(
+            ReplacementTransform(dense_rule_definition, dense_rule_summary),
+            run_time=1.25,
+        )
+        self.wait(1)
+
+
+class ActivationLayerScene(Scene):
+    def construct(self):
+        # A simple slide: the differentiable function g, then the activation layer
+        g_line: Tex = Tex(
+            r"$g: \mathbb{R} \rightarrow \mathbb{R}$ be differentiable",
+            tex_to_color_map=TEX_COLOR_MAP,
+        )
+        activation_lines: Tex = Tex(
+            r"$p \in \mathbb{Z}_+$, \quad $\ell_a \in \mathcal{F}$ \\[0.4em] "
+            r"$\ell_a: \mathbb{F}^{p \times 1} \rightarrow \mathbb{F}^{p \times 1}$",
+            tex_to_color_map=TEX_COLOR_MAP,
+        )
+        activation_slide: VGroup = VGroup(g_line, activation_lines)
+        activation_slide.arrange(DOWN, buff=0.8).move_to(ORIGIN)
+
+        activation_summary: Tex = Tex(
+            r"$g: \mathbb{R} \rightarrow \mathbb{R}$ differentiable \\ "
+            r"$p \in \mathbb{Z}_+$, $\ell_a \in \mathcal{F}$ \\ "
+            r"$\ell_a: \mathbb{F}^{p \times 1} \rightarrow \mathbb{F}^{p \times 1}$",
+            tex_to_color_map=TEX_COLOR_MAP,
+            tex_environment="flushleft",
+        ).scale(SUMMARY_SCALE)
+
+        # How the activation layer uses g: elementwise, on the restriction to F
+        elementwise_definition: Tex = Tex(
+            r"$\ell_a$ applies the function $g|_{\mathbb{F}}: \mathbb{F} "
+            r"\rightarrow \mathbb{F}$, the restriction of $g$ to $\mathbb{F}$, "
+            r"to each element of an input vector.",
+            tex_to_color_map=TEX_COLOR_MAP,
+        )
+        elementwise_summary: Tex = Tex(
+            r"$\ell_a$ applies $g|_{\mathbb{F}}: \mathbb{F} \rightarrow "
+            r"\mathbb{F}$ elementwise",
+            tex_to_color_map=TEX_COLOR_MAP,
+            tex_environment="flushleft",
+        ).scale(SUMMARY_SCALE)
+
+        # Every summary lives in this one stack: left-aligned, top left corner.
+        VGroup(activation_summary, elementwise_summary).arrange(
+            DOWN, aligned_edge=LEFT, buff=0.2
+        ).to_corner(UL)
+
+        # Keep the sentence inside the frame
+        max_width: float = config.frame_width - 1
+        if elementwise_definition.width > max_width:
+            elementwise_definition.scale_to_fit_width(max_width)
+
+        self.play(Write(g_line))
+        self.play(Write(activation_lines))
+        self.wait(1)
+
+        self.play(
+            ReplacementTransform(activation_slide, activation_summary), run_time=1.25
+        )
+
+        self.play(Write(elementwise_definition))
+
+        self.play(
+            ReplacementTransform(elementwise_definition, elementwise_summary),
+            run_time=1.25,
+        )
+
+        # The input vector X in the top half, and what l_a does to it in the bottom
+        input_vector: MathTex = MathTex(
+            r"X = \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_p \end{bmatrix} "
+            r"\in \mathbb{F}^{p \times 1}",
+            tex_to_color_map=TEX_COLOR_MAP,
+        )
+        activation_action: MathTex = MathTex(
+            r"\ell_a(X) = \ell_a\left(\begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ "
+            r"x_p \end{bmatrix}\right) = \begin{bmatrix} g|_{\mathbb{F}}(x_1) \\ "
+            r"g|_{\mathbb{F}}(x_2) \\ \vdots \\ g|_{\mathbb{F}}(x_p) "
+            r"\end{bmatrix}",
+            tex_to_color_map=TEX_COLOR_MAP,
+        )
+        # Each must fit inside its own half of the frame
+        half_height: float = config.frame_height / 2 - 0.5
+        for equation in (input_vector, activation_action):
+            if equation.height > half_height:
+                equation.scale_to_fit_height(half_height)
+        input_vector.move_to(UR * config.frame_height / 4)
+        activation_action.move_to(DOWN * config.frame_height / 4)
+
+        self.play(Write(input_vector))
+        self.play(Write(activation_action))
+        self.wait(1)
