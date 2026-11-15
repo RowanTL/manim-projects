@@ -25,6 +25,7 @@
         packages = [
           (pkgs.python3.withPackages (pypkgs: with pypkgs; [
           ]))
+          pkgs.audacity
           pkgs.uv
           pkgs.ffmpeg
           pkgs.cairo
